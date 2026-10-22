@@ -10,7 +10,7 @@ import { describe, expect, it } from "vitest";
 import { tenantIdSchema } from "@bebranded/elearning-core";
 import type { TenantScope } from "@bebranded/elearning-core";
 
-import { hasChanges, insertedAny } from "./patch.js";
+import { hasChanges, insertedAny, jsonColumn } from "./patch.js";
 import { ownedBy, readableContent } from "./tenant-filters.js";
 
 const db = new Kysely<{ courses: { tenant_id: string | null } }>({
@@ -89,5 +89,13 @@ describe("insertedAny", () => {
     [undefined, false],
   ])("%s inserted rows gives %s", (count, expected) => {
     expect(insertedAny({ numInsertedOrUpdatedRows: count })).toBe(expected);
+  });
+});
+
+describe("jsonColumn", () => {
+  it("keeps null as SQL NULL and serializes everything else", () => {
+    expect(jsonColumn(null)).toBeNull();
+    expect(jsonColumn([{ type: "paragraph" }])).toBe('[{"type":"paragraph"}]');
+    expect(jsonColumn({})).toBe("{}");
   });
 });

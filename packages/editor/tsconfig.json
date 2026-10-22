@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "customConditions": ["@bebranded/source"],
+    "exactOptionalPropertyTypes": false
+  },
+  "include": ["src", "tests"]
+}

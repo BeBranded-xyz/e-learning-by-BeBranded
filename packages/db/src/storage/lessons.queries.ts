@@ -11,7 +11,7 @@ import type {
 
 import type { DB } from "../database.gen.js";
 import { toLessonDetail, toLessonSummary } from "./mappers.js";
-import { hasChanges, insertedAny } from "./patch.js";
+import { hasChanges, insertedAny, jsonColumn } from "./patch.js";
 import { ownedBy, readableContent } from "./tenant-filters.js";
 
 const SUMMARY_COLUMNS = [
@@ -100,7 +100,7 @@ export async function insertLesson(
           eb.val(lesson.status).as("status"),
           eb.val(lesson.isRequired).as("is_required"),
           eb.val(lesson.estimatedMinutes).as("estimated_minutes"),
-          eb.val(lesson.content === null ? null : JSON.stringify(lesson.content)).as("content"),
+          eb.val(jsonColumn(lesson.content)).as("content"),
           eb.val(lesson.contentSchemaVersion).as("content_schema_version"),
           eb.val(JSON.stringify(lesson.settings)).as("settings"),
         ])
@@ -127,8 +127,7 @@ export async function updateLesson(
       status: patch.status,
       is_required: patch.isRequired,
       estimated_minutes: patch.estimatedMinutes,
-      content:
-        content === undefined ? undefined : content === null ? null : JSON.stringify(content),
+      content: content === undefined ? undefined : jsonColumn(content),
       content_schema_version: patch.contentSchemaVersion,
       settings: settings === undefined ? undefined : JSON.stringify(settings),
     })

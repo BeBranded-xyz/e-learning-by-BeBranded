@@ -16,7 +16,7 @@
 - [x] `core`: types, Zod schemas, `canAccess`, progress computation
 - [x] `db`: initial migrations, `postgresStorage`, `migrate` CLI
 - [ ] `server` + `next`: identity, catalog, courses, text lessons, completion
-- [ ] `editor`: block schema, content validation, server-side rendering
+- [x] `editor`: block schema, content validation, server-side rendering
 - [ ] `react`: provider, theming, catalog, course page, text lesson player
 - [ ] `apps/demo` with fake multi-role auth
 

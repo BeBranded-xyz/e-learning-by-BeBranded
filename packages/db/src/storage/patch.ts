@@ -7,3 +7,8 @@ export function hasChanges(patch: object): boolean {
 export function insertedAny(result: { numInsertedOrUpdatedRows: bigint | undefined }): boolean {
   return (result.numInsertedOrUpdatedRows ?? 0n) > 0n;
 }
+
+/** A jsonb column value: SQL NULL stays NULL, anything else is serialized. */
+export function jsonColumn(value: unknown): string | null {
+  return value === null ? null : JSON.stringify(value);
+}

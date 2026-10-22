@@ -86,8 +86,8 @@ flowchart LR
 
 ### Reading a text lesson
 
-1. `<LessonContent>` is a Server Component. It loads the lesson and renders the stored blocks to HTML on the server with `@blocknote/server-util`, using the module's schema.
-2. The learner page ships no editor JavaScript, only the HTML and the BlockNote content styles.
+1. The server validates the stored document again and renders it to HTML with `renderLessonHtml` (`@bebranded/elearning-editor/server`): a pure string renderer that escapes every text, followed by `sanitize-html` as defense in depth (see D11).
+2. The learner page ships no editor JavaScript, only the HTML and the module's content styles (themed with the `--el-*` tokens).
 
 ### Watching a video lesson
 
@@ -120,6 +120,7 @@ Details in [07 — Quizzes](07-quizzes.md).
 | D7 | **BlockNote** as the content editor, documents stored as **BlockNote JSON** | Tiptap alone, Markdown, Lexical, Editor.js | Notion-like UX out of the box (slash menu, drag handles, nested blocks), which authors already know. Built on ProseMirror / Tiptap, with a typed document model that can be validated server-side and custom blocks for our needs. The quiz editor reuses it: each question is a custom block, converted to SurveyJS JSON on save. The core packages are **MPL-2.0**, compatible with MIT distribution when used unmodified. The `@blocknote/xl-*` packages (GPL-3.0 or commercial) are **excluded** (see [08 — Licensing](08-non-functional-requirements.md#licensing)). |
 | D8 | **Theming through CSS custom properties** (`--el-*`), no imposed CSS framework | Tailwind preset, styled-components | Works with any host CSS stack. An optional Tailwind preset can map the tokens. |
 | D9 | **Identity provided by the host** through `IdentityResolver` | Built-in auth, mandatory Supabase Auth | Every product already has auth. The module only stores an opaque `learner_id`. |
+| D11 | **Our own HTML renderer for lesson content**, from the validated document | `@blocknote/server-util` | server-util runs BlockNote in jsdom with React, cannot render toggle blocks under Node (they read `localStorage`, which jsdom refuses without an origin), and does not run on edge runtimes. Our renderer is pure, small, runs anywhere, emits only markup we allowlist, and is the HTML renderer the PDF export needs anyway ([10 — Editor extensions](10-editor-extensions.md)). |
 | D10 | **Multi-column layout, PDF export and Word export built in-house under MIT**, in clean room | `@blocknote/xl-*` packages (GPL-3.0 or commercial) | GPL would contaminate host products. A commercial license would not cover the people who install our MIT packages. Details and clean-room rules in [10 — Editor extensions](10-editor-extensions.md). |
 
 ## Versioning and distribution

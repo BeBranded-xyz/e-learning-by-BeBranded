@@ -50,6 +50,29 @@ export type {
 } from "./content/content.schemas.js";
 
 export {
+  ALLOWED_URL_PROTOCOLS,
+  LESSON_DOCUMENT_LIMITS,
+  calloutVariantSchema,
+  colorSchema,
+  lessonBlockSchema,
+  lessonDocumentSchema,
+  safeUrlSchema,
+} from "./content/lesson-document.schemas.js";
+export type {
+  CalloutVariant,
+  Color,
+  InlineContent,
+  LessonBlock,
+  LessonDocument,
+  LinkContent,
+  StyledText,
+  TableContent,
+  TextStyles,
+} from "./content/lesson-document.types.js";
+export { validateLessonDocument } from "./content/lesson-document.js";
+export type { ContentIssue, ContentIssueCode } from "./content/lesson-document.js";
+
+export {
   accessEffectSchema,
   accessRuleSchema,
   accessTargetTypeSchema,

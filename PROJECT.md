@@ -56,6 +56,7 @@ Last updated: 2026-10-22
 | App framework (hosts, demo) | Next.js App Router | Hosts ≥ 14 |
 | UI | React ≥ 18 | Learner and admin components |
 | Editor | BlockNote core (MPL-2.0, unmodified) | `@blocknote/xl-*` forbidden (GPL/commercial) |
+| Lesson rendering | Own HTML renderer + `sanitize-html` | Spec 02, D11; no DOM, runs on Node and edge |
 | Quiz rendering | SurveyJS Form Library (MIT) | SurveyJS Creator forbidden (commercial) |
 | Validation | Zod | |
 | Database | PostgreSQL ≥ 14 (Supabase compatible), schema `elearning` | Kysely, raw SQL migrations |
@@ -261,6 +262,10 @@ Core rules always apply.
     This is the module's default deny; the opt-in policies for direct Supabase
     reads (spec 05, "RLS") come in a later migration (`BACKLOG.md` B-018).
     Owner: maintainers. Review: when B-018 lands.
+  - `exactOptionalPropertyTypes` is off in `packages/editor` only: BlockNote
+    0.56's generic types (optional props such as `heading.isToggleable`) do not
+    type-check with it. The editor package keeps every other strict option.
+    Owner: maintainers. Review: on each BlockNote upgrade (`BACKLOG.md` B-021).
   - `Kysely<any>` in `packages/db/src/migrations/migrate.ts`: the migration
     runner only issues raw SQL and must accept any database type; documented
     inline.
