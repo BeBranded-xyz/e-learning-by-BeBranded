@@ -1,79 +1,79 @@
-# 06 — Vidéo et vérification du visionnage
+# 06 — Video and watch verification
 
-Objectif : quand le module dit qu'une vidéo a été vue, c'est qu'elle l'a été. Sans un dispositif invasif, l'apprenant reste techniquement capable de laisser tourner la vidéo sans la regarder. Mais il ne doit pas pouvoir **sauter** le contenu ou **falsifier** la complétion depuis le client.
+Goal: when the module says a video was watched, it was. Short of invasive measures, a learner can still technically let the video play without looking. But they must not be able to **skip** the content or **forge** completion from the client.
 
-## Fournisseurs
+## Providers
 
-| | Cloudflare Stream (défaut) | Mux | Bunny Stream |
+| | Cloudflare Stream (default) | Mux | Bunny Stream |
 |---|---|---|---|
-| URLs signées | Oui (JWT signé par clé) | Oui | Oui (token auth) |
-| Streaming adaptatif HLS/DASH | Oui | Oui | Oui |
-| Upload direct navigateur | Oui (tus) | Oui | Oui |
-| Webhooks « prêt » | Oui | Oui | Oui |
-| Sous-titres | Oui, avec génération auto | Oui | Oui |
-| Facturation | Minutes stockées + minutes livrées | Encodage + stockage + livraison | Stockage + bande passante |
+| Signed URLs | Yes (JWT signed with a key) | Yes | Yes (token auth) |
+| Adaptive HLS/DASH streaming | Yes | Yes | Yes |
+| Direct browser upload | Yes (tus) | Yes | Yes |
+| "Ready" webhooks | Yes | Yes | Yes |
+| Captions | Yes, with auto-generation | Yes | Yes |
+| Billing | Minutes stored + minutes delivered | Encoding + storage + delivery | Storage + bandwidth |
 
-Tous sont accessibles via `VideoProvider` (voir [04 — Intégration](04-integration.md#3-vidéo--videoprovider)). Le lecteur côté client est **commun** : un lecteur HLS (hls.js ou `<video>` natif sur Safari) piloté par nos composants. On n'utilise pas d'iframe fournisseur, car il faut un accès fiable aux événements de lecture.
+All of them sit behind `VideoProvider` (see [04 — Integration](04-integration.md#3-video-videoprovider)). The client-side player is **shared**: an HLS player (hls.js, or native `<video>` on Safari) driven by our components. We do not use the provider's iframe player, because we need reliable access to playback events.
 
 ## Upload (back-office)
 
-1. L'admin choisit un fichier. Le back-office appelle `POST /admin/videos/uploads`.
-2. Le serveur demande au fournisseur une URL d'upload direct et crée `video_assets` avec le statut `uploading`.
-3. Le navigateur envoie le fichier **directement au fournisseur** (upload résumable tus). Le fichier ne passe jamais par le serveur de l'hôte.
-4. Le webhook `POST /webhooks/video` fait passer l'asset à `processing`, puis à `ready`, et enregistre `duration_seconds`.
-5. La leçon ne peut pas être publiée tant que l'asset n'est pas `ready`.
+1. The admin picks a file. The back-office calls `POST /admin/videos/uploads`.
+2. The server asks the provider for a direct upload URL and creates a `video_assets` row with status `uploading`.
+3. The browser sends the file **directly to the provider** (resumable tus upload). The file never goes through the host's server.
+4. The `POST /webhooks/video` webhook moves the asset to `processing`, then `ready`, and records `duration_seconds`. Webhooks with an invalid signature are rejected.
+5. The lesson cannot be published until the asset is `ready`.
 
-## Suivi des segments regardés
+## Watched-segment tracking
 
-### Côté client (`<VideoPlayer>`)
+### Client side (`<VideoPlayer>`)
 
-- Le lecteur maintient une liste d'**intervalles réellement joués** : un intervalle s'ouvre au `play` et s'étend à chaque `timeupdate` si la progression est continue. Il se ferme sur `pause`, `seeking`, `ended` ou un saut de plus de 2 s.
-- Les intervalles parcourus pendant un `seeking` ne comptent pas.
-- **Heartbeat** toutes les 15 s de lecture, et à la pause, à la fin, au changement de visibilité de l'onglet et à `pagehide` (via `navigator.sendBeacon`) :
+- The player keeps a list of **intervals actually played**. An interval opens on `play` and extends on each `timeupdate` while playback is continuous. It closes on `pause`, `seeking`, `ended` or a jump of more than 2 s.
+- Intervals crossed during `seeking` do not count.
+- **Heartbeat** every 15 s of playback, plus on pause, on end, on tab visibility change and on `pagehide` (via `navigator.sendBeacon`):
 
 ```json
 POST /lessons/:id/video-progress
 {
-  "sessionId": "c0a8…",          // une session par chargement du lecteur
-  "seq": 7,                       // numéro de séquence monotone
-  "ranges": [[120.0, 134.9]],     // nouveaux intervalles depuis le dernier heartbeat
+  "sessionId": "c0a8…",          // one session per player load
+  "seq": 7,                       // monotonic sequence number
+  "ranges": [[120.0, 134.9]],     // new intervals since the last heartbeat
   "position": 134.9,
   "playbackRate": 1.25
 }
 ```
 
-- Options configurables par leçon (`lessons.settings`) :
-  - `allowSeeking` : `false` interdit d'avancer au-delà de la position maximale déjà regardée. Le retour en arrière reste libre.
-  - `maxPlaybackRate` : vitesse maximale proposée (défaut 2).
-  - `pauseWhenHidden` : met la vidéo en pause quand l'onglet n'est pas visible.
-  - `completionThreshold` : couverture requise (défaut 0,95, pour tolérer les génériques et les petites pertes de heartbeat).
+- Per-lesson options (`lessons.settings`):
+  - `allowSeeking`: `false` forbids moving past the furthest position already watched. Seeking backwards stays free.
+  - `maxPlaybackRate`: highest speed offered (default 2).
+  - `pauseWhenHidden`: pauses the video when the tab is not visible.
+  - `completionThreshold`: required coverage (default 0.95, to tolerate end credits and occasional lost heartbeats).
 
-### Côté serveur (fait foi)
+### Server side (source of truth)
 
-À chaque heartbeat, le serveur :
+On each heartbeat, the server:
 
-1. Vérifie l'accès à la leçon.
-2. Rejette les intervalles hors de `[0, duration_seconds]`, ce qui suppose que la durée vienne du fournisseur.
-3. **Contrôle de plausibilité** : la durée totale des nouveaux intervalles ne peut pas dépasser `(maintenant − dernier heartbeat de la session) × maxPlaybackRate × 1,1`. On ne peut pas déclarer avoir regardé 10 min de vidéo en 15 s. Un heartbeat non plausible est **tronqué** à ce que le temps écoulé autorise, et `suspicious_events` est incrémenté.
-4. Ignore les `seq` déjà reçus (idempotence, rejeu de beacon).
-5. Fusionne les intervalles dans `watched_ranges` (union triée) et recalcule `watched_seconds` et `coverage`.
-6. Passe la leçon à `completed` et émet `lesson.completed` quand `coverage ≥ completionThreshold`. La transition est définitive.
-7. Met à jour `last_position` pour la reprise de lecture.
+1. Checks access to the lesson.
+2. Rejects intervals outside `[0, duration_seconds]`. The duration must come from the provider.
+3. **Plausibility check**: the total length of the new intervals cannot exceed `(now − last heartbeat of the session) × maxPlaybackRate × 1.1`. Nobody can claim 10 minutes of video in 15 seconds. An implausible heartbeat is **truncated** to what the elapsed time allows, and `suspicious_events` is incremented.
+4. Ignores `seq` values already received (idempotency, beacon replays).
+5. Merges the intervals into `watched_ranges` (sorted union) and recomputes `watched_seconds` and `coverage`.
+6. When `coverage ≥ completionThreshold`, sets the lesson to `completed` and emits `lesson.completed`. This transition is final.
+7. Updates `last_position` to resume playback.
 
-La fusion d'intervalles et le contrôle de plausibilité sont des fonctions pures de `elearning-core`, avec des tests de propriétés : l'union est idempotente et commutative, et la couverture est toujours ≤ 1.
+Interval merging and the plausibility check are pure functions in `elearning-core`, with property-based tests: the union is idempotent and commutative, and coverage is always ≤ 1.
 
-### Ce que ce dispositif garantit, et ce qu'il ne garantit pas
+### What this does and does not guarantee
 
-| Tentative | Résultat |
-|-----------|----------|
-| Appeler l'API pour déclarer toute la vidéo vue | Bloqué : plausibilité temporelle |
-| Avancer jusqu'à la fin | Bloqué : les zones sautées ne comptent pas (et le seek est interdit si `allowSeeking = false`) |
-| Lire en ×16 via la console | Bloqué : plafond `maxPlaybackRate` côté serveur |
-| Récupérer l'URL de la vidéo pour la partager | Limité : URL signée, nominative, à courte durée de vie (TTL ≈ durée de la vidéo + marge) |
-| Lancer la vidéo et partir | **Non bloqué.** Hors périmètre v1. Une option « question de présence » aléatoire est envisageable plus tard. |
+| Attempt | Outcome |
+|---------|---------|
+| Calling the API to declare the whole video watched | Blocked: time plausibility check |
+| Seeking to the end | Blocked: skipped parts do not count (and seeking is forbidden when `allowSeeking = false`) |
+| Playing at ×16 from the console | Blocked: server-side `maxPlaybackRate` cap |
+| Grabbing the video URL to share it | Limited: signed, per-learner, short-lived URL (TTL ≈ video duration + margin) |
+| Starting the video and walking away | **Not blocked.** Out of scope for v1. A random "are you still there?" check could be added later. |
 
-## Accessibilité
+## Accessibility
 
-- Sous-titres obligatoires recommandés. Le back-office alerte si une vidéo publiée n'a pas de sous-titres.
-- Lecteur entièrement utilisable au clavier, avec des contrôles labellisés.
-- Transcription textuelle affichable sous la vidéo si elle est fournie.
+- Captions are strongly recommended. The back-office warns when a published video has none.
+- The player is fully keyboard-operable, with labelled controls.
+- A text transcript can be shown below the video when provided.

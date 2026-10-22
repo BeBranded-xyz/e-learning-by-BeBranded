@@ -1,10 +1,46 @@
+# Dependencies and build output
 node_modules/
+.pnpm-store/
 .next/
 dist/
+build/
+out/
 .turbo/
 coverage/
+*.tsbuildinfo
+
+# Secrets and local environment — never commit
 .env
 .env.*
 !.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+id_rsa*
+id_ed25519*
+*.keystore
+credentials*.json
+service-account*.json
+.npmrc
+.vercel/
+.wrangler/
+.dev.vars
+supabase/.temp/
+supabase/.branches/
+
+# Data dumps — never commit real data
+*.sql.gz
+*.dump
+*.sqlite
+*.db
+dumps/
+
+# OS / editors / logs
 .DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
 *.log

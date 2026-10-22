@@ -1,45 +1,52 @@
 # e-learning by BeBranded
 
-Module e-learning **réutilisable et intégrable** dans des applications existantes (ERP, web apps métier, portails clients).
-Plutôt que de recoder la formation dans chaque produit, on maintient **un seul module versionné**. Chaque produit hôte y ajoute son branding (couleurs, typographie, thème) et le branche sur ses propres utilisateurs et rôles.
+A **reusable, embeddable e-learning module** for existing applications (ERPs, business web apps, client portals).
+Instead of rebuilding training features in every product, we maintain **one versioned module**. Each host product adds its own branding (colors, typography, theme) and plugs in its own users and roles.
 
-> **Statut : spécification.** Ce dépôt contient pour l'instant les spécifications techniques. Le code arrive phase par phase (voir la [roadmap](docs/specifications/09-roadmap.md)).
+> **Status: specification.** This repository currently contains the technical specifications. Code will land phase by phase (see the [roadmap](docs/specifications/09-roadmap.md)).
 
-## Ce que fait le module
+## What it does
 
-- **Contenus hiérarchisés** : cours › chapitres › leçons (texte riche, vidéo, quiz).
-- **Vidéo avec vérification du visionnage réel** : on mesure les segments effectivement regardés, pas seulement l'événement « fin de vidéo ».
-- **Quiz interactifs** : notation côté serveur, seuil de réussite, nombre de tentatives.
-- **Suivi de progression** par apprenant, chapitre et cours.
-- **Permissions par rôle ou grade** : chaque utilisateur ne voit que les contenus qui lui sont destinés.
-- **Back-office** de gestion des contenus.
-- **Front intégrable** dans le produit hôte (composants React thémables).
-- **Deux modes de données** : tables dans la base du produit hôte, ou base dédiée au module.
+- **Structured content**: courses › chapters › lessons (rich text, video, quiz).
+- **Notion-like editor**: lessons are authored with a block editor ([BlockNote](https://www.blocknotejs.org/)). Type `/` to insert headings, lists, callouts, images and more.
+- **Verified video watching**: the module tracks the segments a learner has actually watched, not just the "video ended" event.
+- **Interactive quizzes**: graded server-side, with a passing score and an attempt limit.
+- **Progress tracking** per learner, chapter and course.
+- **Role- and grade-based permissions**: each user only sees the content meant for them.
+- **Admin back-office** for content management.
+- **Embeddable front end**: themeable React components that live inside the host product.
+- **Two data modes**: tables inside the host product's database, or a database dedicated to the module.
 
-## Ce que le module ne fait pas
+## What it does not do
 
-- **Authentification** : c'est le produit hôte qui sait qui est connecté. Le module consomme cette identité et n'en crée aucune.
-- **Plateforme LMS autonome** : pas de marketplace, de paiement ni de pages publiques de cours.
-- **SCORM / xAPI** : hors périmètre de la v1 (voir les [questions ouvertes](docs/specifications/09-roadmap.md#questions-ouvertes)).
+- **Authentication**: the host product knows who is signed in. The module consumes that identity and never creates its own.
+- **Standalone LMS**: no marketplace, no payments, no public course pages.
+- **SCORM / xAPI**: out of scope for v1 (see [open questions](docs/specifications/09-roadmap.md#open-questions)).
 
-## Spécifications
+## Specifications
 
-| # | Document | Contenu |
-|---|----------|---------|
-| 01 | [Vision et objectifs](docs/specifications/01-vision-objectifs.md) | Problème, objectifs, critères de succès, périmètre |
-| 02 | [Architecture](docs/specifications/02-architecture.md) | Monorepo, packages, flux, décisions techniques |
-| 03 | [Modèle de données](docs/specifications/03-modele-de-donnees.md) | Schéma PostgreSQL, statuts, migrations |
-| 04 | [Intégration dans un produit hôte](docs/specifications/04-integration.md) | Contrat d'intégration, identité, modes de données, branding, événements |
-| 05 | [Permissions](docs/specifications/05-permissions.md) | Audiences, règles d'accès, RLS |
-| 06 | [Vidéo et vérification du visionnage](docs/specifications/06-video.md) | Fournisseurs, suivi des segments, anti-triche |
-| 07 | [Quiz](docs/specifications/07-quiz.md) | SurveyJS, notation serveur, tentatives |
-| 08 | [Exigences non fonctionnelles](docs/specifications/08-exigences-non-fonctionnelles.md) | Sécurité, RGPD, accessibilité, performance, tests, licences |
-| 09 | [Roadmap et questions ouvertes](docs/specifications/09-roadmap.md) | Phases, livrables, points à trancher |
+| # | Document | Contents |
+|---|----------|----------|
+| 01 | [Vision and goals](docs/specifications/01-vision-and-goals.md) | Problem, goals, success criteria, scope |
+| 02 | [Architecture](docs/specifications/02-architecture.md) | Monorepo, packages, flows, technical decisions |
+| 03 | [Data model](docs/specifications/03-data-model.md) | PostgreSQL schema, statuses, migrations |
+| 04 | [Host integration](docs/specifications/04-integration.md) | Integration contract, identity, data modes, theming, events |
+| 05 | [Permissions](docs/specifications/05-permissions.md) | Audiences, access rules, RLS |
+| 06 | [Video and watch verification](docs/specifications/06-video.md) | Providers, segment tracking, anti-cheat |
+| 07 | [Quizzes](docs/specifications/07-quizzes.md) | SurveyJS, server-side grading, attempts |
+| 08 | [Non-functional requirements](docs/specifications/08-non-functional-requirements.md) | Security, GDPR, accessibility, performance, testing, licensing |
+| 09 | [Roadmap and open questions](docs/specifications/09-roadmap.md) | Phases, deliverables, open decisions |
 
-## Stack envisagée
+## Planned stack
 
-TypeScript · Next.js (App Router) · PostgreSQL / Supabase · React · SurveyJS Form Library (MIT) · Cloudflare Stream (adaptateurs Mux / Bunny) · pnpm + Turborepo · Vitest + Playwright · Changesets.
+TypeScript · Next.js (App Router) · PostgreSQL / Supabase · React · BlockNote (editor) · SurveyJS Form Library (quiz rendering) · Cloudflare Stream (Mux / Bunny adapters) · pnpm + Turborepo · Vitest + Playwright · Changesets.
 
-## Licence
+Packages will be published on npm under the `@bebranded` scope (`@bebranded/elearning-*`).
 
-[MIT](LICENSE) © BeBranded. Vous pouvez l'utiliser, le modifier et l'intégrer dans des produits commerciaux.
+## Security
+
+Please **do not open public issues for vulnerabilities**. See [SECURITY.md](SECURITY.md).
+
+## License
+
+[MIT](LICENSE) © BeBranded. You can use, modify and embed it in commercial products.

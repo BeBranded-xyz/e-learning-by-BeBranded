@@ -1,70 +1,80 @@
-# 09 — Roadmap et questions ouvertes
+# 09 — Roadmap and open questions
 
 ## Phases
 
-### Phase 0 : spécification *(en cours)*
+### Phase 0: specification *(in progress)*
 
-- [x] Vision, périmètre, architecture, modèle de données
-- [ ] Validation des questions ouvertes ci-dessous
-- [ ] Choix du premier produit hôte pilote
+- [x] Vision, scope, architecture, data model
+- [x] Editor choice (BlockNote), npm scope (`@bebranded`), language (English)
+- [x] Repository security baseline (secret scanning, push protection, Dependabot, branch protection)
+- [ ] Remaining open questions below
+- [ ] Pilot host product
 
-### Phase 1 : fondations
+### Phase 1: foundations
 
-- Monorepo (pnpm, Turborepo, Changesets, CI, vérification des licences)
-- `core` : types, schémas Zod, `canAccess`, calcul de progression
-- `db` : migrations initiales, `postgresStorage`, CLI `migrate`
-- `server` + `next` : identité, catalogue, cours, leçons texte, complétion
-- `react` : provider, theming, catalogue, page de cours, lecteur de leçon texte
-- `apps/demo` avec une auth factice multi-rôles
+- Monorepo (pnpm, Turborepo, Changesets, CI, license check, CodeQL)
+- `core`: types, Zod schemas, `canAccess`, progress computation
+- `db`: initial migrations, `postgresStorage`, `migrate` CLI
+- `server` + `next`: identity, catalog, courses, text lessons, completion
+- `editor`: block schema, content validation, server-side rendering
+- `react`: provider, theming, catalog, course page, text lesson player
+- `apps/demo` with fake multi-role auth
 
-**Livrable** : un cours composé uniquement de leçons texte, avec règles d'accès et progression, intégré dans l'app de démo.
+**Deliverable**: a course made of text lessons, with access rules and progress, running in the demo app.
 
-### Phase 2 : vidéo
+### Phase 2: video
 
-- `video` : adaptateur Cloudflare Stream (upload direct, webhooks, tokens signés)
-- `<VideoPlayer>` avec suivi des segments, heartbeats et reprise
-- Plausibilité et fusion côté serveur, tests e2e anti-triche
+- `video`: Cloudflare Stream adapter (direct upload, webhooks, signed tokens)
+- `<VideoPlayer>` with segment tracking, heartbeats and resume
+- Server-side plausibility and merging, anti-cheat e2e tests
 
-**Livrable** : leçons vidéo dont la complétion est vérifiée.
+**Deliverable**: video lessons with verified completion.
 
-### Phase 3 : quiz
+### Phase 3: quizzes
 
-- Expurgation et notation serveur, tentatives, cooldown, mélange
-- `<Quiz>` basé sur SurveyJS Form Library
-- Correction et explications
+- Question custom blocks in the editor, `editorDocumentToSurvey()` conversion
+- Redaction and server-side grading, attempts, cooldown, shuffling
+- `<Quiz>` built on SurveyJS Form Library
+- Corrections and explanations
 
-**Livrable** : quiz notés avec seuil de réussite.
+**Deliverable**: graded quizzes with a passing score.
 
-### Phase 4 : back-office
+### Phase 4: back-office
 
-- Arbre de contenu (drag & drop), éditeur Tiptap, éditeur de quiz maison
-- Gestion des règles d'accès et des assignations
-- Suivi des apprenants, rapports, export CSV
+- Content tree (drag & drop), BlockNote lesson editor with file uploads
+- Access-rule and assignment management
+- Learner tracking, reports, CSV export
 
-**Livrable** : contenus entièrement gérables sans toucher au code.
+**Deliverable**: all content managed without touching code.
 
-### Phase 5 : premier produit hôte en production
+### Phase 5: first host product in production
 
-- Intégration dans le produit pilote, mesure du temps d'intégration
-- Événements, outbox et webhooks
-- Documentation publique, première publication npm `1.0.0`
+- Integration in the pilot product, integration time measured
+- Events, outbox and webhooks
+- Public documentation, first npm release `1.0.0`
 
-### Phase 6 : deuxième produit hôte, puis suite
+### Phase 6: second host product, then beyond
 
-- Intégration dans un 2ᵉ produit (valide la réutilisabilité)
-- Adaptateurs Mux et Bunny
-- Ensuite, selon les besoins : certificats, parcours et prérequis, rôles admin fins (manager d'équipe), rappels d'échéance, multilingue par cours
+- Integration in a 2nd product (proves reusability)
+- Mux and Bunny adapters
+- Then, as needed: certificates, learning paths and prerequisites, finer admin roles (team manager), due-date reminders, multi-language courses
 
-## Questions ouvertes
+## Decisions made
 
-| # | Question | Options | Proposition |
-|---|----------|---------|-------------|
-| Q1 | Scope npm des packages | `@bebranded/elearning-*`, autre nom de marque | `@bebranded`, si le scope est disponible ou nous appartient |
-| Q2 | Format du texte riche | JSON Tiptap, Markdown (MDX) | Tiptap : structure sûre, bonne UX d'édition. Markdown si les auteurs sont des développeurs. |
-| Q3 | Multi-tenant dès la v1 ? | Oui (`tenant_id` partout), non | Oui : le coût est faible maintenant, alors qu'un ajout ultérieur serait coûteux et que les ERP en ont besoin |
-| Q4 | Premier produit hôte pilote | ERP, web app client X… | À choisir : idéalement un produit sur Supabase avec des rôles déjà en place |
-| Q5 | Fournisseur vidéo par défaut | Cloudflare Stream, Mux, Bunny | Cloudflare Stream (déjà dans notre stack) |
-| Q6 | Frameworks front supportés | React seul, React + Web Components | React seul en v1, mode headless pour le reste |
-| Q7 | Langue de la documentation publique | Français, anglais, les deux | Spécifications internes en français, documentation publique (`apps/docs`, README npm) en anglais pour l'audience open source |
-| Q8 | SCORM / xAPI | Hors périmètre, import SCORM, émission xAPI | Hors périmètre v1. À réévaluer si un client apporte des contenus SCORM existants. |
-| Q9 | Faut-il un « contrôle de présence » pendant la vidéo ? | Non, question aléatoire, détection d'inactivité | Non en v1 (voir [06 — Vidéo](06-video.md)) |
+| # | Question | Decision |
+|---|----------|----------|
+| Q1 | npm scope | `@bebranded/elearning-*`. The `@bebranded` scope already belongs to BeBranded. |
+| Q2 | Rich-text format | **BlockNote** (Notion-like block editor), documents stored as BlockNote JSON. The quiz editor reuses it. |
+| Q7 | Language | **English everywhere**: code, docs, specifications, commit messages. |
+
+## Open questions
+
+| # | Question | Options | Proposal |
+|---|----------|---------|----------|
+| Q3 | Multi-tenant from v1? | Yes (`tenant_id` everywhere), no | Yes: cheap now, expensive later, and ERPs need it |
+| Q4 | Pilot host product | ERP, client web app… | To be decided. Ideally a Supabase product with roles already in place. |
+| Q5 | Default video provider | Cloudflare Stream, Mux, Bunny | Cloudflare Stream (already in our stack) |
+| Q6 | Supported front-end frameworks | React only, React + Web Components | React only in v1, headless mode for the rest |
+| Q8 | SCORM / xAPI | Out of scope, SCORM import, xAPI emission | Out of scope for v1. Revisit if a client brings existing SCORM content. |
+| Q9 | Presence check during videos? | No, random question, idle detection | No in v1 (see [06 — Video](06-video.md)) |
+| Q10 | BlockNote UI kit for the admin editor | Mantine (`@blocknote/mantine`), shadcn (`@blocknote/shadcn`), Ariakit | Mantine by default (most complete, styles scoped to the editor). shadcn variant for hosts already on shadcn/ui. |
