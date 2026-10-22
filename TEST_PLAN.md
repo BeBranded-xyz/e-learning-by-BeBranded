@@ -85,7 +85,7 @@ config in the same PR. Tests that cannot be written yet are listed in
 | 30 | Dependency Security Testing | active | Dependabot alerts and updates (npm, actions), pnpm audit, license allowlist | `pnpm audit --audit-level=high && pnpm check:licenses` | pr | |
 | 31 | Authentication Testing | planned phase 1 | Vitest | `pnpm test:api` | pr | IdentityResolver null → 401, identity never cached |
 | 32 | Authorization Testing | active (storage) / planned phase 1 (handlers) | Vitest + Testcontainers | `pnpm test:integration` | commit | Storage: tenant crossing on every read and write, shared catalog read-only. Handlers: every audience rule, IDOR, admin routes |
-| 33 | Injection Testing | planned phase 1 | Vitest | `pnpm test:security` | pr | SQL, XSS in BlockNote documents, SSRF in exports |
+| 33 | Injection Testing | active (content, SQL) / planned phase 1 (handlers) | Vitest, fast-check | `pnpm test:unit` | commit | XSS payloads and fuzzed text through the renderer, hostile links and schemes, CSS values in props, SQL injection through tenant filters. SSRF in exports: phase 4b |
 | 34 | Web Security Testing | planned phase 1 | Playwright | `pnpm test:security` | pr | Recommended CSP and headers in apps/demo |
 | 35 | Secret Scanning | active | gitleaks (CI full history + pre-commit hook), GitHub push protection | `make check` | commit | Workflow `Secret scan`, required check |
 | 36 | Penetration Testing | planned before 1.0.0 | external tester |  | pre-prod |  |
@@ -94,7 +94,7 @@ config in the same PR. Tests that cannot be written yet are listed in
 
 | # | Category | Status | Tool | Command | Gate | Notes |
 |---|---|---|---|---|---|---|
-| 37 | Fuzz Testing | planned phase 1 | fast-check, time-boxed fuzz of route inputs | `pnpm test:fuzz` | pr | Heartbeats, quiz answers, BlockNote documents |
+| 37 | Fuzz Testing | active (documents) / planned phase 1 (routes) | fast-check | `pnpm test:unit` | commit | Arbitrary JSON into `validateLessonDocument` never throws; arbitrary text never yields an executable tag. Route inputs with the server package |
 | 38 | Differential Testing | planned phase 3 | Vitest | `pnpm test:unit` | pr | Editor document → SurveyJS conversion vs reference fixtures |
 
 ## Database Testing

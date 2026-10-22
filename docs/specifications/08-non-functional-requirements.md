@@ -13,7 +13,9 @@ Security is a first-class requirement. The module runs inside other companies' p
 - **Rich content (BlockNote)**:
   - documents are validated against the module's block schema on write: allowed block types only, no raw HTML block, maximum size and depth;
   - link and media URLs go through a protocol allowlist (`https:`, `http:`, `mailto:`), so `javascript:` and `data:` URLs are rejected;
-  - server-side rendering escapes all text, and the rendered HTML then goes through an allowlist-based sanitizer (e.g. `sanitize-html`, MIT) as defense in depth;
+  - documents are also limited in total JSON size, nesting and table cells, measured iteratively so a hostile document cannot exhaust the stack;
+  - media blocks (image, file, audio, video) are rejected until file uploads exist (phase 4); external image URLs stay rejected after that;
+  - server-side rendering escapes all text, and the rendered HTML then goes through an allowlist-based sanitizer (`sanitize-html`, MIT) as defense in depth. Colors and alignment are emitted as data attributes from validated enums, never as inline styles;
   - lesson pages ship a strict **Content Security Policy** recommendation in the integration guide.
 - **Quizzes**: correct answers never leave the server for learners (see [07 — Quizzes](07-quizzes.md#security-correct-answers-never-reach-the-client)).
 - **Files**: MIME allowlist, size limit, server-generated storage keys (never the user's filename), private buckets with signed URLs.
@@ -23,7 +25,7 @@ Security is a first-class requirement. The module runs inside other companies' p
 - **Rate limiting**: the module exposes a `rateLimit` hook that the host wires to its infrastructure (Upstash, Cloudflare…). Recommended limits are documented for heartbeats, quiz submissions and uploads.
 - **Errors**: generic messages to clients. No stack traces, SQL or internal identifiers in responses. Details go to the server logs with a `requestId`.
 - **Logging**: secrets, tokens, signed URLs and quiz answers are never logged. The logger redacts known sensitive keys.
-- **No secrets client-side**: React packages only call the host's API. Server-only modules import `server-only` so that bundling them into client code fails the build.
+- **No secrets client-side**: React packages only call the host's API. Server-only entry points map the `browser` export condition to a module that throws, so bundling them into client code fails at load. (The `server-only` package would also break plain Node, where the module must run.)
 
 ### Repository hygiene (public repository)
 

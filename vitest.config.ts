@@ -43,6 +43,7 @@ export default defineConfig({
       thresholds: {
         "packages/core/src/**": { lines: 95, branches: 95, functions: 95, statements: 95 },
         "packages/db/src/**": { lines: 95, branches: 95, functions: 95, statements: 95 },
+        "packages/editor/src/**": { lines: 95, branches: 95, functions: 95, statements: 95 },
       },
     },
   },
