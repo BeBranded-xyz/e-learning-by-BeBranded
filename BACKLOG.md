@@ -16,17 +16,20 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | ID | Task | Type | Priority | Owner | Link | Added | Notes |
 |---|---|---|---|---|---|---|---|
 | B-001 | Re-run `init.sh --target claude,codex --update` from AI-Dev-Rules `main` once its PRs #1, #2, #3 are merged; commit the new `.ruleset-version` | ops | P1 | maintainers | AI-Dev-Rules #1–#3 | 2026-10-22 | Current install comes from a local integration of those PRs |
-| B-002 | Phase 1 bootstrap: pnpm workspace, Turborepo, `pnpm check` replacing the Makefile, enable `ci.yml` (CodeQL, license check, audit), Changesets | feature | P1 | maintainers | `docs/specifications/09-roadmap.md` | 2026-10-22 | Keep gitleaks and the doc link check inside `pnpm check` |
 
 ## Next
 
 | ID | Task | Type | Priority | Owner | Link | Added | Notes |
 |---|---|---|---|---|---|---|---|
+| B-012 | Phase 1 remaining packages: db, editor, server + next, react, apps/demo with e2e | feature | P1 | maintainers | `docs/specifications/09-roadmap.md` | 2026-10-22 | One pull request per package |
+| B-013 | Before the first publish: API Extractor report, publint, @arethetypeswrong/cli, pack listing test, consumer fixture apps from the tarball | test | P1 | maintainers | `modules/library-publishing` | 2026-10-22 | Blocks B-003 |
+| B-014 | Mutation testing with Stryker on changed files (floors in `TEST_PLAN.md`) | test | P2 | maintainers | `TEST_PLAN.md` #4 | 2026-10-22 | |
+| B-015 | CI matrix: Node 22.12 and 24, Linux and macOS | ops | P2 | maintainers | `TEST_PLAN.md` #46 | 2026-10-22 | |
+| B-016 | Typecheck the code examples of package READMEs in CI | docs | P3 | maintainers | `modules/library-publishing` | 2026-10-22 | |
 | B-003 | Write the delivery plan (packages as units, trusted publishing, one publisher) before adding a release workflow | docs | P2 | maintainers | `modules/library-publishing` | 2026-10-22 | `release.yml` template is manual-only until then |
 | B-004 | Design-system decisions: component catalogue, themes, icon set, enforcement | docs | P2 | maintainers | `PROJECT.md` section 4 | 2026-10-22 | |
 | B-005 | Evaluate the `audit-trail` module for admin actions (content publishing, access rules, assignments) | question | P2 | maintainers | | 2026-10-22 | |
 | B-006 | Evaluate the `data-fetching` module for the React packages | question | P3 | maintainers | | 2026-10-22 | |
-| B-008 | Add the npm ecosystem to `.github/dependabot.yml` when `package.json` exists | ops | P2 | maintainers | | 2026-10-22 | |
 
 ## Later / ideas
 
@@ -55,10 +58,12 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 |---|---|---|---|
 | | Technical specifications 01–10, repository security baseline | 2026-10-22 | direct commits before branch protection |
 | | AI-Dev-Rules adoption (Claude Code and Codex) | 2026-10-22 | #1 |
-| B-007 | `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1), issue templates, `CODEOWNERS` | 2026-10-22 | this PR |
+| B-002 | Monorepo bootstrap: pnpm, Turborepo, TypeScript 6, ESLint, Prettier, Vitest, Changesets, `pnpm check`, CI, plus `@bebranded/elearning-core` | 2026-10-22 | this PR |
+| B-008 | Dependabot npm ecosystem | 2026-10-22 | this PR |
+| B-007 | `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1), issue templates, `CODEOWNERS` | 2026-10-22 | #2 |
 | Q-002 | Business email in history: acceptable, no history rewrite | 2026-10-22 | decision |
 | Q-004 | Learner export built, off by default per course (spec 09, Q12) | 2026-10-22 | decision |
-| Q-005 | Conduct contact: the maintainer's business address | 2026-10-22 | this PR |
+| Q-005 | Conduct contact: the maintainer's business address | 2026-10-22 | #2 |
 | Q-006 | No phase dates: phases run in order (spec 09, Q13) | 2026-10-22 | decision |
 
 ## Conventions

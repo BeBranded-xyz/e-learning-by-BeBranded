@@ -42,6 +42,7 @@ erDiagram
 | status | enum `draft` \| `published` \| `archived` | |
 | published_at | timestamptz null | |
 | completion_rule | jsonb | e.g. `{ "type": "all_required_lessons" }` |
+| enrollment_mode | enum `self` \| `assignment_only` | whether learners can enroll themselves (see [05 — Permissions](05-permissions.md#enrollment-and-assignment)) |
 | locale | text | `en`, `fr`… |
 | metadata | jsonb | free-form field for the host |
 
@@ -105,7 +106,7 @@ erDiagram
 | target_id | uuid | |
 | effect | enum `allow` \| `deny` | |
 | audience_type | enum `everyone` \| `role` \| `grade_min` \| `learner` | |
-| audience_value | text null | role name, grade level or `learner_id` |
+| audience_value | text null | role name, grade level or `learner_id`. In code, the pair is one typed `audience` value (`{ type: "role", role }`…) |
 
 ### Progress
 
@@ -146,7 +147,7 @@ erDiagram
 - **`text` lesson**: `completed` when the learner clicks "Mark as done" or reaches the end of the lesson. Option `requireScrollToEnd`.
 - **`video` lesson**: `completed` when `coverage ≥ completionThreshold` (default 0.95).
 - **`quiz` lesson**: `completed` when at least one attempt has `passed = true`.
-- **Chapter or course progress**: number of `is_required` lessons that are `completed`, divided by the number of `is_required` lessons **the learner can access**. Lessons the learner cannot access do not count against them.
+- **Chapter or course progress**: number of `is_required` lessons that are `completed`, divided by the number of `is_required` lessons **the learner can access**. Lessons the learner cannot access do not count against them. With no accessible required lesson, progress is 0 and the course is not complete.
 - `enrollments.progress` and `completed_at` are recomputed in the same transaction as any change to `lesson_progress`.
 
 ## Publishing and content changes

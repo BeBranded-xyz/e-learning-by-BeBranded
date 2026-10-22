@@ -1,6 +1,6 @@
-# Single check command (PROJECT.md section 2). Specification stage: the
-# repository holds documentation only. Phase 1 replaces this with `pnpm check`
-# (format, lint, typecheck, unit and integration tests) and keeps these checks.
+# Single check command (PROJECT.md section 2): secret scans and doc links,
+# then `pnpm check` (format, lint, typecheck, tests with coverage, dead code,
+# licenses).
 .PHONY: check
 
 check:
@@ -8,3 +8,4 @@ check:
 	gitleaks dir --redact --no-banner .
 	PYTHONDONTWRITEBYTECODE=1 python3 scripts/check-doc-links.py
 	git diff --check
+	corepack pnpm check

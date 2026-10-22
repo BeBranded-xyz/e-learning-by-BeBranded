@@ -73,7 +73,7 @@ Nothing sensitive may ever be committed. A secret pushed once must be considered
 
 ## Compatibility
 
-- Node.js ≥ 20, React ≥ 18 (19 recommended), Next.js ≥ 14 (App Router).
+- Node.js ≥ 22.12 (Node 20 reached end of life in April 2026, and Kysely 0.29 requires 22), React ≥ 18 (19 recommended), Next.js ≥ 14 (App Router).
 - PostgreSQL ≥ 14 (Supabase, Neon, RDS, self-hosted).
 - Browsers: last two versions of evergreen browsers, iOS Safari ≥ 16.
 

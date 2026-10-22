@@ -2,7 +2,7 @@
 
 ## Phases
 
-### Phase 0: specification *(in progress)*
+### Phase 0: specification
 
 - [x] Vision, scope, architecture, data model
 - [x] Editor choice (BlockNote), npm scope (`@bebranded`), language (English)
@@ -10,15 +10,15 @@
 - [ ] Remaining open questions below
 - [ ] Pilot host product
 
-### Phase 1: foundations
+### Phase 1: foundations *(in progress)*
 
-- Monorepo (pnpm, Turborepo, Changesets, CI, license check, CodeQL)
-- `core`: types, Zod schemas, `canAccess`, progress computation
-- `db`: initial migrations, `postgresStorage`, `migrate` CLI
-- `server` + `next`: identity, catalog, courses, text lessons, completion
-- `editor`: block schema, content validation, server-side rendering
-- `react`: provider, theming, catalog, course page, text lesson player
-- `apps/demo` with fake multi-role auth
+- [x] Monorepo (pnpm, Turborepo, Changesets, CI, license check, CodeQL)
+- [x] `core`: types, Zod schemas, `canAccess`, progress computation
+- [ ] `db`: initial migrations, `postgresStorage`, `migrate` CLI
+- [ ] `server` + `next`: identity, catalog, courses, text lessons, completion
+- [ ] `editor`: block schema, content validation, server-side rendering
+- [ ] `react`: provider, theming, catalog, course page, text lesson player
+- [ ] `apps/demo` with fake multi-role auth
 
 **Deliverable**: a course made of text lessons, with access rules and progress, running in the demo app.
 

@@ -21,7 +21,7 @@ Last updated: 2026-10-22
   receives fixes through semver updates. Non-trivial parts: trustworthy
   completion (video watch verification, server-side grading), permission rules
   driven by the host's roles, and two data modes (host database or dedicated).
-- **Status**: specification (phase 0). No code yet. See
+- **Status**: phase 1 (foundations) in progress. See
   `docs/specifications/09-roadmap.md`.
 - **License**: MIT, copyright BeBranded. Public repository.
 
@@ -32,11 +32,13 @@ Last updated: 2026-10-22
 - **Entry points**: the `@bebranded/elearning-*` packages; later `apps/demo`
   (fictional host, e2e bed) and `apps/docs` (public docs).
 - **Local dev command(s)**: none yet (phase 1: `pnpm dev` for `apps/demo`).
-- **Check command**: `make check` (spec stage: gitleaks on history and working
-  tree, relative doc links, `git diff --check`). Phase 1 replaces it with
-  `pnpm check`, which keeps these checks and adds format, lint, typecheck, unit
-  and integration tests.
-- **Build / start**: none yet.
+- **Check command**: `make check`: gitleaks on history and working tree,
+  relative doc links, `git diff --check`, then `pnpm check` (Prettier, ESLint,
+  typecheck, Vitest with coverage floors, knip, license allowlist).
+- **Toolchain**: Node 24 for development (`.node-version`), packages support
+  Node ≥ 22.12; pnpm 10 through Corepack (`corepack pnpm`); TypeScript 6
+  (typescript-eslint does not support TypeScript 7 yet).
+- **Build / start**: `corepack pnpm build` (Turborepo, `tsc` per package).
 - **Deployment target**: the npm registry (packages). Hosting for `apps/docs`
   and `apps/demo` is undecided.
 - **What triggers a deploy**: a reviewed PR merged into protected `main`; the
@@ -74,7 +76,9 @@ Last updated: 2026-10-22
   address.
 - **Tone**: technical and factual. **Emojis** in code, commits, technical docs:
   not allowed.
-- **Size limit overrides**: none. **Exemptions**: none yet.
+- **Size limit overrides**: none. **Exemptions**: the 50-line function limit is not
+  applied to `describe` callbacks in test files (each test stays small);
+  enforced in `eslint.config.js`.
 
 ### Design system (projects with a UI)
 
