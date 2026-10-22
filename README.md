@@ -36,6 +36,7 @@ Instead of rebuilding training features in every product, we maintain **one vers
 | 07 | [Quizzes](docs/specifications/07-quizzes.md) | SurveyJS, server-side grading, attempts |
 | 08 | [Non-functional requirements](docs/specifications/08-non-functional-requirements.md) | Security, GDPR, accessibility, performance, testing, licensing |
 | 09 | [Roadmap and open questions](docs/specifications/09-roadmap.md) | Phases, deliverables, open decisions |
+| 10 | [Editor extensions](docs/specifications/10-editor-extensions.md) | Multi-column layout, PDF and Word export, clean-room rules |
 
 ## Planned stack
 

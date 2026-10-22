@@ -97,8 +97,9 @@ Nothing sensitive may ever be committed. A secret pushed once must be considered
 - **Allowed dependency licenses**: MIT, ISC, BSD-2/3-Clause, Apache-2.0, and **MPL-2.0 for unmodified dependencies** (needed for BlockNote). MPL-2.0 is a file-level copyleft: using the packages as dependencies places no obligation on our code. Only modified copies of MPL files would have to be published under MPL. We do not patch or vendor BlockNote source files.
 - **Forbidden**: GPL, LGPL, AGPL, SSPL, BUSL and commercial licenses. This explicitly excludes:
   - **SurveyJS Creator** (commercial);
-  - the **`@blocknote/xl-*` packages** (`xl-multi-column`, `xl-pdf-exporter`, `xl-docx-exporter`, `xl-ai`…), licensed GPL-3.0 or commercial;
+  - the **`@blocknote/xl-*` packages** (`xl-multi-column`, `xl-pdf-exporter`, `xl-docx-exporter`, `xl-ai`…), licensed GPL-3.0 or commercial. We build the equivalent features ourselves under **clean-room rules**: nobody reads their source (see [10 — Editor extensions](10-editor-extensions.md#clean-room-rules));
   - any code from ClassroomIO, LearnHouse or CourseLit (AGPL).
+- **Dual-licensed dependencies** are allowed when one option is on the allowlist, and we use that option. Example: `jszip` (MIT or GPL-3.0), used under MIT.
 - An automated license check in CI fails the build on any dependency outside the allowlist.
 - Notable dependencies checked: BlockNote core / react / server-util (MPL-2.0), SurveyJS Form Library (MIT), hls.js (Apache-2.0), Kysely (MIT), Zod (MIT).
 

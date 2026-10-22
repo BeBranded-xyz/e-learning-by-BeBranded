@@ -120,6 +120,7 @@ Details in [07 — Quizzes](07-quizzes.md).
 | D7 | **BlockNote** as the content editor, documents stored as **BlockNote JSON** | Tiptap alone, Markdown, Lexical, Editor.js | Notion-like UX out of the box (slash menu, drag handles, nested blocks), which authors already know. Built on ProseMirror / Tiptap, with a typed document model that can be validated server-side and custom blocks for our needs. The quiz editor reuses it: each question is a custom block, converted to SurveyJS JSON on save. The core packages are **MPL-2.0**, compatible with MIT distribution when used unmodified. The `@blocknote/xl-*` packages (GPL-3.0 or commercial) are **excluded** (see [08 — Licensing](08-non-functional-requirements.md#licensing)). |
 | D8 | **Theming through CSS custom properties** (`--el-*`), no imposed CSS framework | Tailwind preset, styled-components | Works with any host CSS stack. An optional Tailwind preset can map the tokens. |
 | D9 | **Identity provided by the host** through `IdentityResolver` | Built-in auth, mandatory Supabase Auth | Every product already has auth. The module only stores an opaque `learner_id`. |
+| D10 | **Multi-column layout, PDF export and Word export built in-house under MIT**, in clean room | `@blocknote/xl-*` packages (GPL-3.0 or commercial) | GPL would contaminate host products. A commercial license would not cover the people who install our MIT packages. Details and clean-room rules in [10 — Editor extensions](10-editor-extensions.md). |
 
 ## Versioning and distribution
 

@@ -1,0 +1,180 @@
+# 10 — Editor extensions: multi-column layout, PDF and Word export
+
+BlockNote's core packages (MPL-2.0) cover the Notion-like editing experience. Three features we need are only available in BlockNote's `@blocknote/xl-*` packages, which are licensed **GPL-3.0 or commercial**:
+
+- multi-column layouts;
+- PDF export;
+- Word (`.docx`) export.
+
+Neither license works for an MIT module embedded in proprietary products:
+
+- **GPL-3.0** would force every host product to be distributed under the GPL.
+- A **commercial license** would cover BeBranded, but not the other people and companies who install our MIT packages. They would each need their own license.
+
+We therefore build these three features **ourselves, from scratch, under MIT**, following the clean-room rules below.
+
+## Clean-room rules
+
+Reading GPL code and rewriting it produces a derivative work, which would still be GPL. To stay legally clean:
+
+1. **Nobody working on these features reads the source code of `@blocknote/xl-*`** or of any other GPL, AGPL or commercial implementation of the same features. This includes "just for inspiration" reading and asking an AI assistant to summarize or translate that code.
+2. **Allowed inputs**:
+   - this specification;
+   - BlockNote's public documentation and the public API of its MPL-2.0 core packages;
+   - observable end-user behavior, for example using a public demo as a user;
+   - open format specifications (ECMA-376 / Office Open XML, CSS Paged Media);
+   - documentation and source code of the permissively licensed libraries listed below.
+3. **The behavior is specified first** (this document), then implemented against the specification.
+4. **Traceability**: the pull request template includes a checkbox stating that the author has not consulted GPL or commercial implementations of the feature.
+5. **Our own data format**: the JSON shape of our column blocks is designed by us. Compatibility with documents produced by `@blocknote/xl-multi-column` is a non-goal.
+
+## Technology selection
+
+| Need | Choice | License | Why | Rejected alternatives |
+|------|--------|---------|-----|-----------------------|
+| Editing model for columns | **ProseMirror** node specs (`prosemirror-model`, `prosemirror-state`, `prosemirror-view`) registered in BlockNote through its extension points, with Tiptap extensions where convenient | MIT | BlockNote runs on ProseMirror and Tiptap, so columns must live at that level to support nested blocks, drag & drop and cursor movement | Simple custom block with a fixed layout (no nested blocks, poor UX) |
+| Shared export format | **Our own intermediate document tree** (`ExportDocument`) in `elearning-core` | MIT (ours) | One conversion from BlockNote JSON, then one renderer per format. Each renderer is tested on the same fixtures. | Converting BlockNote JSON separately for each format |
+| HTML (learner view and PDF source) | `@blocknote/server-util` for standard blocks + our own renderers for custom blocks, then `sanitize-html` | MPL-2.0 (unmodified) / MIT | Reuses the server-side rendering already used for lessons (see [02 — Architecture](02-architecture.md#reading-a-text-lesson)) | — |
+| PDF | **HTML + print CSS rendered by headless Chromium**, behind a `PdfRenderer` port | — | Highest fidelity (tables, columns, fonts, images), reuses the HTML renderer and the theme, and gives a PDF with real selectable text | `@react-pdf/renderer` (MIT): every block would need a second layout implementation with a limited CSS subset. `pdf-lib`: too low-level. |
+| PDF adapters | `playwright-core` (Node / self-hosted), `puppeteer-core` + `@sparticuz/chromium` (Vercel and other serverless platforms), `@cloudflare/puppeteer` (Cloudflare Browser Rendering), HTTP client for **Gotenberg** (container) | Apache-2.0 / MIT | Each host picks what its infrastructure supports | Bundling Chromium in our packages |
+| Word | **`docx`** (builds `.docx` files from a typed API) | MIT | Mature, actively maintained, typed, covers headings, lists, tables, images, styles and numbering | Converting HTML to DOCX (poor fidelity), generating raw OOXML by hand |
+| Zip (dependency of `docx`) | `jszip` | MIT **or** GPL-3.0 (dual) | We use it under the **MIT** option. The license check allowlists it explicitly with that choice. | — |
+
+All new dependencies must pass the CI license check (see [08 — Licensing](08-non-functional-requirements.md#licensing)).
+
+## Package layout
+
+```
+packages/
+├── core/
+│   └── src/export/          ExportDocument types, BlockNote JSON → ExportDocument (pure)
+├── editor/
+│   ├── src/blocks/columns/  columnList + column: node specs, commands, drag & drop, resize
+│   └── src/render/html/     ExportDocument → HTML (learner view, PDF source)
+└── export/                  @bebranded/elearning-export (new, server-only)
+    ├── src/pdf/             PdfRenderer port + adapters (playwright, serverless, cloudflare, gotenberg)
+    ├── src/docx/            ExportDocument → .docx with the `docx` library
+    └── src/assets/          image inlining through FileStorage
+```
+
+`elearning-export` is a separate, server-only package. Hosts that do not need export never install Chromium-related dependencies.
+
+## Multi-column layout
+
+### Data model
+
+Two new block types in the module's BlockNote schema:
+
+```json
+{
+  "type": "columnList",
+  "children": [
+    { "type": "column", "props": { "width": 0.6 }, "children": [ /* any blocks except columnList */ ] },
+    { "type": "column", "props": { "width": 0.4 }, "children": [ /* … */ ] }
+  ]
+}
+```
+
+- A `columnList` holds **2 to 4** `column` blocks.
+- `width` values are ratios, normalized to sum to 1. The minimum ratio is 0.15.
+- A `column` contains any regular block, but **no nested `columnList`**, to keep layouts readable and exports predictable.
+- Server-side content validation enforces these constraints.
+
+### Editing behavior
+
+| Action | Behavior |
+|--------|----------|
+| Create columns | Slash menu entries "2 columns", "3 columns", "4 columns". Or drag a block onto the left or right edge of another block. |
+| Drag between columns | The drag handle moves blocks within a column, between columns, and out of the column list. |
+| Resize | A handle between two columns adjusts their ratios, with keyboard support (focus the handle, then arrow keys). |
+| Remove a column | When a column becomes empty and loses focus, it is removed. When only one column remains, the column list is unwrapped and its blocks go back to the main flow. |
+| Keyboard | Arrow keys move the cursor across column boundaries in reading order (left column top to bottom, then the next column). |
+| Undo / redo | Every operation above is a single history step. |
+
+### Rendering
+
+- CSS grid with `grid-template-columns` built from the ratios.
+- Below a configurable breakpoint (default 640 px), columns **stack vertically** in order.
+- Screen readers read columns in document order. The layout carries no semantics.
+
+### Risk
+
+Multi-column editing is the hardest piece of this document: nested containers in ProseMirror, drop zones, cursor behavior. It starts with a **time-boxed spike** (see [09 — Roadmap](09-roadmap.md)). If the spike shows that a robust implementation is too costly, the fallback is a simpler layout block: columns editable one at a time, with no drag & drop between them.
+
+## Export
+
+### What can be exported
+
+| Scope | Route | Notes |
+|-------|-------|-------|
+| One lesson | `GET /lessons/:id/export?format=pdf\|docx` | Text lessons and notes of video and quiz lessons |
+| A whole course | `GET /courses/:id/export?format=pdf\|docx` | Cover page, generated table of contents, chapters as sections |
+
+- **Access rules apply**: an export only contains content the requester can access. A course export skips inaccessible lessons, as the course page does.
+- **Admins** can export drafts. Learners only export published content.
+- Course-level settings let admins disable export for learners (`allowLearnerExport`, default `false`).
+
+### Pipeline
+
+```mermaid
+flowchart LR
+  BN["BlockNote JSON<br/>(stored lesson content)"] --> T["toExportDocument()<br/>elearning-core, pure"]
+  T --> ED["ExportDocument"]
+  ED --> A["Asset inlining<br/>FileStorage → data URIs"]
+  A --> H["HTML renderer<br/>+ print CSS + theme"]
+  A --> D["DOCX renderer<br/>(docx library)"]
+  H --> P["PdfRenderer port<br/>headless Chromium"]
+  P --> PDF[".pdf"]
+  D --> DOCX[".docx"]
+```
+
+### Block mapping
+
+| Block | PDF (HTML + print CSS) | Word |
+|-------|------------------------|------|
+| Headings | `h1`–`h3`, PDF bookmarks | Heading 1–3 styles (Word navigation pane) |
+| Paragraph and inline styles | Native | Runs with bold, italic, underline, strike, code, color, links |
+| Bulleted, numbered and check lists | Native lists | Word numbering definitions, ☐ / ☑ for check lists |
+| Toggle | Expanded | Expanded |
+| Quote | Styled `blockquote` | "Quote" style |
+| Callout | Tinted box with icon | Single-cell shaded table |
+| Code | Monospace block, no syntax highlighting in v1 | Monospace style, shaded paragraph |
+| Table | Native table, header row repeated across pages | Word table, repeated header row |
+| Image | Inlined image with caption | Embedded image scaled to page width, caption |
+| Columns | CSS grid, kept on one page when possible | Borderless table, one cell per column with the matching width. Word section columns flow text and would not match the layout. |
+| Video | Thumbnail + title + link to the lesson | Same |
+| Quiz questions | **Excluded by default.** Optional "questions only" mode, never with answers for learners | Same |
+| File attachment | Name + link to the lesson | Same |
+
+### Document styling
+
+- Exports use the host theme (primary color, font family) and an optional logo, so a document matches the host product's branding.
+- Page format A4 or US Letter, set by the host or from the requester's locale.
+- Header with course and lesson title, footer with page numbers and export date.
+
+## Export security
+
+The PDF renderer runs a browser on the server. It must never become a way to read internal resources (SSRF) or to run code.
+
+- Chromium only renders **HTML that we generate and sanitize**. It never receives user-provided HTML or an arbitrary URL.
+- **JavaScript is disabled** in the rendering page.
+- **All network requests from the page are blocked.** Images are fetched beforehand, server-side, **only through the `FileStorage` port**, and inlined as data URIs. Editor images must therefore be uploaded files. External image URLs are rejected at content validation time.
+- Fonts are bundled or inlined. Nothing is fetched at render time.
+- Limits: maximum document size (number of blocks, total image weight), rendering timeout (default 30 s), concurrency limit per tenant, and the `rateLimit` hook on export routes.
+- Exports are generated on request and streamed to the requester. They are not stored, unless the host decides to cache them in its own storage.
+- Word files are generated from structured data by the `docx` library. No user content is interpreted as XML.
+
+## Testing
+
+- **Golden fixtures**: a set of BlockNote documents covering every block type, rendered to `ExportDocument`, HTML, PDF and DOCX.
+- PDF: text extracted from the output is compared with the expected text, plus visual regression on rendered pages (Playwright screenshots).
+- DOCX: the generated XML is checked for expected styles and structure, and opened in LibreOffice headless in CI to make sure the file is valid.
+- Columns: Playwright scenarios for every behavior in the editing table, on desktop and mobile widths.
+- Security tests: a document with an external image URL, `javascript:` links, oversized content and hostile text must be rejected or neutralized, and the renderer must not make any network request (verified by request interception).
+
+## Out of scope
+
+- AI writing features.
+- Exporting to formats other than PDF and DOCX (ODT, Markdown, EPUB).
+- Importing DOCX or PDF files into the editor.
+- Syntax highlighting in exports.

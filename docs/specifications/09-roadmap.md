@@ -47,6 +47,15 @@
 
 **Deliverable**: all content managed without touching code.
 
+### Phase 4b: editor extensions
+
+- Multi-column spike (time-boxed to 3 days): nested columns, drag & drop, cursor movement. Go / no-go on the full implementation, or the simpler fallback.
+- `ExportDocument` and HTML renderer, then PDF (Chromium adapters) and DOCX (`docx`)
+- Export security tests (no network from the renderer, SSRF, limits)
+- Clean-room checkbox in the pull request template
+
+**Deliverable**: multi-column lessons, and lessons and courses exportable to PDF and Word. See [10 — Editor extensions](10-editor-extensions.md).
+
 ### Phase 5: first host product in production
 
 - Integration in the pilot product, integration time measured
@@ -78,3 +87,5 @@
 | Q8 | SCORM / xAPI | Out of scope, SCORM import, xAPI emission | Out of scope for v1. Revisit if a client brings existing SCORM content. |
 | Q9 | Presence check during videos? | No, random question, idle detection | No in v1 (see [06 — Video](06-video.md)) |
 | Q10 | BlockNote UI kit for the admin editor | Mantine (`@blocknote/mantine`), shadcn (`@blocknote/shadcn`), Ariakit | Mantine by default (most complete, styles scoped to the editor). shadcn variant for hosts already on shadcn/ui. |
+| Q11 | Default PDF adapter | Serverless Chromium (Vercel), Cloudflare Browser Rendering, Gotenberg | Serverless Chromium for Vercel hosts. Cloudflare Browser Rendering if cold starts or bundle size become a problem. |
+| Q12 | Learner export enabled by default? | Yes, no | No (`allowLearnerExport = false`): training content often belongs to the host company and should not leave the product without a decision |
