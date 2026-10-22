@@ -11,3 +11,4 @@ renovate.json
 scripts/check-licenses.mjs
 .github/workflows/pre-production.yml
 .github/workflows/release.yml
+**/*.gen.ts

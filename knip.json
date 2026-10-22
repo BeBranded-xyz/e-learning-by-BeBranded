@@ -8,6 +8,10 @@
     "packages/*": {
       "entry": ["src/index.ts"],
       "project": ["src/**/*.ts", "tests/**/*.ts"]
+    },
+    "packages/db": {
+      "entry": ["src/index.ts", "src/bin.ts", "scripts/*.ts"],
+      "project": ["src/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts"]
     }
   }
 }

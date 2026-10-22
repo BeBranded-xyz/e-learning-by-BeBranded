@@ -1,0 +1,51 @@
+{
+  "name": "@bebranded/elearning-db",
+  "version": "0.0.0",
+  "description": "PostgreSQL migrations and storage adapter (Kysely) of the BeBranded e-learning module.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BeBranded-xyz/e-learning-by-BeBranded.git",
+    "directory": "packages/db"
+  },
+  "homepage": "https://github.com/BeBranded-xyz/e-learning-by-BeBranded#readme",
+  "bugs": "https://github.com/BeBranded-xyz/e-learning-by-BeBranded/issues",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "elearning": "./dist/bin.js"
+  },
+  "files": [
+    "dist",
+    "migrations",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "db:types": "tsx scripts/generate-types.ts"
+  },
+  "dependencies": {
+    "@bebranded/elearning-core": "workspace:^",
+    "kysely": "^0.29.7",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@testcontainers/postgresql": "12.2.1",
+    "@types/pg": "8.23.1",
+    "kysely-codegen": "0.20.0",
+    "pg": "8.23.1"
+  },
+  "peerDependencies": {
+    "pg": "^8.11.0"
+  }
+}

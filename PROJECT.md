@@ -247,9 +247,19 @@ Core rules always apply.
   `init.sh --dest . --target claude,codex --update` from AI-Dev-Rules `main`
   (`BACKLOG.md` B-001).
 - **Baseline**: no code; `make check` green.
-- **Scoped exceptions**: Dependabot instead of Renovate (the Renovate app is not
-  installed on the organization). Workflow templates `ci.yml`,
-  `pre-production.yml`, `release.yml` are kept manual-only until phase 1.
+- **Scoped exceptions**:
+  - Dependabot instead of Renovate (the Renovate app is not installed on the
+    organization).
+  - Workflow templates `pre-production.yml` and `release.yml` stay manual-only
+    until their suites exist (`ci.yml` is live since phase 1).
+  - RLS (`modules/database`): every table has RLS enabled but **no permissive
+    policy**, so only the owning role used by the module can read or write.
+    This is the module's default deny; the opt-in policies for direct Supabase
+    reads (spec 05, "RLS") come in a later migration (`BACKLOG.md` B-018).
+    Owner: maintainers. Review: when B-018 lands.
+  - `Kysely<any>` in `packages/db/src/migrations/migrate.ts`: the migration
+    runner only issues raw SQL and must accept any database type; documented
+    inline.
 
 ## 11. Key architecture decisions
 

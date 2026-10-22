@@ -43,7 +43,7 @@ config in the same PR. Tests that cannot be written yet are listed in
 | 3 | Property-Based Testing | active | fast-check | `pnpm test:unit` | commit | canAccess (child never wider than parent, deny wins, order independence), progress bounds, status monotony |
 | 4 | Mutation Testing | planned phase 1 | Stryker | `pnpm stryker run --incremental` | pr | core and server packages first |
 | 5 | Component / Module Tests | planned phase 1 | Vitest + Testing Library | `pnpm test:component` | pr | react and admin components |
-| 6 | Integration Tests | planned phase 1 | Vitest + Testcontainers (Postgres) | `pnpm test:integration` | pr | Real Postgres, never mocked |
+| 6 | Integration Tests | active | Vitest + Testcontainers (PostgreSQL 14) or `ELEARNING_TEST_DATABASE_URL` | `pnpm test:integration` | commit | Real Postgres, one schema per test file, never mocked |
 | 7 | API Tests | planned phase 1 | Vitest with real Request/Response | `pnpm test:api` | pr | Every route, every error code |
 | 8 | Contract Tests | planned phase 1 | Zod schemas + API report (API Extractor) | `pnpm test:contract` | pr | Public API and HTTP contract |
 | 9 | End-to-End (E2E) Tests | planned phase 1 | Playwright on apps/demo | `pnpm test:e2e` | pr | Desktop and mobile viewports |
@@ -84,7 +84,7 @@ config in the same PR. Tests that cannot be written yet are listed in
 | 29 | DAST | planned phase 5 | ZAP baseline on apps/demo |  | pre-prod |  |
 | 30 | Dependency Security Testing | active | Dependabot alerts and updates (npm, actions), pnpm audit, license allowlist | `pnpm audit --audit-level=high && pnpm check:licenses` | pr | |
 | 31 | Authentication Testing | planned phase 1 | Vitest | `pnpm test:api` | pr | IdentityResolver null → 401, identity never cached |
-| 32 | Authorization Testing | planned phase 1 | Vitest + Testcontainers | `pnpm test:authz` | pr | Every audience rule, tenant crossing, IDOR, admin routes |
+| 32 | Authorization Testing | active (storage) / planned phase 1 (handlers) | Vitest + Testcontainers | `pnpm test:integration` | commit | Storage: tenant crossing on every read and write, shared catalog read-only. Handlers: every audience rule, IDOR, admin routes |
 | 33 | Injection Testing | planned phase 1 | Vitest | `pnpm test:security` | pr | SQL, XSS in BlockNote documents, SSRF in exports |
 | 34 | Web Security Testing | planned phase 1 | Playwright | `pnpm test:security` | pr | Recommended CSP and headers in apps/demo |
 | 35 | Secret Scanning | active | gitleaks (CI full history + pre-commit hook), GitHub push protection | `make check` | commit | Workflow `Secret scan`, required check |
@@ -101,8 +101,8 @@ config in the same PR. Tests that cannot be written yet are listed in
 
 | # | Category | Status | Tool | Command | Gate | Notes |
 |---|---|---|---|---|---|---|
-| 39 | Database Tests | planned phase 1 | Testcontainers | `pnpm test:db` | pr | Constraints, optional RLS policies |
-| 40 | Migration Testing | planned phase 1 | Testcontainers | `pnpm test:db` | pr | Up on clean DB and on previous version with data |
+| 39 | Database Tests | active | Vitest + Testcontainers | `pnpm test:integration` | commit | Check constraints (including NULL handling), FKs, unique keys, updated_at triggers, RLS enabled with default deny for other roles. Optional RLS policies: B-018 |
+| 40 | Migration Testing | active | Vitest + Testcontainers | `pnpm test:integration` | commit | Clean DB, idempotent re-run, upgrade from an earlier subset, concurrent runs, modified or unknown applied migration, failed migration rolls back. Upgrade on previous release data: from the first release (B-013) |
 
 ## Concurrency Testing
 

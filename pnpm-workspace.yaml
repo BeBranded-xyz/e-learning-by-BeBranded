@@ -4,3 +4,9 @@ packages:
 
 # Dependency install scripts are blocked unless listed here (spec 08, supply chain).
 onlyBuiltDependencies: []
+
+# Optional native accelerators of Testcontainers (dev only); pure JS fallbacks are used.
+ignoredBuiltDependencies:
+  - cpu-features
+  - protobufjs
+  - ssh2

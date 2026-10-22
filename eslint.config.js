@@ -11,7 +11,16 @@ const sizeLimits = {
 };
 
 export default tseslint.config(
-  { ignores: ["**/dist/**", "**/coverage/**", "**/.next/**", "**/.turbo/**", ".claude/**"] },
+  {
+    ignores: [
+      "**/dist/**",
+      "**/coverage/**",
+      "**/.next/**",
+      "**/.turbo/**",
+      ".claude/**",
+      "**/*.gen.ts",
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,

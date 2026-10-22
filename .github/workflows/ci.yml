@@ -63,7 +63,10 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with: { node-version-file: .node-version, cache: pnpm }
       - run: pnpm install --frozen-lockfile
+      # Integration tests start PostgreSQL with Testcontainers (Docker is on the runner).
       - run: pnpm test:coverage
+      - name: Generated database types are up to date
+        run: pnpm --filter @bebranded/elearning-db db:types --verify
 
   build:
     name: Build packages

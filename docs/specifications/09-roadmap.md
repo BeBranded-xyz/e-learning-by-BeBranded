@@ -14,7 +14,7 @@
 
 - [x] Monorepo (pnpm, Turborepo, Changesets, CI, license check, CodeQL)
 - [x] `core`: types, Zod schemas, `canAccess`, progress computation
-- [ ] `db`: initial migrations, `postgresStorage`, `migrate` CLI
+- [x] `db`: initial migrations, `postgresStorage`, `migrate` CLI
 - [ ] `server` + `next`: identity, catalog, courses, text lessons, completion
 - [ ] `editor`: block schema, content validation, server-side rendering
 - [ ] `react`: provider, theming, catalog, course page, text lesson player
