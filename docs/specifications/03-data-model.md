@@ -110,7 +110,7 @@ erDiagram
 
 ### Progress
 
-**`enrollments`**: `id`, `tenant_id`, `course_id`, `learner_id`, `source` (`self` \| `assigned` \| `auto`), `assigned_by` null, `due_at` null, `started_at`, `completed_at` null, `progress` numeric (0–1, denormalized). Unique on (`course_id`, `learner_id`).
+**`enrollments`**: `id`, `tenant_id`, `course_id`, `learner_id`, `source` (`self` \| `assigned` \| `auto`), `assigned_by` null, `due_at` null, `started_at` null (set when the first lesson starts), `completed_at` null, `progress` numeric (0–1, denormalized). Unique on (`course_id`, `learner_id`). `tenant_id` is the learner's tenant, which can differ from a shared course's.
 
 **`lesson_progress`**
 
@@ -140,7 +140,9 @@ erDiagram
 ### Technical tables
 
 - **`schema_migrations`**: applied migrations (name, checksum, date).
-- **`event_outbox`**: events to deliver to the host product (`id`, `type`, `payload`, `created_at`, `delivered_at`, `attempts`). It guarantees that an event is not lost if the host's hook fails (outbox pattern).
+- **`event_outbox`**: events to deliver to the host product (`id`, `tenant_id`, `type`, `payload`, `occurred_at`, `created_at`, `next_attempt_at`, `delivered_at`, `attempts`, `last_error`). It guarantees that an event is not lost if the host's hook fails (outbox pattern). A worker claims due events and pushes `next_attempt_at` forward as a lease, so concurrent workers never deliver the same event at the same time.
+- **Denormalized parents**: `chapters` and `lessons` carry their course's `tenant_id`, and `lessons` their `course_id`, so tenant filtering and course trees need no join. `lesson_progress` carries `course_id` and the learner's `tenant_id`.
+- **Row level security** is enabled on every table with no permissive policy: only the role that owns the tables (the connection the module uses) can access them. The opt-in policies of [05 — Permissions](05-permissions.md#rls) come in a later migration.
 
 ## Computation rules
 

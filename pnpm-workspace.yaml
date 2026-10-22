@@ -4,3 +4,17 @@ packages:
 
 # Dependency install scripts are blocked unless listed here (spec 08, supply chain).
 onlyBuiltDependencies: []
+
+# Optional native accelerators of Testcontainers (dev only); pure JS fallbacks are used.
+ignoredBuiltDependencies:
+  - cpu-features
+  - protobufjs
+  - ssh2
+
+# Audit suppressions (core/dependencies.mdc): advisory id, reason, owner, expiry.
+auditConfig:
+  ignoreGhsas:
+    # braces <=3.0.3 ReDoS-style stack exhaustion, no patched version yet.
+    # Dev-only path: kysely-codegen > micromatch > braces, fed only our own
+    # constant patterns. Owner: maintainers. Expires: 2026-11-22 (BACKLOG B-020).
+    - GHSA-vfj7-8cjw-p6xm

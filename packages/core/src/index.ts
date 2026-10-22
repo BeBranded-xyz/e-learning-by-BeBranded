@@ -77,3 +77,22 @@ export type { CourseProgress, LessonProgressStatus, ProgressLesson } from "./pro
 
 export { eventTypes, parseEventPayload } from "./events/events.js";
 export type { DomainEvent, EventHandlers, EventPayload, EventType } from "./events/events.js";
+
+export type {
+  ChapterPatch,
+  CoursePatch,
+  Enrollment,
+  EnrollmentSource,
+  EventOutbox,
+  JsonValue,
+  LessonDetail,
+  LessonPatch,
+  LessonProgress,
+  LessonSummary,
+  PendingEvent,
+  StorageAdapter,
+  StorageReads,
+  StorageTransaction,
+  StorageWrites,
+  TenantScope,
+} from "./ports/storage.types.js";

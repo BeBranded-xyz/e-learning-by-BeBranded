@@ -6,8 +6,11 @@
       "ignoreBinaries": ["playwright"]
     },
     "packages/*": {
-      "entry": ["src/index.ts"],
       "project": ["src/**/*.ts", "tests/**/*.ts"]
+    },
+    "packages/db": {
+      "entry": ["src/bin.ts", "scripts/*.ts"],
+      "project": ["src/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts"]
     }
   }
 }

@@ -8,7 +8,7 @@
 > If the project uses an external tracker (GitHub Issues, Linear, Notion),
 > this file lists the tracker link per item and stays the index.
 
-Last updated: 2026-10-22
+Last updated: 2026-10-23
 Tracker: this file only (GitHub Issues once outside contributors arrive)
 
 ## Now (committed for the current iteration)
@@ -21,11 +21,15 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 
 | ID | Task | Type | Priority | Owner | Link | Added | Notes |
 |---|---|---|---|---|---|---|---|
-| B-012 | Phase 1 remaining packages: db, editor, server + next, react, apps/demo with e2e | feature | P1 | maintainers | `docs/specifications/09-roadmap.md` | 2026-10-22 | One pull request per package |
+| B-012 | Phase 1 remaining packages: editor, server + next, react, apps/demo with e2e | feature | P1 | maintainers | `docs/specifications/09-roadmap.md` | 2026-10-22 | One pull request per package |
 | B-013 | Before the first publish: API Extractor report, publint, @arethetypeswrong/cli, pack listing test, consumer fixture apps from the tarball | test | P1 | maintainers | `modules/library-publishing` | 2026-10-22 | Blocks B-003 |
 | B-014 | Mutation testing with Stryker on changed files (floors in `TEST_PLAN.md`) | test | P2 | maintainers | `TEST_PLAN.md` #4 | 2026-10-22 | |
 | B-015 | CI matrix: Node 22.12 and 24, Linux and macOS | ops | P2 | maintainers | `TEST_PLAN.md` #46 | 2026-10-22 | |
 | B-016 | Typecheck the code examples of package READMEs in CI | docs | P3 | maintainers | `modules/library-publishing` | 2026-10-22 | |
+| B-017 | CI database matrix: PostgreSQL 14 (lowest) and the latest major | test | P2 | maintainers | `TEST_PLAN.md` #46 | 2026-10-23 | Tests use 14 today |
+| B-018 | Opt-in RLS policies migration for direct Supabase reads, with `can_access` SQL mirroring core, and policy tests (anonymous, owner, other user) | feature | P3 | maintainers | spec 05, "RLS" | 2026-10-23 | Tables currently default-deny for every role but the owner |
+| B-019 | GDPR: `deleteLearnerData`, `exportLearnerData`, retention purge job for inactive learners | feature | P2 | maintainers | spec 08, `modules/data-lifecycle` | 2026-10-23 | Not in the phase 1 roadmap; needed before a production pilot |
+| B-020 | Audit suppression GHSA-vfj7-8cjw-p6xm (braces, dev-only via kysely-codegen) expires 2026-11-22: upgrade when a patched version exists, or re-justify | debt | P2 | maintainers | `pnpm-workspace.yaml` | 2026-10-23 | No patched version published |
 | B-003 | Write the delivery plan (packages as units, trusted publishing, one publisher) before adding a release workflow | docs | P2 | maintainers | `modules/library-publishing` | 2026-10-22 | `release.yml` template is manual-only until then |
 | B-004 | Design-system decisions: component catalogue, themes, icon set, enforcement | docs | P2 | maintainers | `PROJECT.md` section 4 | 2026-10-22 | |
 | B-005 | Evaluate the `audit-trail` module for admin actions (content publishing, access rules, assignments) | question | P2 | maintainers | | 2026-10-22 | |
@@ -58,8 +62,9 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 |---|---|---|---|
 | | Technical specifications 01–10, repository security baseline | 2026-10-22 | direct commits before branch protection |
 | | AI-Dev-Rules adoption (Claude Code and Codex) | 2026-10-22 | #1 |
-| B-002 | Monorepo bootstrap: pnpm, Turborepo, TypeScript 6, ESLint, Prettier, Vitest, Changesets, `pnpm check`, CI, plus `@bebranded/elearning-core` | 2026-10-22 | this PR |
-| B-008 | Dependabot npm ecosystem | 2026-10-22 | this PR |
+| | `@bebranded/elearning-db`: migrations, `elearning migrate`, `postgresStorage` | 2026-10-23 | this PR |
+| B-002 | Monorepo bootstrap: pnpm, Turborepo, TypeScript 6, ESLint, Prettier, Vitest, Changesets, `pnpm check`, CI, plus `@bebranded/elearning-core` | 2026-10-22 | #3 |
+| B-008 | Dependabot npm ecosystem | 2026-10-22 | #3 |
 | B-007 | `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1), issue templates, `CODEOWNERS` | 2026-10-22 | #2 |
 | Q-002 | Business email in history: acceptable, no history rewrite | 2026-10-22 | decision |
 | Q-004 | Learner export built, off by default per course (spec 09, Q12) | 2026-10-22 | decision |
