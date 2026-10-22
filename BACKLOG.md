@@ -26,7 +26,6 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | B-004 | Design-system decisions: component catalogue, themes, icon set, enforcement | docs | P2 | maintainers | `PROJECT.md` section 4 | 2026-10-22 | |
 | B-005 | Evaluate the `audit-trail` module for admin actions (content publishing, access rules, assignments) | question | P2 | maintainers | | 2026-10-22 | |
 | B-006 | Evaluate the `data-fetching` module for the React packages | question | P3 | maintainers | | 2026-10-22 | |
-| B-007 | Add `CODE_OF_CONDUCT.md`, issue templates, and `CODEOWNERS` | docs | P2 | maintainers | `modules/open-source` | 2026-10-22 | Code of conduct needs a contact (Q-005) |
 | B-008 | Add the npm ecosystem to `.github/dependabot.yml` when `package.json` exists | ops | P2 | maintainers | | 2026-10-22 | |
 
 ## Later / ideas
@@ -48,18 +47,19 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | ID | Question | Who decides | Blocking | Asked on | Link |
 |---|---|---|---|---|---|
 | Q-001 | Which host product pilots the module? | Maxime | Phase 5 | 2026-10-22 | spec 09, Q4 |
-| Q-002 | Rewrite the first commit of this repository to remove a personal email address (force push), and the same question for AI-Dev-Rules | Maxime | No | 2026-10-22 | |
 | Q-003 | Install the Renovate app on the organization, or keep Dependabot | Maxime | No | 2026-10-22 | `core/dependencies` |
-| Q-004 | Learner export disabled by default (`allowLearnerExport = false`)? | Maxime | Phase 4b | 2026-10-22 | spec 09, Q12 |
-| Q-005 | Contact address for code of conduct enforcement | Maxime | B-007 | 2026-10-22 | |
-| Q-006 | Dates for roadmap phases (turns `planned phase N` into dated, blocking entries) | Maxime | No | 2026-10-22 | `TEST_PLAN.md` |
 
 ## Done (last 30 days, then prune)
 
 | ID | Task | Closed on | PR |
 |---|---|---|---|
 | | Technical specifications 01–10, repository security baseline | 2026-10-22 | direct commits before branch protection |
-| | AI-Dev-Rules adoption (Claude Code and Codex) | 2026-10-22 | this PR |
+| | AI-Dev-Rules adoption (Claude Code and Codex) | 2026-10-22 | #1 |
+| B-007 | `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1), issue templates, `CODEOWNERS` | 2026-10-22 | this PR |
+| Q-002 | Business email in history: acceptable, no history rewrite | 2026-10-22 | decision |
+| Q-004 | Learner export built, off by default per course (spec 09, Q12) | 2026-10-22 | decision |
+| Q-005 | Conduct contact: the maintainer's business address | 2026-10-22 | this PR |
+| Q-006 | No phase dates: phases run in order (spec 09, Q13) | 2026-10-22 | decision |
 
 ## Conventions
 

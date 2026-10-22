@@ -1,0 +1,23 @@
+name: Feature request
+description: Propose a new capability or a change of behavior.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: This repository is public. Do not mention client names or internal details.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What you are trying to do and why the module does not allow it today.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: The behavior you would like. Specifications in docs/specifications change first.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

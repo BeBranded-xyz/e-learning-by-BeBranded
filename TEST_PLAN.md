@@ -11,8 +11,8 @@ Owner: BeBranded maintainers
 
 > Specification stage: there is no code yet, so most categories are `planned`
 > for the roadmap phase that introduces the code they test
-> (`docs/specifications/09-roadmap.md`). Phases get dates when the roadmap is
-> scheduled (`BACKLOG.md`); a planned category becomes blocking from then on.
+> (`docs/specifications/09-roadmap.md`). Phases have no dates and run in
+> order (spec 09, Q13); a planned category becomes blocking when its phase starts.
 
 ## Check command
 

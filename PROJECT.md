@@ -171,6 +171,7 @@ No deployed environment yet.
 |---|---|
 | GitHub repository | `BeBranded-xyz/e-learning-by-BeBranded` (public) |
 | npm scope | `@bebranded` (packages `@bebranded/elearning-*`) |
+| Conduct and maintainer contact | `max@bebranded.xyz` (business address, published by the owner's decision) |
 
 ## 9. Active rules
 

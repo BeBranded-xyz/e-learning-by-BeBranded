@@ -1,0 +1,9 @@
+# Workflows, release configuration and security-sensitive files need a
+# maintainer review (modules/open-source). Everything else defaults to the
+# same owner until more maintainers join.
+* @Max-bebranded
+/.github/ @Max-bebranded
+/.githooks/ @Max-bebranded
+/.claude/ @Max-bebranded
+/SECURITY.md @Max-bebranded
+/LICENSE @Max-bebranded

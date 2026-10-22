@@ -75,6 +75,8 @@
 | Q1 | npm scope | `@bebranded/elearning-*`. The `@bebranded` scope already belongs to BeBranded. |
 | Q2 | Rich-text format | **BlockNote** (Notion-like block editor), documents stored as BlockNote JSON. The quiz editor reuses it. |
 | Q7 | Language | **English everywhere**: code, docs, specifications, commit messages. |
+| Q12 | Learner export of lessons to PDF and Word | Built, **off by default** per course (`allowLearnerExport = false`). Admins and authors can always export; an admin turns learner export on per course. |
+| Q13 | Phase dates | No dates: every phase is built, in order. A `planned phase N` test category becomes blocking when phase N starts. |
 
 ## Open questions
 
@@ -88,4 +90,3 @@
 | Q9 | Presence check during videos? | No, random question, idle detection | No in v1 (see [06 — Video](06-video.md)) |
 | Q10 | BlockNote UI kit for the admin editor | Mantine (`@blocknote/mantine`), shadcn (`@blocknote/shadcn`), Ariakit | Mantine by default (most complete, styles scoped to the editor). shadcn variant for hosts already on shadcn/ui. |
 | Q11 | Default PDF adapter | Serverless Chromium (Vercel), Cloudflare Browser Rendering, Gotenberg | Serverless Chromium for Vercel hosts. Cloudflare Browser Rendering if cold starts or bundle size become a problem. |
-| Q12 | Learner export enabled by default? | Yes, no | No (`allowLearnerExport = false`): training content often belongs to the host company and should not leave the product without a decision |
