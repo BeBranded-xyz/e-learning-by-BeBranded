@@ -1,0 +1,33 @@
+# Release template (modules/releases.mdc). Uses release-please to open a
+# release PR from conventional commits, generate CHANGELOG.md, tag, and create
+# the GitHub release. This workflow owns version metadata only.
+# Production deployment belongs to the project's delivery plan (see
+# modules/deployments.mdc): analyze every PR merge into main, gate the exact
+# revision, and deploy only affected units. Implement that pipeline or configure
+# the hosting integration before enabling production delivery. Do not attach a
+# blanket deploy to release_created or create a second deployment owner.
+
+name: Release
+
+# Manual-only until phase 1 adds the pnpm workspace (PROJECT.md section 10).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # tags, releases, CHANGELOG.md
+      pull-requests: write # the release PR
+    timeout-minutes: 30
+    outputs:
+      released: ${{ steps.rp.outputs.release_created }}
+      tag: ${{ steps.rp.outputs.tag_name }}
+    steps:
+      - id: rp
+        uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        with:
+          release-type: node
