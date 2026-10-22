@@ -1,0 +1,34 @@
+name: Bug report
+description: Something does not work as documented.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This repository is public. Do not paste credentials, tokens, real learner data, or client names. Use fake values.
+        Security issues go through a private advisory, not this form.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: The smallest steps or code that show the problem.
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Package versions, Node.js, Next.js, React, PostgreSQL.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Redact anything sensitive before pasting.
+      render: text

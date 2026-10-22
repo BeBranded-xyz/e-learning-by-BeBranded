@@ -29,3 +29,7 @@ CI runs the same scan on the full history of every push and pull request. A find
 ## If you committed a secret by mistake
 
 Do not just delete it in a new commit: it stays in the history. **Revoke and rotate the secret at its provider first**, then contact the maintainers privately (see [SECURITY.md](SECURITY.md)) so the history can be cleaned.
+
+## Code of conduct
+
+Everyone taking part in this project follows the [code of conduct](CODE_OF_CONDUCT.md).

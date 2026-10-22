@@ -48,6 +48,10 @@ Packages will be published on npm under the `@bebranded` scope (`@bebranded/elea
 
 Please **do not open public issues for vulnerabilities**. See [SECURITY.md](SECURITY.md).
 
+## Community
+
+Contributions are welcome: read [CONTRIBUTING.md](CONTRIBUTING.md) and the [code of conduct](CODE_OF_CONDUCT.md).
+
 ## License
 
 [MIT](LICENSE) © BeBranded. You can use, modify and embed it in commercial products.
