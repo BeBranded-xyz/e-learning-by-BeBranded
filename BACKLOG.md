@@ -29,6 +29,7 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | B-017 | CI database matrix: PostgreSQL 14 (lowest) and the latest major | test | P2 | maintainers | `TEST_PLAN.md` #46 | 2026-10-23 | Tests use 14 today |
 | B-018 | Opt-in RLS policies migration for direct Supabase reads, with `can_access` SQL mirroring core, and policy tests (anonymous, owner, other user) | feature | P3 | maintainers | spec 05, "RLS" | 2026-10-23 | Tables currently default-deny for every role but the owner |
 | B-019 | GDPR: `deleteLearnerData`, `exportLearnerData`, retention purge job for inactive learners | feature | P2 | maintainers | spec 08, `modules/data-lifecycle` | 2026-10-23 | Not in the phase 1 roadmap; needed before a production pilot |
+| B-020 | Audit suppression GHSA-vfj7-8cjw-p6xm (braces, dev-only via kysely-codegen) expires 2026-11-22: upgrade when a patched version exists, or re-justify | debt | P2 | maintainers | `pnpm-workspace.yaml` | 2026-10-23 | No patched version published |
 | B-003 | Write the delivery plan (packages as units, trusted publishing, one publisher) before adding a release workflow | docs | P2 | maintainers | `modules/library-publishing` | 2026-10-22 | `release.yml` template is manual-only until then |
 | B-004 | Design-system decisions: component catalogue, themes, icon set, enforcement | docs | P2 | maintainers | `PROJECT.md` section 4 | 2026-10-22 | |
 | B-005 | Evaluate the `audit-trail` module for admin actions (content publishing, access rules, assignments) | question | P2 | maintainers | | 2026-10-22 | |

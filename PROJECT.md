@@ -39,6 +39,10 @@ Last updated: 2026-10-22
   Node ≥ 22.12; pnpm 10 through Corepack (`corepack pnpm`); TypeScript 6
   (typescript-eslint does not support TypeScript 7 yet).
 - **Build / start**: `corepack pnpm build` (Turborepo, `tsc` per package).
+- **Workspace resolution**: each package exports a `@bebranded/source`
+  condition pointing to `src/index.ts`. TypeScript (`customConditions`),
+  ESLint, Vitest and `tsx` use it, so checks never depend on a previous build.
+  Published consumers do not set it and resolve `dist`.
 - **Deployment target**: the npm registry (packages). Hosting for `apps/docs`
   and `apps/demo` is undecided.
 - **What triggers a deploy**: a reviewed PR merged into protected `main`; the

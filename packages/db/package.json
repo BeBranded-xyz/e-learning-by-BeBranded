@@ -17,6 +17,7 @@
   },
   "exports": {
     ".": {
+      "@bebranded/source": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     }
@@ -32,7 +33,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json",
-    "db:types": "tsx scripts/generate-types.ts"
+    "db:types": "tsx --conditions=@bebranded/source scripts/generate-types.ts"
   },
   "dependencies": {
     "@bebranded/elearning-core": "workspace:^",
