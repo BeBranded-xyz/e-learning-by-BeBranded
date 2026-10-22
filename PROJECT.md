@@ -1,0 +1,273 @@
+# Project Identity
+
+> **This is the only file that should contain project-specific facts.**
+> The rules in `.claude/rules/` are project-agnostic and defer to this file.
+> Keep it up to date in the same PR whenever the stack, structure, or a key
+> decision changes. **This repository is public**: never put secrets, client
+> names, internal identifiers, or internal URLs here.
+
+Last updated: 2026-10-22
+
+---
+
+## 1. What this project is
+
+- **Name**: e-learning by BeBranded
+- **One-line description**: an embeddable, themeable e-learning module (courses,
+  verified video, quizzes, progress, role-based access) that host web products
+  install as npm packages.
+- **Domain / problem**: several products need user training. Instead of
+  rebuilding it per product, one versioned module is installed everywhere and
+  receives fixes through semver updates. Non-trivial parts: trustworthy
+  completion (video watch verification, server-side grading), permission rules
+  driven by the host's roles, and two data modes (host database or dedicated).
+- **Status**: specification (phase 0). No code yet. See
+  `docs/specifications/09-roadmap.md`.
+- **License**: MIT, copyright BeBranded. Public repository.
+
+## 2. How it runs
+
+- **Primary runtime**: TypeScript packages consumed by Next.js (App Router) host
+  products; server handlers use Web `Request`/`Response`.
+- **Entry points**: the `@bebranded/elearning-*` packages; later `apps/demo`
+  (fictional host, e2e bed) and `apps/docs` (public docs).
+- **Local dev command(s)**: none yet (phase 1: `pnpm dev` for `apps/demo`).
+- **Check command**: `make check` (spec stage: gitleaks on history and working
+  tree, relative doc links, `git diff --check`). Phase 1 replaces it with
+  `pnpm check`, which keeps these checks and adds format, lint, typecheck, unit
+  and integration tests.
+- **Build / start**: none yet.
+- **Deployment target**: the npm registry (packages). Hosting for `apps/docs`
+  and `apps/demo` is undecided.
+- **What triggers a deploy**: a reviewed PR merged into protected `main`; the
+  Changesets release PR, once merged, publishes the affected packages from CI.
+
+## 3. Tech stack
+
+| Layer | Technology | Notes |
+|---|---|---|
+| Language | TypeScript (strict) | |
+| App framework (hosts, demo) | Next.js App Router | Hosts ≥ 14 |
+| UI | React ≥ 18 | Learner and admin components |
+| Editor | BlockNote core (MPL-2.0, unmodified) | `@blocknote/xl-*` forbidden (GPL/commercial) |
+| Quiz rendering | SurveyJS Form Library (MIT) | SurveyJS Creator forbidden (commercial) |
+| Validation | Zod | |
+| Database | PostgreSQL ≥ 14 (Supabase compatible), schema `elearning` | Kysely, raw SQL migrations |
+| Authentication | none: provided by the host through `IdentityResolver` | |
+| File storage | host-provided `FileStorage` port | S3/R2 and Supabase Storage adapters planned |
+| Video | Cloudflare Stream (default), Mux, Bunny | `VideoProvider` port |
+| Export | headless Chromium (PDF), `docx` (Word) | Spec 10, clean-room |
+| Monitoring / errors | host-injected logger and `onMetric` hook | |
+| Background jobs | event outbox, delivery triggered by the host | |
+| Feature flags | none | |
+| Release tooling | Changesets, npm trusted publishing with provenance | |
+| Monorepo | pnpm workspaces + Turborepo | |
+| Tests | Vitest, fast-check, Testing Library, Playwright, Testcontainers | |
+| LLM provider | none | |
+
+## 4. Languages & conventions
+
+- **Everything in English**: code, identifiers, comments, commits, docs,
+  specifications, issues.
+- **User-facing UI strings**: English and French, extensible by hosts.
+- **Commit messages**: conventional commits; commit with the GitHub noreply
+  address.
+- **Tone**: technical and factual. **Emojis** in code, commits, technical docs:
+  not allowed.
+- **Size limit overrides**: none. **Exemptions**: none yet.
+
+### Design system (projects with a UI)
+
+- **Token source**: CSS custom properties prefixed `--el-*`
+  (`docs/specifications/04-integration.md`, section 6). Package path decided in
+  phase 1.
+- **Shared components**: `@bebranded/elearning-react` and `-admin`.
+- **Styling approach**: plain CSS with low specificity (`:where()`), no imposed
+  framework; optional Tailwind preset.
+- **Component catalogue, themes, icons, enforcement**: to be decided in phase 1
+  (`BACKLOG.md`).
+
+## 5. Environments & domains
+
+No deployed environment yet.
+
+### CI/CD and deployment plan
+
+- **Required checks / main branch protection**: ruleset "Protect main": PR
+  required (squash only, threads resolved), required check `gitleaks`, no force
+  push, no deletion.
+- **Deployable units**: each `@bebranded/elearning-*` package (published to
+  npm), `apps/docs`. Selection and publishing follow
+  `modules/library-publishing` and `modules/deployments`; the plan is written
+  in phase 1 before any release workflow exists.
+
+## 6. Repository structure
+
+```
+.
+├── AGENTS.md                 Entry point for Codex (generated rule index at the end)
+├── CLAUDE.md                 Entry point for Claude Code
+├── PROJECT.md                This file
+├── TEST_PLAN.md              Status of every test category
+├── BACKLOG.md                Everything still to do
+├── README.md / LICENSE / SECURITY.md / CONTRIBUTING.md
+├── Makefile                  `make check`
+├── docs/
+│   ├── specifications/       Technical specifications 01–10
+│   ├── adr/                  Architecture decision records
+│   ├── reference/            Testing catalogue, ruleset changelog (ruleset-owned)
+│   └── *.md                  Registries: functions, migrations, flags, debt, runbook
+├── scripts/                  check-doc-links.py (project), ruleset helper scripts
+├── .claude/                  Rules, hooks, skills (ruleset-owned except settings.json)
+├── .githooks/pre-commit      gitleaks on staged changes, for every editor and agent
+└── .github/                  Workflows, Dependabot, PR template
+```
+
+- **Monorepo?**: yes from phase 1 (`packages/*`, `apps/*`), see
+  `docs/specifications/02-architecture.md`.
+
+### Configuration and architecture
+
+- **Validated configuration boundaries**: `createElearning()` validates its
+  options with Zod at startup; the module reads no environment variable itself.
+- **Module owners, public APIs, allowed dependency graph**:
+  `docs/specifications/02-architecture.md` (package table). `core` depends on
+  nothing; adapters implement ports; `react` never imports server packages.
+- **Architecture enforcement**: phase 1 (dependency-cruiser or equivalent).
+
+## 7. Data & source of truth
+
+- **Application database**: the `elearning` schema, in the host database or a
+  dedicated one (`docs/specifications/03-data-model.md`).
+- **External source of truth**: the host product for identity, roles, grades;
+  the video provider for asset duration and status.
+
+### Business invariants
+
+- The server decides completion, grading, and access; client state is never
+  accepted as is.
+- Correct quiz answers never reach a learner endpoint response.
+- A completed lesson never goes back to an incomplete state; historical quiz
+  scores are never recomputed.
+- Content access is denied by default; `deny` rules always win; a child never
+  grants more than its parent.
+- Every query is scoped by `tenant_id` in the storage layer.
+- Video coverage uses the provider's duration and server-checked, plausible
+  intervals only.
+- The module stores no personal data beyond the opaque `learner_id` (and an
+  optional cached display name).
+
+### Domain ownership and data governance
+
+- **Authoritative rules**: pure functions in `@bebranded/elearning-core`
+  (`canAccess`, progress, interval merging, plausibility, `scoreQuiz`,
+  `redactQuiz`, content validation).
+- **Data lifecycle**: `deleteLearnerData`, `exportLearnerData`, configurable
+  retention (`docs/specifications/08-non-functional-requirements.md`).
+
+## 8. Public identifiers
+
+| Key | Value |
+|---|---|
+| GitHub repository | `BeBranded-xyz/e-learning-by-BeBranded` (public) |
+| npm scope | `@bebranded` (packages `@bebranded/elearning-*`) |
+
+## 9. Active rules
+
+Core rules always apply.
+
+**Languages**
+- [x] `typescript`
+- [ ] `python` (only `scripts/check-doc-links.py`; applies to that file)
+- [ ] `go`
+- [ ] `rust`
+- [ ] `php` (incl. WordPress)
+- [ ] `swift` (iOS / macOS)
+- [ ] `kotlin-android` (native Android)
+- [ ] `react-native` (Expo)
+- [x] `sql`
+- [x] `shell`
+
+**Platforms**
+- [x] `nextjs`
+- [x] `supabase` (mode A on Supabase hosts; the module must also work on plain Postgres)
+- [ ] `cloudflare-workers`
+- [ ] `webflow`
+- [ ] `vercel`
+
+**Modules**
+- [x] `database`
+- [x] `data-lifecycle`
+- [ ] `audit-trail` (to evaluate for admin actions, see `BACKLOG.md`)
+- [ ] `auth` (identity comes from the host)
+- [x] `integrations` (video providers, webhooks, outbox delivery)
+- [x] `api-design`
+- [x] `frontend`
+- [x] `design-system`
+- [ ] `data-fetching` (to evaluate in phase 1)
+- [x] `i18n`
+- [x] `performance`
+- [x] `background-jobs` (event outbox)
+- [x] `observability`
+- [x] `infra`
+- [x] `deployments` (publishing is the deployment, per `library-publishing`)
+- [x] `releases`
+- [ ] `ai-features`
+- [x] `library-publishing`
+- [x] `open-source`
+- [x] `maintenance`
+- [ ] `graphify`
+
+**Testing**: maximal by default. Status per category in `TEST_PLAN.md`.
+
+## 10. Reference documents
+
+| Doc | Purpose |
+|---|---|
+| `docs/specifications/` | Technical specifications |
+| `TEST_PLAN.md` | Status, tooling, command, and gate for every test category |
+| `BACKLOG.md` | Everything still to do |
+| `docs/FUNCTIONS_REGISTRY.md` | Routes, webhooks, jobs (from phase 1) |
+| `docs/MIGRATIONS_CHANGELOG.md` | Migration history (from phase 1) |
+| `docs/FEATURE_FLAGS.md` | Flags (none) |
+| `docs/DEBT.md` | Deliberate shortcuts |
+| `docs/RUNBOOK.md` | Security and release incident procedures |
+| `docs/adr/` | Architecture decision records |
+
+### Ruleset adoption
+
+- **Installed**: 2026-10-22, targets `claude,codex`, from a local integration
+  of AI-Dev-Rules `main` plus open pull requests #1, #2, #3 (recorded SHA
+  `3389e34` is local only). After they merge, run
+  `init.sh --dest . --target claude,codex --update` from AI-Dev-Rules `main`
+  (`BACKLOG.md` B-001).
+- **Baseline**: no code; `make check` green.
+- **Scoped exceptions**: Dependabot instead of Renovate (the Renovate app is not
+  installed on the organization). Workflow templates `ci.yml`,
+  `pre-production.yml`, `release.yml` are kept manual-only until phase 1.
+
+## 11. Key architecture decisions
+
+Recorded as D1–D10 in `docs/specifications/02-architecture.md`.
+
+## 12. Budgets and thresholds
+
+| Budget | Value |
+|---|---|
+| `@bebranded/elearning-react` bundle | < 30 kB gzip, excluding SurveyJS and hls.js |
+| Course progress query | one aggregated SQL query |
+| PDF export render timeout | 30 s |
+| Coverage / mutation floors | see `TEST_PLAN.md` |
+
+## 13. Secrets and access (dates only, never values)
+
+No secret is used by this repository yet. npm publishing will use trusted
+publishing (OIDC), so no registry token will be stored.
+
+## 14. External systems — do not assume undocumented behavior
+
+- Cloudflare Stream signed URLs, direct upload, and webhook signatures
+- npm trusted publishing and provenance
+- BlockNote public API and block schema (never its `xl-*` source)
+- SurveyJS Form Library JSON schema
+- Supabase PostgREST schema exposure and RLS behavior

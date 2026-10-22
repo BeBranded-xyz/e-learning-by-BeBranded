@@ -1,0 +1,128 @@
+# Pre-production gate template (core/testing.mdc "Before production").
+# Runs on release branches / release candidates against a production-like
+# environment. Copy to .github/workflows/pre-production.yml and fill in.
+
+name: Pre-production gate
+
+# Manual-only until phase 1 adds the pnpm workspace (PROJECT.md section 10).
+on:
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: Pre-prod base URL
+        required: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "22"
+  TARGET_URL: ${{ inputs.target_url || 'https://staging.example.com' }}
+
+jobs:
+  full-e2e:
+    name: Full E2E across browser and device matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium, firefox, webkit, mobile-chrome, mobile-safari]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { persist-credentials: false }
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: "${{ env.NODE_VERSION }}", cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps
+      - run: pnpm test:e2e --project="$PROJECT"
+        env: { BASE_URL: "${{ env.TARGET_URL }}", PROJECT: "${{ matrix.project }}" }
+
+  load:
+    name: Load, stress, spike, soak
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { persist-credentials: false }
+      - uses: grafana/setup-k6-action@43b9fc21641a76002687994433dd586f56e791b1 # v1.2.2
+      - run: k6 run tests/load/baseline.js --env BASE_URL="$TARGET_URL"
+      - run: k6 run tests/load/stress.js --env BASE_URL="$TARGET_URL"
+      - run: k6 run tests/load/spike.js --env BASE_URL="$TARGET_URL"
+      - run: k6 run tests/load/soak.js --env BASE_URL="$TARGET_URL" --duration 30m
+
+  security:
+    name: DAST, auth, authorization, injection suites
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { persist-credentials: false }
+      - name: DAST baseline scan
+        uses: zaproxy/action-baseline@de8ad967d3548d44ef623df22cf95c3b0baf8b25 # v0.15.0
+        with: { target: "${{ env.TARGET_URL }}", fail_action: true }
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: "${{ env.NODE_VERSION }}", cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:security
+        env: { BASE_URL: "${{ env.TARGET_URL }}" }
+
+  resilience:
+    name: Failure injection, timeouts, retries, failover
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { persist-credentials: false }
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: "${{ env.NODE_VERSION }}", cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:resilience
+        env: { BASE_URL: "${{ env.TARGET_URL }}" }
+
+  data-and-config:
+    name: Backup restore drill, rollback, upgrade, configuration, i18n matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { persist-credentials: false }
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: "${{ env.NODE_VERSION }}", cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:restore-drill
+      - run: pnpm test:rollback
+      - run: pnpm test:upgrade --from="$(git describe --tags --abbrev=0)"
+      - run: pnpm test:config
+      - run: pnpm test:i18n-matrix
+
+  business:
+    name: Acceptance and critical business flows
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { persist-credentials: false }
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: "${{ env.NODE_VERSION }}", cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:acceptance
+        env: { BASE_URL: "${{ env.TARGET_URL }}" }
+
+  gate:
+    name: Pre-production gate green
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [full-e2e, load, security, resilience, data-and-config, business]
+    if: always()
+    steps:
+      - name: Check needed jobs
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          printf '%s' "$NEEDS" | grep -Eq '"result": "(failure|cancelled)"' && exit 1 || echo "ready for exploratory testing and release"

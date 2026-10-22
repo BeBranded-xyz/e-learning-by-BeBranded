@@ -1,0 +1,70 @@
+# Backlog
+
+> The single list of everything this project still has to do, so nothing is
+> forgotten (`core/ai-workflow.mdc`, "Backlog"). Anything noticed but not done
+> in the current task goes here immediately: follow-ups, ideas, bugs seen in
+> passing, tests still missing, docs to write, questions for the client.
+> Reviewed at every planning session and monthly (`core/maintenance.mdc`).
+> If the project uses an external tracker (GitHub Issues, Linear, Notion),
+> this file lists the tracker link per item and stays the index.
+
+Last updated: 2026-10-22
+Tracker: this file only (GitHub Issues once outside contributors arrive)
+
+## Now (committed for the current iteration)
+
+| ID | Task | Type | Priority | Owner | Link | Added | Notes |
+|---|---|---|---|---|---|---|---|
+| B-001 | Re-run `init.sh --target claude,codex --update` from AI-Dev-Rules `main` once its PRs #1, #2, #3 are merged; commit the new `.ruleset-version` | ops | P1 | maintainers | AI-Dev-Rules #1–#3 | 2026-10-22 | Current install comes from a local integration of those PRs |
+| B-002 | Phase 1 bootstrap: pnpm workspace, Turborepo, `pnpm check` replacing the Makefile, enable `ci.yml` (CodeQL, license check, audit), Changesets | feature | P1 | maintainers | `docs/specifications/09-roadmap.md` | 2026-10-22 | Keep gitleaks and the doc link check inside `pnpm check` |
+
+## Next
+
+| ID | Task | Type | Priority | Owner | Link | Added | Notes |
+|---|---|---|---|---|---|---|---|
+| B-003 | Write the delivery plan (packages as units, trusted publishing, one publisher) before adding a release workflow | docs | P2 | maintainers | `modules/library-publishing` | 2026-10-22 | `release.yml` template is manual-only until then |
+| B-004 | Design-system decisions: component catalogue, themes, icon set, enforcement | docs | P2 | maintainers | `PROJECT.md` section 4 | 2026-10-22 | |
+| B-005 | Evaluate the `audit-trail` module for admin actions (content publishing, access rules, assignments) | question | P2 | maintainers | | 2026-10-22 | |
+| B-006 | Evaluate the `data-fetching` module for the React packages | question | P3 | maintainers | | 2026-10-22 | |
+| B-007 | Add `CODE_OF_CONDUCT.md`, issue templates, and `CODEOWNERS` | docs | P2 | maintainers | `modules/open-source` | 2026-10-22 | Code of conduct needs a contact (Q-005) |
+| B-008 | Add the npm ecosystem to `.github/dependabot.yml` when `package.json` exists | ops | P2 | maintainers | | 2026-10-22 | |
+
+## Later / ideas
+
+| ID | Task | Type | Priority | Link | Added | Notes |
+|---|---|---|---|---|---|---|
+| B-009 | Upstream to AI-Dev-Rules: the Claude pre-commit hook runs the current project's check even for a commit in another repository (`cd other && git commit`) | debt | P3 | | 2026-10-22 | Found during adoption |
+| B-010 | Upstream to AI-Dev-Rules: `--update` re-adds project templates the project deleted on purpose (workflows, `renovate.json`); no opt-out | debt | P3 | | 2026-10-22 | Worked around by keeping workflows manual-only |
+| B-011 | Upstream to AI-Dev-Rules: library variants of the web-app templates (runbook, functions registry, test plan phase statuses) | debt | P3 | | 2026-10-22 | |
+
+## Missing tests (from `TEST_PLAN.md` gaps and review findings)
+
+| ID | Area | Test to add | Category | Link | Added |
+|---|---|---|---|---|---|
+| | No code yet | Every planned category in `TEST_PLAN.md` starts with its phase | | `TEST_PLAN.md` | 2026-10-22 |
+
+## Questions / decisions pending
+
+| ID | Question | Who decides | Blocking | Asked on | Link |
+|---|---|---|---|---|---|
+| Q-001 | Which host product pilots the module? | Maxime | Phase 5 | 2026-10-22 | spec 09, Q4 |
+| Q-002 | Rewrite the first commit of this repository to remove a personal email address (force push), and the same question for AI-Dev-Rules | Maxime | No | 2026-10-22 | |
+| Q-003 | Install the Renovate app on the organization, or keep Dependabot | Maxime | No | 2026-10-22 | `core/dependencies` |
+| Q-004 | Learner export disabled by default (`allowLearnerExport = false`)? | Maxime | Phase 4b | 2026-10-22 | spec 09, Q12 |
+| Q-005 | Contact address for code of conduct enforcement | Maxime | B-007 | 2026-10-22 | |
+| Q-006 | Dates for roadmap phases (turns `planned phase N` into dated, blocking entries) | Maxime | No | 2026-10-22 | `TEST_PLAN.md` |
+
+## Done (last 30 days, then prune)
+
+| ID | Task | Closed on | PR |
+|---|---|---|---|
+| | Technical specifications 01–10, repository security baseline | 2026-10-22 | direct commits before branch protection |
+| | AI-Dev-Rules adoption (Claude Code and Codex) | 2026-10-22 | this PR |
+
+## Conventions
+
+- Types: `feature` | `bug` | `test` | `debt` | `docs` | `ops` | `question`.
+- Priority: `P0` blocking, `P1` this iteration, `P2` next, `P3` someday.
+- Debt items with a deadline live in `DEBT.md` and are only linked here.
+- Flags with a removal date live in `FEATURE_FLAGS.md` and are only linked here.
+- One line per item; details go in the linked issue or a short note.

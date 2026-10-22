@@ -44,3 +44,5 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 *.log
+test-results/
+playwright-report/
