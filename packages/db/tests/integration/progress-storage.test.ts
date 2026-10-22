@@ -157,3 +157,49 @@ describe("enrollments", () => {
     expect(locked).toBeNull();
   });
 });
+
+describe("lockOrCreateEnrollment", () => {
+  it("creates the enrollment once under concurrent first requests and returns the same row", async () => {
+    const learnerId = learnerIdSchema.parse("concurrent-learner");
+
+    const rows = await Promise.all(
+      Array.from({ length: 5 }, () =>
+        database.storage.transaction((tx) =>
+          tx.lockOrCreateEnrollment(tenantA, anEnrollment({ learnerId })),
+        ),
+      ),
+    );
+
+    expect(new Set(rows.map((row) => row.id)).size).toBe(1);
+    expect(await database.storage.listEnrollments(tenantA, learnerId)).toHaveLength(1);
+  });
+
+  it("returns the existing enrollment untouched", async () => {
+    const learnerId = learnerIdSchema.parse("existing-learner");
+    const existing = anEnrollment({
+      learnerId,
+      progress: 0.5,
+      startedAt: new Date("2026-04-01T00:00:00Z"),
+    });
+    await database.storage.transaction((tx) => tx.saveEnrollment(tenantA, existing));
+
+    const row = await database.storage.transaction((tx) =>
+      tx.lockOrCreateEnrollment(tenantA, anEnrollment({ learnerId })),
+    );
+
+    expect(row).toEqual(existing);
+  });
+
+  it("refuses to hand out an enrollment of the same learner id in another tenant", async () => {
+    const learnerId = learnerIdSchema.parse("shared-id");
+    await database.storage.transaction((tx) =>
+      tx.saveEnrollment(tenantB, anEnrollment({ learnerId })),
+    );
+
+    await expect(
+      database.storage.transaction((tx) =>
+        tx.lockOrCreateEnrollment(tenantA, anEnrollment({ learnerId })),
+      ),
+    ).rejects.toThrow("enrollment belongs to another tenant");
+  });
+});
