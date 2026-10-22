@@ -1,0 +1,6 @@
+packages:
+  - packages/*
+  - apps/*
+
+# Dependency install scripts are blocked unless listed here (spec 08, supply chain).
+onlyBuiltDependencies: []

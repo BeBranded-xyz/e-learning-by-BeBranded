@@ -32,8 +32,9 @@ For a given learner and target (e.g. a lesson):
    - no rule → the level **inherits** the parent's decision;
    - at least one matching `deny` rule → **denied** (`deny` always wins);
    - at least one matching `allow` rule → **allowed**;
-   - `allow` rules exist but none matches → **denied**.
-4. A course with no rule at all is **denied by default**. It needs an explicit rule, `everyone` at minimum. This prevents publishing sensitive content to everyone by mistake. The back-office suggests `everyone` as the initial rule when creating a course.
+   - `allow` rules exist but none matches → **denied**;
+   - only `deny` rules exist and none matches → the level **inherits** the parent's decision.
+4. A course is **denied by default** unless an `allow` rule matches the learner: a course with no rule, or with only `deny` rules, is invisible. It needs an explicit rule, `everyone` at minimum. This prevents publishing sensitive content to everyone by mistake. The back-office suggests `everyone` as the initial rule when creating a course.
 5. A child cannot grant more access than its parent. A learner cannot see a lesson without access to its course.
 
 Evaluation is a pure function in `elearning-core`:

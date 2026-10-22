@@ -1,0 +1,21 @@
+import { z } from "zod";
+
+// Branded ids: a raw string never travels between layers (languages/typescript).
+export const courseIdSchema = z.uuid().brand<"CourseId">();
+export const chapterIdSchema = z.uuid().brand<"ChapterId">();
+export const lessonIdSchema = z.uuid().brand<"LessonId">();
+export const accessRuleIdSchema = z.uuid().brand<"AccessRuleId">();
+export const enrollmentIdSchema = z.uuid().brand<"EnrollmentId">();
+
+export type CourseId = z.infer<typeof courseIdSchema>;
+export type ChapterId = z.infer<typeof chapterIdSchema>;
+export type LessonId = z.infer<typeof lessonIdSchema>;
+export type AccessRuleId = z.infer<typeof accessRuleIdSchema>;
+export type EnrollmentId = z.infer<typeof enrollmentIdSchema>;
+
+/** Opaque identifiers coming from the host product. */
+export const learnerIdSchema = z.string().trim().min(1).max(255).brand<"LearnerId">();
+export const tenantIdSchema = z.string().trim().min(1).max(255).brand<"TenantId">();
+
+export type LearnerId = z.infer<typeof learnerIdSchema>;
+export type TenantId = z.infer<typeof tenantIdSchema>;

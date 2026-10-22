@@ -47,8 +47,11 @@ This project uses the shared AI development ruleset. Read in this order:
 
 | Task | Command |
 |---|---|
-| Check (spec stage: secret scan, doc links, whitespace) | `make check` |
-| Install, dev server, E2E, DB, build | none yet: added in phase 1 with the pnpm workspace |
+| Full check (secrets, doc links, format, lint, types, tests, dead code, licenses) | `make check` |
+| Install | `corepack pnpm install` |
+| Unit tests | `corepack pnpm test:unit` |
+| Build | `corepack pnpm build` |
+| Add a changeset (any change to a published package) | `corepack pnpm changeset` |
 
 ## Skills
 

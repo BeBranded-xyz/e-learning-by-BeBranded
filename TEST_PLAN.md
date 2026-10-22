@@ -17,8 +17,9 @@ Owner: BeBranded maintainers
 ## Check command
 
 `make check` runs gitleaks (history and working tree), the relative doc link
-check, and `git diff --check`. Phase 1 replaces it with `pnpm check`: format,
-lint, typecheck, unit, and integration tests, plus the same checks.
+check, `git diff --check`, then `pnpm check`: Prettier, ESLint, typecheck,
+Vitest with coverage floors, knip, and the license allowlist. CI runs the same
+suites as separate jobs (`.github/workflows/ci.yml`) behind one `gate` check.
 
 ## Coverage and mutation thresholds
 
@@ -37,9 +38,9 @@ config in the same PR. Tests that cannot be written yet are listed in
 
 | # | Category | Status | Tool | Command | Gate | Notes |
 |---|---|---|---|---|---|---|
-| 1 | Static Analysis | active (docs) / planned phase 1 | gitleaks, doc link check; then ESLint, Prettier, tsc --strict | `make check` | commit | Spec stage covers docs only |
-| 2 | Unit Tests | planned phase 1 | Vitest | `pnpm test:unit` | commit | Every core rule: access, progress, intervals, grading |
-| 3 | Property-Based Testing | planned phase 1 | fast-check | `pnpm test:unit` | commit | Interval union, plausibility, canAccess, scoreQuiz |
+| 1 | Static Analysis | active | Prettier, ESLint (typescript-eslint strict, size limits), tsc strict, knip, gitleaks, doc link check | `make check` | commit | |
+| 2 | Unit Tests | active | Vitest | `pnpm test:unit` | commit | core: access, progress, schemas, events. Other packages join as they land |
+| 3 | Property-Based Testing | active | fast-check | `pnpm test:unit` | commit | canAccess (child never wider than parent, deny wins, order independence), progress bounds, status monotony |
 | 4 | Mutation Testing | planned phase 1 | Stryker | `pnpm stryker run --incremental` | pr | core and server packages first |
 | 5 | Component / Module Tests | planned phase 1 | Vitest + Testing Library | `pnpm test:component` | pr | react and admin components |
 | 6 | Integration Tests | planned phase 1 | Vitest + Testcontainers (Postgres) | `pnpm test:integration` | pr | Real Postgres, never mocked |
@@ -49,9 +50,9 @@ config in the same PR. Tests that cannot be written yet are listed in
 | 10 | UI / Frontend Tests | planned phase 1 | Testing Library | `pnpm test:component` | pr |  |
 | 11 | Visual Regression Testing | planned phase 1 | Playwright screenshots | `pnpm test:visual` | pr | Includes host themes and exports (spec 10) |
 | 12 | Accessibility Testing | planned phase 1 | axe-core in Playwright and Vitest | `pnpm test:a11y` | pr | WCAG 2.1 AA |
-| 13 | Regression Testing | planned phase 1 | Vitest | `pnpm test:unit` | commit | Every bug fix starts with a failing test |
+| 13 | Regression Testing | active | Vitest | `pnpm test:unit` | commit | Every bug fix starts with a failing test |
 | 14 | Smoke Tests | planned phase 1 | Playwright | `pnpm test:smoke` | pr | Consumer fixture apps from the packed tarball |
-| 15 | Sanity Tests | planned phase 1 | Vitest | `pnpm test:unit` | commit |  |
+| 15 | Sanity Tests | active | Vitest | `pnpm test:unit` | commit | |
 
 ## Performance Testing
 
@@ -81,7 +82,7 @@ config in the same PR. Tests that cannot be written yet are listed in
 |---|---|---|---|---|---|---|
 | 28 | SAST | planned phase 1 | CodeQL, eslint-plugin-security |  | pr |  |
 | 29 | DAST | planned phase 5 | ZAP baseline on apps/demo |  | pre-prod |  |
-| 30 | Dependency Security Testing | active (Dependabot alerts) / planned phase 1 | pnpm audit, license check | `pnpm audit --audit-level=high` | pr |  |
+| 30 | Dependency Security Testing | active | Dependabot alerts and updates (npm, actions), pnpm audit, license allowlist | `pnpm audit --audit-level=high && pnpm check:licenses` | pr | |
 | 31 | Authentication Testing | planned phase 1 | Vitest | `pnpm test:api` | pr | IdentityResolver null → 401, identity never cached |
 | 32 | Authorization Testing | planned phase 1 | Vitest + Testcontainers | `pnpm test:authz` | pr | Every audience rule, tenant crossing, IDOR, admin routes |
 | 33 | Injection Testing | planned phase 1 | Vitest | `pnpm test:security` | pr | SQL, XSS in BlockNote documents, SSRF in exports |
@@ -117,7 +118,7 @@ config in the same PR. Tests that cannot be written yet are listed in
 |---|---|---|---|---|---|---|
 | 44 | Browser Testing | planned phase 1 | Playwright (chromium, firefox, webkit) |  | pre-prod |  |
 | 45 | Device Testing | planned phase 4 | Playwright device emulation |  | pre-prod | iOS Safari ≥ 16 |
-| 46 | Operating System Testing | planned phase 1 | CI matrix Linux + macOS |  | pr | Node ≥ 20 |
+| 46 | Operating System Testing | planned phase 1 | CI matrix Linux + macOS |  | pr | Node ≥ 22.12 |
 | 47 | Responsive Testing | planned phase 1 | Playwright viewports | `pnpm test:e2e` | pr | Columns stack below 640 px |
 
 ## Internationalization
