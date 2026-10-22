@@ -62,6 +62,8 @@ function writes(db: Kysely<DB>): StorageWrites {
   return {
     lockEnrollment: (scope, courseId, learnerId) =>
       progress.findEnrollment(db, scope, { courseId, learnerId }, { forUpdate: true }),
+    lockOrCreateEnrollment: (scope, enrollment) =>
+      progress.lockOrCreateEnrollment(db, scope, enrollment),
     saveEnrollment: (scope, enrollment) => progress.saveEnrollment(db, scope, enrollment),
     saveLessonProgress: (scope, value) => progress.saveLessonProgress(db, scope, value),
     appendEvent: (event) => outbox.appendEvent(db, event),

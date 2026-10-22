@@ -131,3 +131,31 @@ export async function saveEnrollment(
     )
     .execute();
 }
+
+export async function lockOrCreateEnrollment(
+  db: Kysely<DB>,
+  scope: TenantScope,
+  enrollment: Enrollment,
+): Promise<Enrollment> {
+  await db
+    .insertInto("enrollments")
+    .values({
+      id: enrollment.id,
+      tenant_id: scope.tenantId,
+      course_id: enrollment.courseId,
+      learner_id: enrollment.learnerId,
+      source: enrollment.source,
+      assigned_by: enrollment.assignedBy,
+      due_at: enrollment.dueAt,
+      started_at: enrollment.startedAt,
+      completed_at: enrollment.completedAt,
+      progress: enrollment.progress,
+    })
+    .onConflict((oc) => oc.columns(["course_id", "learner_id"]).doNothing())
+    .execute();
+  const key = { courseId: enrollment.courseId, learnerId: enrollment.learnerId };
+  const stored = await findEnrollment(db, scope, key, { forUpdate: true });
+  // The row exists: it was just inserted, or it already belonged to this tenant's learner.
+  if (stored === null) throw new Error("enrollment belongs to another tenant");
+  return stored;
+}

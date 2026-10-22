@@ -7,7 +7,7 @@ All tables live in a **dedicated PostgreSQL schema**, `elearning` by default (co
 - `uuid` primary keys (`gen_random_uuid()`).
 - `created_at` / `updated_at` as `timestamptz` on every table.
 - **`tenant_id text null`** on every content and progress table. It serves multi-company hosts (an ERP serving several companies). It stays `null` for single-tenant hosts.
-- **`learner_id text not null`** is the opaque identifier of the user in the host product. There is **no foreign key** to the host's users table, so a dedicated database works. In embedded mode, the host may add an FK if it wants to.
+- **`learner_id text not null`** is the opaque identifier of the user in the host product, unique across the host's tenants (one id per person, as in the host's users table). There is **no foreign key** to the host's users table, so a dedicated database works. In embedded mode, the host may add an FK if it wants to.
 - Ordering positions (`position`) are integers. Reordering runs in a single transaction.
 
 ## Schema

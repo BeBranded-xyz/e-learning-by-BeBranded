@@ -188,28 +188,45 @@ const hostTheme = {
 
 ## 8. API surface
 
-All routes are relative to the mount point (e.g. `/api/elearning`). `/admin/*` routes require `isAdmin`.
+All routes are relative to the mount point (e.g. `/api/elearning`) and versioned with a `/v1` prefix. `/v1/admin/*` routes require `isAdmin`. Request and response bodies are JSON with `snake_case` fields and ISO 8601 UTC dates; collections are wrapped as `{ "data": [...], "next_cursor": null }`. `GET` never changes state.
 
 **Learner**
 
 | Method | Route | Purpose |
 |--------|-------|---------|
-| GET | `/courses` | Catalog filtered by access rules, with progress |
-| GET | `/courses/:slug` | Accessible chapters › lessons tree, with progress |
-| POST | `/courses/:id/enroll` | Self-enroll (if the course allows it) |
-| GET | `/lessons/:id` | Lesson content (plus video token or redacted quiz) |
-| POST | `/lessons/:id/complete` | Mark a text lesson as done |
-| POST | `/lessons/:id/video-progress` | Video heartbeat |
-| GET | `/quizzes/:id` | Redacted definition, remaining attempts |
-| POST | `/quizzes/:id/attempts` | Submit an attempt |
-| GET | `/me/progress` | Learner dashboard |
+| GET | `/v1/courses` | Catalog filtered by access rules, with the learner's enrollment |
+| GET | `/v1/courses/:slug` | Accessible chapters › lessons tree, with lesson statuses and progress |
+| POST | `/v1/courses/:id/enroll` | Self-enroll (201, or 200 when already enrolled) |
+| GET | `/v1/lessons/:id` | Lesson rendered to HTML (plus video token or redacted quiz later) |
+| POST | `/v1/lessons/:id/start` | Record that the learner opened the lesson (enrolls on first start in a self-enroll course) |
+| POST | `/v1/lessons/:id/complete` | Mark a text lesson as done |
+| POST | `/v1/lessons/:id/video-progress` | Video heartbeat (phase 2) |
+| GET | `/v1/quizzes/:id` | Redacted definition, remaining attempts (phase 3) |
+| POST | `/v1/quizzes/:id/attempts` | Submit an attempt (phase 3) |
+| GET | `/v1/me/progress` | Learner dashboard ("My training") |
+
+Content the learner cannot see answers **404, exactly like content that does not exist**, so ids reveal nothing. An assignment-only course stays invisible until the learner is assigned.
 
 **Admin**
 
-CRUD on `/admin/courses`, `/admin/chapters`, `/admin/lessons`, `/admin/quizzes`, `/admin/access-rules`, `/admin/enrollments`. Plus `POST /admin/videos/uploads` (direct upload), `POST /admin/files/uploads` (editor images and attachments), `POST /admin/reorder` and `GET /admin/reports/*` (tracking per course or per learner, CSV export).
+CRUD on `/v1/admin/courses`, `/v1/admin/chapters`, `/v1/admin/lessons`, `/v1/admin/access-rules`, then `/v1/admin/quizzes` and `/v1/admin/enrollments` in their phases. Plus `POST /v1/admin/videos/uploads` (direct upload), `POST /v1/admin/files/uploads` (editor images and attachments), `POST /v1/admin/reorder` and `GET /v1/admin/reports/*` (tracking per course or per learner, CSV export).
 
 **System**
 
-`POST /webhooks/video` receives the video provider's webhooks (signature verified).
+`POST /v1/webhooks/video` receives the video provider's webhooks (signature verified).
 
-Every input is validated with Zod. Errors use a single format: `{ error: { code, message, details? } }`. Error messages never include stack traces, SQL or internal identifiers.
+**Errors**
+
+Every input is validated with Zod. Every error uses one envelope, `{ "error": { "code", "message", "details"?, "request_id" } }`, and the response carries the same `X-Request-Id`. Messages never include stack traces, SQL or internal identifiers; 5xx answers always say `internal_error`.
+
+| Status | Codes |
+|--------|-------|
+| 400 | `validation_failed`, `invalid_json`, `invalid_content` |
+| 401 | `unauthenticated` |
+| 403 | `forbidden` (admin route without `isAdmin`), `origin_not_allowed` (CSRF check) |
+| 404 | `not_found` |
+| 405 | `method_not_allowed` |
+| 409 | `completion_not_manual` (a video or quiz lesson cannot be marked as done) |
+| 413 | `payload_too_large` |
+| 415 | `unsupported_media_type` |
+| 500 | `internal_error` |

@@ -15,6 +15,14 @@
     "packages/editor": {
       "entry": ["src/server/browser-guard.ts"],
       "project": ["src/**/*.ts", "tests/**/*.ts"]
+    },
+    "packages/server": {
+      "entry": ["src/browser-guard.ts"],
+      "project": ["src/**/*.ts", "tests/**/*.ts"]
+    },
+    "packages/next": {
+      "entry": ["src/browser-guard.ts"],
+      "project": ["src/**/*.ts"]
     }
   }
 }

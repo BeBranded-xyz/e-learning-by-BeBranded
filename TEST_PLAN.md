@@ -44,7 +44,7 @@ config in the same PR. Tests that cannot be written yet are listed in
 | 4 | Mutation Testing | planned phase 1 | Stryker | `pnpm stryker run --incremental` | pr | core and server packages first |
 | 5 | Component / Module Tests | planned phase 1 | Vitest + Testing Library | `pnpm test:component` | pr | react and admin components |
 | 6 | Integration Tests | active | Vitest + Testcontainers (PostgreSQL 14) or `ELEARNING_TEST_DATABASE_URL` | `pnpm test:integration` | commit | Real Postgres, one schema per test file, never mocked |
-| 7 | API Tests | planned phase 1 | Vitest with real Request/Response | `pnpm test:api` | pr | Every route, every error code |
+| 7 | API Tests | active (learner) / planned phase 1 (admin) | Vitest with real Request/Response and PostgreSQL | `pnpm test:integration` | commit | Every learner route, error envelope, status codes, headers, request id |
 | 8 | Contract Tests | planned phase 1 | Zod schemas + API report (API Extractor) | `pnpm test:contract` | pr | Public API and HTTP contract |
 | 9 | End-to-End (E2E) Tests | planned phase 1 | Playwright on apps/demo | `pnpm test:e2e` | pr | Desktop and mobile viewports |
 | 10 | UI / Frontend Tests | planned phase 1 | Testing Library | `pnpm test:component` | pr |  |
@@ -70,7 +70,7 @@ config in the same PR. Tests that cannot be written yet are listed in
 |---|---|---|---|---|---|---|
 | 21 | Failure Injection | planned phase 2 | Vitest with fake adapters | `pnpm test:resilience` | pr | Video provider, file storage, event sink down or slow |
 | 22 | Timeout Testing | planned phase 2 | Vitest, fake clock | `pnpm test:resilience` | pr | Provider calls, PDF render timeout |
-| 23 | Retry Testing | planned phase 2 | Vitest, fake clock | `pnpm test:resilience` | pr | Outbox delivery backoff |
+| 23 | Retry Testing | active (outbox) / planned phase 2 (providers) | Vitest, injected clock | `pnpm test:integration` | commit | Failed delivery retried after backoff with the same event id; backoff bounds and cap |
 | 24 | Failover Testing | N/A: no infrastructure owned by the module |  |  |  |  |
 | 25 | Recovery Testing | planned phase 2 | Vitest + Testcontainers | `pnpm test:integration` | pr | Outbox redelivery after crash |
 | 26 | Disaster Recovery Testing | N/A: data lives in the host's or a dedicated database operated by the host |  |  |  |  |
@@ -83,8 +83,8 @@ config in the same PR. Tests that cannot be written yet are listed in
 | 28 | SAST | planned phase 1 | CodeQL, eslint-plugin-security |  | pr |  |
 | 29 | DAST | planned phase 5 | ZAP baseline on apps/demo |  | pre-prod |  |
 | 30 | Dependency Security Testing | active | Dependabot alerts and updates (npm, actions), pnpm audit, license allowlist | `pnpm audit --audit-level=high && pnpm check:licenses` | pr | |
-| 31 | Authentication Testing | planned phase 1 | Vitest | `pnpm test:api` | pr | IdentityResolver null → 401, identity never cached |
-| 32 | Authorization Testing | active (storage) / planned phase 1 (handlers) | Vitest + Testcontainers | `pnpm test:integration` | commit | Storage: tenant crossing on every read and write, shared catalog read-only. Handlers: every audience rule, IDOR, admin routes |
+| 31 | Authentication Testing | active | Vitest | `pnpm test:integration` | commit | No identity gives 401; invalid identity gives a generic 500; the resolver runs on every request |
+| 32 | Authorization Testing | active (storage, learner routes) / planned phase 1 (admin routes) | Vitest + Testcontainers | `pnpm test:integration` | commit | Every audience type, deny wins, drafts and archived hidden, child never wider than parent, tenant crossing, 404 instead of 403 for hidden content, assignment-only courses |
 | 33 | Injection Testing | active (content, SQL) / planned phase 1 (handlers) | Vitest, fast-check | `pnpm test:unit` | commit | XSS payloads and fuzzed text through the renderer, hostile links and schemes, CSS values in props, SQL injection through tenant filters. SSRF in exports: phase 4b |
 | 34 | Web Security Testing | planned phase 1 | Playwright | `pnpm test:security` | pr | Recommended CSP and headers in apps/demo |
 | 35 | Secret Scanning | active | gitleaks (CI full history + pre-commit hook), GitHub push protection | `make check` | commit | Workflow `Secret scan`, required check |
@@ -108,9 +108,9 @@ config in the same PR. Tests that cannot be written yet are listed in
 
 | # | Category | Status | Tool | Command | Gate | Notes |
 |---|---|---|---|---|---|---|
-| 41 | Race Condition Testing | planned phase 2 | Vitest + Testcontainers | `pnpm test:concurrency` | pr | Parallel heartbeats, double quiz submission |
+| 41 | Race Condition Testing | active (enrollment, progress) / planned phase 2 (heartbeats, quizzes) | Vitest + Testcontainers | `pnpm test:integration` | commit | Racing first requests create one enrollment and one course.started; concurrent completions keep counts right; outbox claims never overlap |
 | 42 | Deadlock Testing | planned phase 2 | Testcontainers | `pnpm test:concurrency` | pr | Progress recomputation transactions |
-| 43 | Idempotency Testing | planned phase 2 | Vitest | `pnpm test:concurrency` | pr | Heartbeat seq replay, outbox handlers |
+| 43 | Idempotency Testing | active | Vitest + Testcontainers | `pnpm test:integration` | commit | start, complete and enroll repeated give the same state and no duplicate event; migrations re-run |
 
 ## Compatibility Testing
 
@@ -136,7 +136,7 @@ config in the same PR. Tests that cannot be written yet are listed in
 | 51 | Installation Testing | planned phase 1 | Consumer fixture apps from `pnpm pack` | `pnpm test:consumers` | pr | Per supported Next.js and React major |
 | 52 | Upgrade Testing | planned phase 1 | Testcontainers | `pnpm test:upgrade` | pr | Previous minor's schema and data |
 | 53 | Rollback Testing | planned phase 2 | Testcontainers | `pnpm test:upgrade` | pr | Previous package version against the new additive schema |
-| 54 | Configuration Testing | planned phase 1 | Vitest | `pnpm test:config` | pr | createElearning() rejects invalid options |
+| 54 | Configuration Testing | active | Vitest | `pnpm test:unit` | commit | createElearning and postgresStorage reject invalid options at startup; defaults documented |
 
 ## Business Testing
 

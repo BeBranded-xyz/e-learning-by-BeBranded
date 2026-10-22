@@ -8,6 +8,7 @@ import type { StorageAdapter } from "@bebranded/elearning-core";
 
 import { migrate } from "../../src/migrations/migrate.js";
 import { postgresStorage } from "../../src/storage/postgres-storage.js";
+import type {} from "./vitest-context.js";
 
 export type TestDatabase = {
   readonly url: string;

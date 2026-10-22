@@ -100,6 +100,12 @@ export type StorageWrites = {
     courseId: CourseId,
     learnerId: LearnerId,
   ): Promise<Enrollment | null>;
+  /**
+   * Inserts `enrollment` unless the learner already has one for the course,
+   * then returns the stored row, locked until the transaction ends. Safe
+   * under concurrency: two first requests end up with the same row.
+   */
+  lockOrCreateEnrollment(scope: TenantScope, enrollment: Enrollment): Promise<Enrollment>;
   saveEnrollment(scope: TenantScope, enrollment: Enrollment): Promise<void>;
   saveLessonProgress(scope: TenantScope, progress: LessonProgress): Promise<void>;
   /** Written in the same transaction as the change it describes (outbox). */

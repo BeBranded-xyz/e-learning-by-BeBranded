@@ -36,14 +36,24 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       include: ["packages/*/src/**/*.{ts,tsx}"],
-      // bin.ts only forwards process arguments to the tested runCli.
-      exclude: ["**/*.test.{ts,tsx}", "**/*.types.ts", "**/*.gen.ts", "**/index.ts", "**/bin.ts"],
+      // bin.ts only forwards process arguments to the tested runCli; browser-guard.ts only
+      // throws, and is what browser bundles get instead of the server entry points.
+      exclude: [
+        "**/*.test.{ts,tsx}",
+        "**/*.types.ts",
+        "**/*.gen.ts",
+        "**/index.ts",
+        "**/bin.ts",
+        "**/browser-guard.ts",
+      ],
       reporter: ["text-summary", "lcov"],
       // Per-layer floors (core/testing.mdc). They only go up.
       thresholds: {
         "packages/core/src/**": { lines: 95, branches: 95, functions: 95, statements: 95 },
         "packages/db/src/**": { lines: 95, branches: 95, functions: 95, statements: 95 },
         "packages/editor/src/**": { lines: 95, branches: 95, functions: 95, statements: 95 },
+        "packages/server/src/**": { lines: 90, branches: 90, functions: 90, statements: 90 },
+        "packages/next/src/**": { lines: 90, branches: 90, functions: 90, statements: 90 },
       },
     },
   },
