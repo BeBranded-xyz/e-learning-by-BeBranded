@@ -47,7 +47,6 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | B-026 | `Idempotency-Key` on admin creates; `ETag` / `If-Match` on admin edits of shared content | feature | P2 | maintainers | `modules/api-design` | 2026-10-23 | Learner actions are idempotent by state already |
 | B-027 | OpenAPI document generated from the Zod schemas, committed and diffed in CI, Spectral lint | feature | P2 | maintainers | `modules/api-design` | 2026-10-23 | |
 | B-028 | `rateLimit` hook and recommended limits (spec 08) | feature | P2 | maintainers | spec 08 | 2026-10-23 | |
-| B-029 | Admin reorder endpoint (`POST /v1/admin/reorder`) to move lessons between chapters and renumber positions in one transaction | feature | P2 | maintainers | spec 04, section 8 | 2026-10-23 | Positions are set one by one today |
 | B-030 | Size budget in CI for `@bebranded/elearning-react` (size-limit, < 30 kB gzip with TanStack Query) | test | P2 | maintainers | `PROJECT.md` section 12 | 2026-10-23 | Measured by hand in the PR |
 | B-031 | Server Component variants of the catalog, course page and lesson (data fetched on the server, no client JS for text lessons), per spec 08 | feature | P2 | maintainers | spec 08, "Performance" | 2026-10-23 | Phase 1 ships Client Components |
 | B-032 | Storybook (or Ladle) stories for every exported component, with visual regression | test | P2 | maintainers | `modules/frontend`, `TEST_PLAN.md` #11 | 2026-10-23 | |
@@ -86,6 +85,7 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 |---|---|---|---|
 | | Technical specifications 01–10, repository security baseline | 2026-10-22 | direct commits before branch protection |
 | | AI-Dev-Rules adoption (Claude Code and Codex) | 2026-10-22 | #1 |
+| B-029 | Admin reorder endpoint `POST /v1/admin/reorder` (phase 4 starts) | 2026-10-23 | this PR |
 | B-050 | Phase 3, quizzes: core conversion, presentation and grading, editor question blocks, db tables, server attempts and admin save, `<Quiz>` on SurveyJS, demo quiz and anti-cheat e2e; phase 3 complete | 2026-10-23 | #19–#24 |
 | B-037 | Phase 2, video: core rules, db tables, `@bebranded/elearning-video` (Cloudflare Stream), server endpoints and webhook, `<VideoPlayer>`, demo video and anti-cheat e2e; phase 2 complete | 2026-10-23 | #11–#16, #18 |
 | B-012 | Phase 1: apps/demo with fake multi-role auth and Playwright journeys; phase 1 complete | 2026-10-23 | this PR |

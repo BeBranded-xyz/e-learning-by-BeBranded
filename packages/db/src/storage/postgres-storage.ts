@@ -78,6 +78,7 @@ function writes(db: Kysely<DB>): StorageWrites {
     saveLessonProgress: (scope, value) => progress.saveLessonProgress(db, scope, value),
     appendEvent: (event) => outbox.appendEvent(db, event),
     insertCourse: (course) => withConflicts(() => content.insertCourse(db, course)),
+    lockCourse: (scope, id) => content.lockCourse(db, scope, id),
     updateCourse: (scope, id, patch) =>
       withConflicts(() => content.updateCourse(db, scope, id, patch)),
     deleteCourse: (scope, id) => content.deleteCourse(db, scope, id),

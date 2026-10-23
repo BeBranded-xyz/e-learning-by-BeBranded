@@ -112,4 +112,28 @@ export const createAccessRuleBody = z.discriminatedUnion("target_type", [
   z.strictObject({ target_type: z.literal("lesson"), target_id: lessonIdSchema, ...ruleFields }),
 ]);
 
+const unique = (ids: readonly string[]) => new Set(ids).size === ids.length;
+
+/** Body of `POST /v1/admin/reorder`: the full new order of one course's chapters and lessons. */
+export const reorderBody = z
+  .strictObject({
+    course_id: courseIdSchema,
+    chapters: z
+      .array(
+        z.strictObject({
+          id: chapterIdSchema,
+          lesson_ids: z.array(lessonIdSchema).max(1_000),
+        }),
+      )
+      .max(500),
+  })
+  .refine(
+    (body) =>
+      unique(body.chapters.map((chapter) => chapter.id)) &&
+      unique(body.chapters.flatMap((chapter) => chapter.lesson_ids)),
+    { message: "A chapter or lesson appears twice.", path: ["chapters"] },
+  );
+
+export type ReorderBody = z.infer<typeof reorderBody>;
+
 export type CreateAccessRuleBody = z.infer<typeof createAccessRuleBody>;

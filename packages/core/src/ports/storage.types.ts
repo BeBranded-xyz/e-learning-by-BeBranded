@@ -69,6 +69,7 @@ export type ChapterPatch = Patch<Pick<Chapter, "title" | "position" | "status">>
 export type LessonPatch = Patch<
   Pick<
     LessonDetail,
+    | "chapterId"
     | "title"
     | "position"
     | "status"
@@ -123,6 +124,11 @@ export type StorageWrites = {
   /** Written in the same transaction as the change it describes (outbox). */
   appendEvent(event: DomainEvent): Promise<void>;
   insertCourse(course: Course): Promise<void>;
+  /**
+   * The course, locked until the transaction ends, when the tenant owns it;
+   * null for a missing, shared-catalog or other tenant's course.
+   */
+  lockCourse(scope: TenantScope, id: CourseId): Promise<Course | null>;
   updateCourse(scope: TenantScope, id: CourseId, patch: CoursePatch): Promise<boolean>;
   deleteCourse(scope: TenantScope, id: CourseId): Promise<boolean>;
   /** False when the parent course does not exist or belongs to another tenant. */
@@ -131,6 +137,7 @@ export type StorageWrites = {
   deleteChapter(scope: TenantScope, id: ChapterId): Promise<boolean>;
   /** False when the parent chapter does not exist or belongs to another tenant. */
   insertLesson(scope: TenantScope, lesson: LessonDetail): Promise<boolean>;
+  /** A `chapterId` patch only moves the lesson to another chapter of the same course; false otherwise. */
   updateLesson(scope: TenantScope, id: LessonId, patch: LessonPatch): Promise<boolean>;
   deleteLesson(scope: TenantScope, id: LessonId): Promise<boolean>;
   insertAccessRule(rule: AccessRule): Promise<void>;

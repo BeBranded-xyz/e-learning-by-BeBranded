@@ -124,6 +124,22 @@ export async function deleteCourse(
   return true;
 }
 
+/** The owned course, locked until the transaction ends (shared-catalog courses are read-only). */
+export async function lockCourse(
+  db: Kysely<DB>,
+  scope: TenantScope,
+  id: CourseId,
+): Promise<Course | null> {
+  const row = await db
+    .selectFrom("courses")
+    .selectAll()
+    .where("id", "=", id)
+    .where(ownedBy("tenant_id", scope))
+    .forUpdate()
+    .executeTakeFirst();
+  return row === undefined ? null : toCourse(row);
+}
+
 export async function listChapters(
   db: Kysely<DB>,
   scope: TenantScope,

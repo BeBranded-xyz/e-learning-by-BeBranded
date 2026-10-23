@@ -4,6 +4,7 @@ import type { Course } from "@bebranded/elearning-core";
 import type { RequestContext } from "../context.js";
 import { json, noContent } from "../http/responses.js";
 import { presentAdminCourse, presentCourseTree } from "../presenters/admin.presenters.js";
+import { loadCourseTree } from "../services/course-tree.js";
 import { emitIfPublished } from "../services/publishing.js";
 import { createCourseBody, updateCourseBody } from "./admin.schemas.js";
 import { found, parseId } from "./ids.js";
@@ -47,20 +48,8 @@ export async function getAdminCourse(
   const course = found(
     await context.storage.findCourseById(context.scope, parseId(courseIdSchema, rawId)),
   );
-  const [chapters, lessons] = await Promise.all([
-    context.storage.listChapters(context.scope, [course.id]),
-    context.storage.listLessons(context.scope, [course.id]),
-  ]);
-  const ids = [
-    course.id,
-    ...chapters.map((chapter) => chapter.id),
-    ...lessons.map((lesson) => lesson.id),
-  ];
-  const rules = await context.storage.listAccessRules(context.scope, ids);
-  return json(
-    presentCourseTree(course, { chapters, lessons, rules }, context.scope),
-    context.requestId,
-  );
+  const tree = await loadCourseTree(context.storage, context.scope, course);
+  return json(presentCourseTree(course, tree, context.scope), context.requestId);
 }
 
 /** PATCH /v1/admin/courses/:id. Publishing sets published_at once and emits content.published. */
