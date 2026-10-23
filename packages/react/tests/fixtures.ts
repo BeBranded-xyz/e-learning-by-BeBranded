@@ -72,4 +72,5 @@ export const lesson: ApiLesson = {
   html: "<h2>Hello</h2><p>Read <strong>this</strong>.</p>",
   settings: {},
   status: "in_progress",
+  video: null,
 };
