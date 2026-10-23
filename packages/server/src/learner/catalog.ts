@@ -5,10 +5,12 @@ import type { RequestContext } from "../context.js";
 import { httpErrors } from "../http/http-error.js";
 import { json } from "../http/responses.js";
 import { presentCourseSummary, presentCourseView } from "../presenters/learner.presenters.js";
+import { applyPendingAssignments } from "../services/assignments.js";
 import { isCourseVisible, loadCourseView } from "../services/course-view.js";
 
 /** GET /v1/courses: published courses the learner may see, with their enrollment. */
 export async function listCatalog(context: RequestContext): Promise<Response> {
+  await applyPendingAssignments(context);
   const { storage, scope, learner } = context;
   const courses = (await storage.listCourses(scope)).filter(
     (course) => course.status === "published",
@@ -32,6 +34,7 @@ export async function listCatalog(context: RequestContext): Promise<Response> {
 }
 
 async function findVisibleCourse(context: RequestContext, find: () => Promise<Course | null>) {
+  await applyPendingAssignments(context);
   const course = await find();
   const view = course === null ? null : await loadCourseView(context, course);
   if (view === null) throw httpErrors.notFound();

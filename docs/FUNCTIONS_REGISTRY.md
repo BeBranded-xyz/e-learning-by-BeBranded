@@ -6,7 +6,7 @@
 > the "Called by" column must stay accurate. To remove an entry, first mark it
 > `DEAD - remove by YYYY-MM-DD`, verify no callers, then delete.
 
-Last updated: 2026-10-23
+Last updated: 2026-10-24
 
 ## Auth categories
 
@@ -57,6 +57,9 @@ Paths are relative to the host's mount point. Auth: `client` = the host's sessio
 | `handleVideoWebhook` | POST `/v1/webhooks/video` | Provider processing state of a video | video provider | provider signature | active | maintainers | spec 06 |
 | `createAccessRule` | POST `/v1/admin/access-rules` | Add an audience rule | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8 |
 | `deleteAccessRule` | DELETE `/v1/admin/access-rules/:id` | Remove an audience rule | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8 |
+| `createAssignment` | POST `/v1/admin/assignments` | Assign a course to a role, a grade or a learner with an optional due date; 409 `audience_without_access` when the rules leave the audience out | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8; spec 05 |
+| `listAssignments` | GET `/v1/admin/courses/:id/assignments` | The tenant's assignments of a course | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8 |
+| `deleteAssignment` | DELETE `/v1/admin/assignments/:id` | Remove an assignment, keeping its enrollments | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8 |
 
 ## Webhooks (inbound)
 

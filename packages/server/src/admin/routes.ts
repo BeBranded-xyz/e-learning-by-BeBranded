@@ -1,6 +1,7 @@
 import type { RequestContext } from "../context.js";
 import type { Route } from "../http/router.js";
 import { createAccessRule, deleteAccessRule } from "./access-rules.js";
+import { createAssignment, deleteAssignment, listAssignments } from "./assignments.js";
 import { createChapter, deleteChapter, updateChapter } from "./chapters.js";
 import {
   createCourse,
@@ -85,5 +86,20 @@ export const adminRoutes: readonly Route<RequestContext>[] = [
     method: "DELETE",
     pattern: "/v1/admin/access-rules/:id",
     handle: (context, { id }) => deleteAccessRule(context, id),
+  },
+  {
+    method: "POST",
+    pattern: "/v1/admin/assignments",
+    handle: (context) => createAssignment(context),
+  },
+  {
+    method: "GET",
+    pattern: "/v1/admin/courses/:id/assignments",
+    handle: (context, { id }) => listAssignments(context, id),
+  },
+  {
+    method: "DELETE",
+    pattern: "/v1/admin/assignments/:id",
+    handle: (context, { id }) => deleteAssignment(context, id),
   },
 ];
