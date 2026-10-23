@@ -56,6 +56,7 @@ export {
   LESSON_DOCUMENT_LIMITS,
   calloutVariantSchema,
   colorSchema,
+  inlineContentSchema,
   lessonBlockSchema,
   lessonDocumentSchema,
   safeUrlSchema,
@@ -110,6 +111,54 @@ export type {
   HeartbeatVideo,
   VideoProgressState,
 } from "./video/heartbeat.js";
+
+export {
+  QUESTION_NAME,
+  QUIZ_LIMITS,
+  quizAnswersSchema,
+  quizDefinitionSchema,
+  quizLessonSettingsSchema,
+  quizQuestionSchema,
+  showCorrectionSchema,
+} from "./quiz/quiz.schemas.js";
+export type {
+  QuizAnswers,
+  QuizDefinition,
+  QuizLessonSettings,
+  QuizQuestion,
+  QuizQuestionKind,
+  ShowCorrection,
+} from "./quiz/quiz.schemas.js";
+export { QUESTION_BLOCK_TYPES, questionBlockSchema } from "./quiz/quiz-document.schemas.js";
+export type { QuestionBlock, QuestionBlockType } from "./quiz/quiz-document.schemas.js";
+export { editorDocumentToQuiz, plainText, questionProblem } from "./quiz/quiz-document.js";
+export type { QuizDocument } from "./quiz/quiz-document.js";
+export { presentQuiz } from "./quiz/present.js";
+export type {
+  PresentationOptions,
+  PresentedOption,
+  PresentedQuestion,
+  QuizPresentation,
+} from "./quiz/present.js";
+export { gradeQuiz, isPassing, normalizeAnswer } from "./quiz/grade.js";
+export type { QuestionResult, QuizGrade } from "./quiz/grade.js";
+export { buildCorrections, toSurveyJson } from "./quiz/survey.js";
+export type {
+  QuizCorrection,
+  RenderBlocks,
+  SurveyChoice,
+  SurveyElement,
+  SurveyJson,
+} from "./quiz/survey.js";
+export {
+  QUIZ_TIMING,
+  attemptEligibility,
+  attemptExpiresAt,
+  attemptsRemaining,
+  cooldownEndsAt,
+  isPastDeadline,
+} from "./quiz/attempts.js";
+export type { AttemptHistory, Eligibility } from "./quiz/attempts.js";
 
 export { eventTypes, parseEventPayload } from "./events/events.js";
 export type { DomainEvent, EventHandlers, EventPayload, EventType } from "./events/events.js";
@@ -166,3 +215,10 @@ export type {
   ApiVideoProgress,
   ApiProgress,
 } from "./api/api.types.js";
+export type {
+  ApiLessonQuiz,
+  ApiOpenQuizAttempt,
+  ApiQuizAttempt,
+  ApiQuizCorrection,
+  ApiQuizResult,
+} from "./api/quiz-api.types.js";

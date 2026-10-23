@@ -1,3 +1,5 @@
+import type { z } from "zod";
+
 import { err, ok } from "../result.js";
 import { MAX_JSON_NESTING, measureJson } from "./json-size.js";
 import type { Result } from "../result.js";
@@ -10,7 +12,10 @@ export type ContentIssueCode =
   | "too_many_blocks"
   | "too_many_table_cells"
   | "duplicate_block_id"
-  | "invalid_content";
+  | "invalid_content"
+  | "invalid_question"
+  | "no_questions"
+  | "too_many_questions";
 
 export type ContentIssue = {
   readonly code: ContentIssueCode;
@@ -100,35 +105,45 @@ function limitIssue(shape: Shape): ContentIssue | null {
 }
 
 /**
+ * The checks every stored document goes through before its schema: size,
+ * nesting, block count, table size and unique block ids (spec 08). Null
+ * when the document passes them.
+ */
+export function precheckDocument(input: unknown, noun: string): ContentIssue[] | null {
+  const size = measureJson(input, LESSON_DOCUMENT_LIMITS.maxBytes);
+  if (size.kind === "too_large") {
+    return [
+      { code: "too_large", message: `At most ${LESSON_DOCUMENT_LIMITS.maxBytes} bytes`, path: [] },
+    ];
+  }
+  if (size.kind === "too_deep") {
+    return [
+      { code: "too_deep", message: `At most ${MAX_JSON_NESTING} nested JSON values`, path: [] },
+    ];
+  }
+  if (!Array.isArray(input)) {
+    return [{ code: "invalid_content", message: `${noun} is an array of blocks`, path: [] }];
+  }
+  const issue = limitIssue(measure(input));
+  return issue === null ? null : [issue];
+}
+
+/** Schema failures as content issues, capped so a hostile document gets a bounded answer. */
+export function schemaIssues(error: z.ZodError): ContentIssue[] {
+  return error.issues.slice(0, 20).map((zodIssue) => ({
+    code: "invalid_content" as const,
+    message: zodIssue.message,
+    path: zodIssue.path.filter((segment) => typeof segment !== "symbol"),
+  }));
+}
+
+/**
  * Validates lesson content before it is stored (spec 08): size, depth, block
  * count and table size first, then the strict block schema.
  */
 export function validateLessonDocument(input: unknown): Result<LessonDocument, ContentIssue[]> {
-  const size = measureJson(input, LESSON_DOCUMENT_LIMITS.maxBytes);
-  if (size.kind === "too_large") {
-    return err([
-      { code: "too_large", message: `At most ${LESSON_DOCUMENT_LIMITS.maxBytes} bytes`, path: [] },
-    ]);
-  }
-  if (size.kind === "too_deep") {
-    return err([
-      { code: "too_deep", message: `At most ${MAX_JSON_NESTING} nested JSON values`, path: [] },
-    ]);
-  }
-  if (!Array.isArray(input)) {
-    return err([
-      { code: "invalid_content", message: "A lesson document is an array of blocks", path: [] },
-    ]);
-  }
-  const issue = limitIssue(measure(input));
-  if (issue !== null) return err([issue]);
+  const issues = precheckDocument(input, "A lesson document");
+  if (issues !== null) return err(issues);
   const parsed = lessonDocumentSchema.safeParse(input);
-  if (parsed.success) return ok(parsed.data);
-  return err(
-    parsed.error.issues.slice(0, 20).map((zodIssue) => ({
-      code: "invalid_content" as const,
-      message: zodIssue.message,
-      path: zodIssue.path.filter((segment) => typeof segment !== "symbol"),
-    })),
-  );
+  return parsed.success ? ok(parsed.data) : err(schemaIssues(parsed.error));
 }

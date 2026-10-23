@@ -78,6 +78,7 @@ export const lesson: ApiLesson = {
   settings: {},
   status: "in_progress",
   video: null,
+  quiz: null,
 };
 
 export const readyVideo: ApiLessonVideo = {
