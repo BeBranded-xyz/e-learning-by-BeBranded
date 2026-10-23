@@ -5,6 +5,8 @@ import type {
   ApiEnrollment,
   ApiLesson,
   ApiLessonProgress,
+  ApiQuizAttempt,
+  ApiQuizResult,
   ApiVideoHeartbeat,
 } from "@bebranded/elearning-core";
 
@@ -78,6 +80,14 @@ export function createApiClient(
         body,
         keepalive: options.keepalive,
       }),
+    openQuizAttempt: (lessonId: string) =>
+      request<ApiQuizAttempt>("POST", `/lessons/${id(lessonId)}/quiz/attempts`),
+    submitQuizAttempt: (lessonId: string, attemptId: string, answers: unknown) =>
+      request<ApiQuizResult>(
+        "POST",
+        `/lessons/${id(lessonId)}/quiz/attempts/${id(attemptId)}/submit`,
+        { body: { answers } },
+      ),
     myProgress: (signal?: AbortSignal) =>
       request<ApiCollection<ApiCourseSummary>>("GET", "/me/progress", { signal }),
   };
