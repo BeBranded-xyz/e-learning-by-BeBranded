@@ -3,7 +3,7 @@
 A **reusable, embeddable e-learning module** for existing applications (ERPs, business web apps, client portals).
 Instead of rebuilding training features in every product, we maintain **one versioned module**. Each host product adds its own branding (colors, typography, theme) and plugs in its own users and roles.
 
-> **Status: phases 1 (foundations) and 2 (video) done, not published yet.** Text and video lessons, verified video completion, access rules, progress, the learner UI and the admin API work end to end in the demo app. Quizzes and the back-office come next (see the [roadmap](docs/specifications/09-roadmap.md)).
+> **Status: phases 1 (foundations), 2 (video) and 3 (quizzes) done, not published yet.** Text, video and quiz lessons, verified video completion, server-graded quizzes, access rules, progress, the learner UI and the admin API work end to end in the demo app. The back-office comes next (see the [roadmap](docs/specifications/09-roadmap.md)).
 
 ## Try it locally
 

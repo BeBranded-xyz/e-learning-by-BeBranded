@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import "@bebranded/elearning-react/styles.css";
+import "survey-core/survey-core.min.css";
+import "@bebranded/elearning-react/quiz.css";
 import "./demo.css";
 
 export const metadata: Metadata = {

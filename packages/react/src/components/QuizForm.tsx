@@ -31,10 +31,12 @@ function useSurveyModel(
     created.showCompletePage = false;
     created.showQuestionNumbers = "on";
     created.completeText = labels.submit;
+    // True or false as two labelled radio buttons, not a three-state switch.
     for (const question of created.getAllQuestions()) {
-      if (question.getType() === "boolean") {
-        question.setPropertyValue("labelTrue", labels.yes);
-        question.setPropertyValue("labelFalse", labels.no);
+      if (question instanceof runtime.QuestionBoolean) {
+        question.displayMode = "radio";
+        question.labelTrue = labels.yes;
+        question.labelFalse = labels.no;
       }
     }
     return created;

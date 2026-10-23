@@ -21,6 +21,12 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | B-041 | Back-office warning when a published video has no captions (spec 06, "Accessibility"); `VideoPlayer` relies on provider HLS subtitles or `video.captions` | feature | P2 | maintainers | spec 06, phase 4 | 2026-10-23 | Linked from the `media-has-caption` suppression in `VideoPlayer.tsx` |
 | B-042 | Refresh an expired playback URL mid-session (sessions longer than the video + 15 min): refetch the lesson and swap the source at the current position | feature | P3 | maintainers | spec 06 | 2026-10-23 | `VideoPlayer` keeps its first URL |
 | B-043 | Bundle budget check for `@bebranded/elearning-react` (30 kB gzip, excluding hls.js), so a static import of hls.js would fail CI | test | P2 | maintainers | spec 08, "Performance" | 2026-10-23 | hls.js is a dynamic import today |
+| B-044 | Admin grant of extra quiz attempts per learner (spec 07, "Attempts"), with its table and audit | feature | P2 | maintainers | spec 07, phase 4 | 2026-10-23 | Phase 3 enforces `maxAttempts` only |
+| B-045 | Quiz reporting: pass rate, average score and attempts, per-question correct rate from `quiz_attempts.question_results`, CSV export | feature | P2 | maintainers | spec 07, "Reporting", phase 4 | 2026-10-23 | Data is stored from phase 3 |
+| B-046 | Quiz authoring UI in the back-office: slash-menu entries for the question blocks, correct ticks, points and explanation fields, the "N learners have already taken this quiz" warning from `learners_attempted` | feature | P2 | maintainers | spec 07, phase 4 | 2026-10-23 | `quizEditorSchema` and `PUT /admin/lessons/:id/quiz` exist |
+| B-047 | Formatted quiz prompts and options (bold, links, code) instead of plain text, rendered safely in SurveyJS | feature | P3 | maintainers | spec 07, "Authoring" | 2026-10-23 | Formatting is dropped today |
+| B-048 | Add `quiz_attempts` (answers, scores) to the data lifecycle inventory and to `deleteLearnerData` / `exportLearnerData` (B-019) | ops | P2 | maintainers | `modules/data-lifecycle` | 2026-10-23 | Attempts cascade with lesson_progress |
+| B-049 | Recommended rate limit for quiz attempt opening and submission in the `rateLimit` hook (B-028) | feature | P2 | maintainers | spec 08 | 2026-10-23 | Attempt limits and cooldowns already bound grading |
 | B-001 | Re-run `init.sh --target claude,codex --update` from AI-Dev-Rules `main` once its PRs #1, #2, #3 are merged; commit the new `.ruleset-version` | ops | P1 | maintainers | AI-Dev-Rules #1–#3 | 2026-10-22 | Current install comes from a local integration of those PRs |
 
 ## Next
@@ -80,6 +86,7 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 |---|---|---|---|
 | | Technical specifications 01–10, repository security baseline | 2026-10-22 | direct commits before branch protection |
 | | AI-Dev-Rules adoption (Claude Code and Codex) | 2026-10-22 | #1 |
+| B-050 | Phase 3, quizzes: core conversion, presentation and grading, editor question blocks, db tables, server attempts and admin save, `<Quiz>` on SurveyJS, demo quiz and anti-cheat e2e; phase 3 complete | 2026-10-23 | #19–#24 |
 | B-037 | Phase 2, video: core rules, db tables, `@bebranded/elearning-video` (Cloudflare Stream), server endpoints and webhook, `<VideoPlayer>`, demo video and anti-cheat e2e; phase 2 complete | 2026-10-23 | #11–#16, #18 |
 | B-012 | Phase 1: apps/demo with fake multi-role auth and Playwright journeys; phase 1 complete | 2026-10-23 | this PR |
 | B-023 | Content stylesheet for rendered lessons, shipped with `@bebranded/elearning-react` | 2026-10-23 | #8 |

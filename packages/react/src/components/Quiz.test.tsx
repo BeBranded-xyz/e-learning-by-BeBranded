@@ -30,11 +30,13 @@ async function startAndAnswer(beforeAnswering: () => void = () => undefined) {
   await user.click(screen.getByRole("button", { name: "Start the quiz" }));
   const green = await screen.findByRole("radio", { name: "Green" });
   beforeAnswering();
+  await user.click(screen.getByRole("radio", { name: "True" }));
   await user.click(green);
   await user.click(screen.getByRole("button", { name: "Submit my answers" }));
 }
 
-describe("Quiz", () => {
+// SurveyJS renders its full form in jsdom, which takes seconds under coverage instrumentation.
+describe("Quiz", { timeout: 20_000 }, () => {
   it("states the rules before the first attempt, accessibly", async () => {
     const { container } = renderQuiz();
 
@@ -55,7 +57,7 @@ describe("Quiz", () => {
 
     await screen.findByText("Not passed: 50%");
     expect(requests.find((request) => request.key === submitKey)?.body).toEqual({
-      answers: { q2: "o2" },
+      answers: { q1: true, q2: "o2" },
     });
   });
 

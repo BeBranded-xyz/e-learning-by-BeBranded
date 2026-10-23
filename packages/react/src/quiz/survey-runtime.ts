@@ -1,10 +1,11 @@
 import type { ComponentType } from "react";
-import type { SurveyModel } from "survey-core";
+import type { QuestionBooleanModel, SurveyModel } from "survey-core";
 
 /** SurveyJS, loaded only when a quiz opens: it weighs far more than the rest of the module. */
 export type SurveyRuntime = {
   readonly Model: new (json: unknown) => SurveyModel;
   readonly Survey: ComponentType<{ model: SurveyModel }>;
+  readonly QuestionBoolean: abstract new (...args: never[]) => QuestionBooleanModel;
 };
 
 let pending: Promise<SurveyRuntime> | null = null;
@@ -12,7 +13,11 @@ let pending: Promise<SurveyRuntime> | null = null;
 /** Loads SurveyJS once per page, with its French strings when the locale is French. */
 export function loadSurveyRuntime(locale: string): Promise<SurveyRuntime> {
   pending ??= Promise.all([import("survey-core"), import("survey-react-ui")]).then(
-    ([core, react]) => ({ Model: core.Model, Survey: react.Survey }),
+    ([core, react]) => ({
+      Model: core.Model,
+      Survey: react.Survey,
+      QuestionBoolean: core.QuestionBooleanModel,
+    }),
   );
   const french =
     locale.split("-")[0] === "fr"
