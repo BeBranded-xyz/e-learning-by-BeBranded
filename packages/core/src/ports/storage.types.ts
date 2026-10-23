@@ -11,6 +11,7 @@ import type {
 } from "../content/ids.js";
 import type { DomainEvent } from "../events/events.js";
 import type { LessonProgressStatus } from "../progress/progress.js";
+import type { VideoStorageReads, VideoStorageWrites } from "./video-storage.types.js";
 
 export type JsonValue =
   string | number | boolean | null | readonly JsonValue[] | { readonly [key: string]: JsonValue };
@@ -100,7 +101,7 @@ export type StorageReads = {
     learnerId: LearnerId,
   ): Promise<Enrollment | null>;
   listEnrollments(scope: TenantScope, learnerId: LearnerId): Promise<Enrollment[]>;
-};
+} & VideoStorageReads;
 
 export type StorageWrites = {
   /** Locks the learner's enrollment row until the transaction ends. */
@@ -132,7 +133,7 @@ export type StorageWrites = {
   deleteLesson(scope: TenantScope, id: LessonId): Promise<boolean>;
   insertAccessRule(rule: AccessRule): Promise<void>;
   deleteAccessRule(scope: TenantScope, id: AccessRuleId): Promise<boolean>;
-};
+} & VideoStorageWrites;
 
 export type StorageTransaction = StorageReads & StorageWrites;
 

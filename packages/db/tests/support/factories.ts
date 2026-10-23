@@ -7,6 +7,7 @@ import {
   learnerIdSchema,
   lessonIdSchema,
   tenantIdSchema,
+  videoAssetIdSchema,
 } from "@bebranded/elearning-core";
 import type {
   AccessRule,
@@ -15,6 +16,7 @@ import type {
   LessonDetail,
   TenantId,
   TenantScope,
+  VideoAsset,
 } from "@bebranded/elearning-core";
 
 // Synthetic data only (modules/open-source): fake tenants, learners and courses.
@@ -93,5 +95,20 @@ export function anAllowRule(
     targetId: target.id,
     effect: "allow",
     audience: { type: "everyone" },
+  };
+}
+
+export function aVideoAsset(lesson: LessonDetail, overrides: Partial<VideoAsset> = {}): VideoAsset {
+  counter += 1;
+  return {
+    id: videoAssetIdSchema.parse(randomUUID()),
+    lessonId: lesson.id,
+    provider: "fake",
+    providerAssetId: `asset-${counter}`,
+    status: "uploading",
+    durationSeconds: null,
+    thumbnailUrl: null,
+    captions: [],
+    ...overrides,
   };
 }

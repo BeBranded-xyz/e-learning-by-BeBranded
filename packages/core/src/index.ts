@@ -11,6 +11,7 @@ export {
   learnerIdSchema,
   lessonIdSchema,
   tenantIdSchema,
+  videoAssetIdSchema,
 } from "./content/ids.js";
 export type {
   AccessRuleId,
@@ -20,6 +21,7 @@ export type {
   LearnerId,
   LessonId,
   TenantId,
+  VideoAssetId,
 } from "./content/ids.js";
 
 export {
@@ -137,6 +139,14 @@ export type {
   VideoProvider,
   VideoWebhookEvent,
 } from "./ports/video-provider.types.js";
+export type {
+  VideoAsset,
+  VideoCaption,
+  VideoHeartbeatKey,
+  VideoProgress,
+  VideoStorageReads,
+  VideoStorageWrites,
+} from "./ports/video-storage.types.js";
 
 export type {
   ApiChapter,
