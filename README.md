@@ -3,11 +3,11 @@
 A **reusable, embeddable e-learning module** for existing applications (ERPs, business web apps, client portals).
 Instead of rebuilding training features in every product, we maintain **one versioned module**. Each host product adds its own branding (colors, typography, theme) and plugs in its own users and roles.
 
-> **Status: phase 1 (foundations) done, not published yet.** Text lessons, access rules, progress, the learner UI and the admin API work end to end in the demo app. Video, quizzes and the back-office come next (see the [roadmap](docs/specifications/09-roadmap.md)).
+> **Status: phases 1 (foundations) and 2 (video) done, not published yet.** Text and video lessons, verified video completion, access rules, progress, the learner UI and the admin API work end to end in the demo app. Quizzes and the back-office come next (see the [roadmap](docs/specifications/09-roadmap.md)).
 
 ## Try it locally
 
-Requires Node.js 24 (see `.node-version`), Corepack and Docker (for PostgreSQL).
+Requires Node.js 24 (see `.node-version`), Corepack, Docker (for PostgreSQL) and ffmpeg (the seed generates the demo's synthetic video).
 
 ```sh
 corepack pnpm install

@@ -29,6 +29,7 @@
     "@bebranded/elearning-next": "workspace:*",
     "@bebranded/elearning-react": "workspace:*",
     "@bebranded/elearning-server": "workspace:*",
+    "@bebranded/elearning-video": "workspace:*",
     "next": "16.4.2",
     "pg": "8.23.1",
     "react": "19.3.1",

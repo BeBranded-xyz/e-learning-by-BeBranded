@@ -22,11 +22,11 @@
 
 **Deliverable**: a course made of text lessons, with access rules and progress, running in the demo app.
 
-### Phase 2: video
+### Phase 2: video *(done)*
 
-- `video`: Cloudflare Stream adapter (direct upload, webhooks, signed tokens)
-- `<VideoPlayer>` with segment tracking, heartbeats and resume
-- Server-side plausibility and merging, anti-cheat e2e tests
+- [x] `video`: Cloudflare Stream adapter (direct upload, webhooks, signed tokens)
+- [x] `<VideoPlayer>` with segment tracking, heartbeats and resume
+- [x] Server-side plausibility and merging, anti-cheat e2e tests
 
 **Deliverable**: video lessons with verified completion.
 

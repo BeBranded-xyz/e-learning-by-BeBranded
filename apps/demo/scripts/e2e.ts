@@ -9,6 +9,7 @@ import pg from "pg";
 
 import { DEFAULT_SCHEMA, migrate, postgresStorage } from "@bebranded/elearning-db";
 
+import { ensureDemoVideo } from "./demo-video.js";
 import { seedDemo } from "./seed-demo.js";
 
 async function database(): Promise<{ url: string; stop: () => Promise<void> }> {
@@ -30,6 +31,7 @@ async function prepare(url: string): Promise<void> {
   });
   const storage = postgresStorage({ connectionString: url });
   try {
+    ensureDemoVideo();
     await migrate(db, { schema: DEFAULT_SCHEMA });
     await seedDemo(storage);
   } finally {
