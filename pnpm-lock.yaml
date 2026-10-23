@@ -224,6 +224,15 @@ importers:
         specifier: ^0.29.7
         version: 0.29.7
 
+  packages/video:
+    dependencies:
+      '@bebranded/elearning-core':
+        specifier: workspace:^
+        version: link:../core
+      zod:
+        specifier: ^4.6.7
+        version: 4.6.7
+
 packages:
 
   '@asamuzakjp/css-color@7.1.7':

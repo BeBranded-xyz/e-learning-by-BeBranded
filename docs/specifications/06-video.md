@@ -19,7 +19,7 @@ All of them sit behind `VideoProvider` (see [04 — Integration](04-integration.
 
 1. The admin picks a file. The back-office calls `POST /admin/videos/uploads`.
 2. The server asks the provider for a direct upload URL and creates a `video_assets` row with status `uploading`.
-3. The browser sends the file **directly to the provider** (resumable tus upload). The file never goes through the host's server.
+3. The browser sends the file **directly to the provider**. The file never goes through the host's server. Phase 2 uses Cloudflare's direct creator upload (one `multipart/form-data` POST, up to 200 MB), created with `requireSignedURLs` so the video is private. Resumable tus uploads for larger files come with the back-office (phase 4).
 4. The `POST /webhooks/video` webhook moves the asset to `processing`, then `ready`, and records `duration_seconds`. Webhooks with an invalid signature are rejected.
 5. The lesson cannot be published until the asset is `ready`.
 

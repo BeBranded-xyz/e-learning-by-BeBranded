@@ -24,6 +24,10 @@
       "entry": ["src/browser-guard.ts"],
       "project": ["src/**/*.ts"]
     },
+    "packages/video": {
+      "entry": ["src/browser-guard.ts"],
+      "project": ["src/**/*.ts", "tests/**/*.ts"]
+    },
     "packages/react": {
       "project": ["src/**/*.{ts,tsx}", "tests/**/*.{ts,tsx}"]
     }
