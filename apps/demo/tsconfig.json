@@ -7,7 +7,12 @@
     "moduleResolution": "Bundler",
     "allowJs": false,
     "incremental": true,
-    "plugins": [{ "name": "next" }]
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "customConditions": ["@bebranded/source"]
   },
   "include": [
     "next-env.d.ts",
