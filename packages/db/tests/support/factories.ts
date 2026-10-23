@@ -6,6 +6,8 @@ import {
   courseIdSchema,
   learnerIdSchema,
   lessonIdSchema,
+  quizAttemptIdSchema,
+  quizIdSchema,
   tenantIdSchema,
   videoAssetIdSchema,
 } from "@bebranded/elearning-core";
@@ -13,7 +15,11 @@ import type {
   AccessRule,
   Chapter,
   Course,
+  LearnerId,
   LessonDetail,
+  Quiz,
+  QuizAttempt,
+  QuizDefinition,
   TenantId,
   TenantScope,
   VideoAsset,
@@ -109,6 +115,54 @@ export function aVideoAsset(lesson: LessonDetail, overrides: Partial<VideoAsset>
     durationSeconds: null,
     thumbnailUrl: null,
     captions: [],
+    ...overrides,
+  };
+}
+
+export const aDefinition = (prompt = "Is the exit marked in green?"): QuizDefinition => ({
+  questions: [
+    { id: "q-1", kind: "true_false", prompt, points: 1, explanation: "", intro: [], answer: true },
+  ],
+  outro: [],
+});
+
+/** A SHA-256-shaped version; the real hash is computed by the server. */
+export const aVersion = (digit = "a") => digit.repeat(64);
+
+export function aQuiz(lesson: LessonDetail, overrides: Partial<Quiz> = {}): Quiz {
+  return {
+    id: quizIdSchema.parse(randomUUID()),
+    lessonId: lesson.id,
+    editorDocument: [{ id: "q-1", type: "trueFalseQuestion" }],
+    definition: aDefinition(),
+    version: aVersion(),
+    ...overrides,
+  };
+}
+
+export function anAttempt(
+  quiz: Quiz,
+  learnerId: LearnerId,
+  overrides: Partial<QuizAttempt> = {},
+): QuizAttempt {
+  return {
+    id: quizAttemptIdSchema.parse(randomUUID()),
+    quizId: quiz.id,
+    lessonId: quiz.lessonId,
+    learnerId,
+    attemptNumber: 1,
+    status: "open",
+    quizVersion: quiz.version,
+    seed: 4_294_967_295,
+    shuffleQuestions: true,
+    shuffleOptions: false,
+    startedAt: new Date("2026-03-01T10:00:00Z"),
+    expiresAt: null,
+    closedAt: null,
+    answers: null,
+    questionResults: null,
+    score: null,
+    passed: null,
     ...overrides,
   };
 }

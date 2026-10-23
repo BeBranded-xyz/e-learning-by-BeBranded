@@ -21,6 +21,8 @@ const tables = [
   "video_assets",
   "video_progress",
   "video_sessions",
+  "quizzes",
+  "quiz_attempts",
 ];
 
 beforeAll(async () => {

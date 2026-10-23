@@ -1,7 +1,6 @@
 import type { Kysely } from "kysely";
 
 import type {
-  LearnerId,
   LessonId,
   TenantScope,
   VideoAsset,
@@ -12,19 +11,10 @@ import type {
 
 import type { DB } from "../database.gen.js";
 import { insertedAny } from "./patch.js";
+import { lessonProgressOf as lessonProgress } from "./learner-lesson.js";
+import type { LearnerLesson } from "./learner-lesson.js";
 import { ownedBy, readableContent } from "./tenant-filters.js";
 import { toVideoAsset, toVideoProgress } from "./video.mappers.js";
-
-type LearnerLesson = { learnerId: LearnerId; lessonId: LessonId };
-
-/** The learner's lesson progress row: video progress and sessions hang off it. */
-function lessonProgress(db: Kysely<DB>, scope: TenantScope, key: LearnerLesson) {
-  return db
-    .selectFrom("lesson_progress")
-    .where("lesson_progress.lesson_id", "=", key.lessonId)
-    .where("lesson_progress.learner_id", "=", key.learnerId)
-    .where(ownedBy("lesson_progress.tenant_id", scope));
-}
 
 export async function findVideoAsset(
   db: Kysely<DB>,

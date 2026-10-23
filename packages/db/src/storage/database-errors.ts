@@ -14,6 +14,10 @@ const CONFLICTS: Record<string, { code: string; message: string }> = {
     code: "video_asset_in_use",
     message: "This video is already attached to another lesson.",
   },
+  idx_quiz_attempts_one_open: {
+    code: "quiz_attempt_open",
+    message: "An attempt at this quiz is already open.",
+  },
 };
 
 /** Runs a write and turns a known unique violation into a typed conflict; other errors propagate. */

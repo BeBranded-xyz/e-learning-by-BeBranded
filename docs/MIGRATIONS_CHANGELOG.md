@@ -77,3 +77,14 @@ Last updated: 2026-10-23
 - RLS: unchanged
 - Types regenerated: yes
 - PR: phase 2, budget carry-over fix
+
+## 20261023000600_quiz_tables
+- Date: 2026-10-23
+- Type: schema
+- Tables: quizzes, quiz_attempts
+- Summary: quizzes (editor document, graded definition, version hash) and learners' attempts (spec 03, spec 07). Attempts hang off lesson_progress and cascade with it; a partial unique index allows one open attempt per learner and lesson; CHECK constraints tie status, closing time and score together.
+- Breaking: no
+- Rollback: documented in header
+- RLS: enabled on both tables, no policy (default deny, as every table)
+- Types regenerated: yes
+- PR: #21

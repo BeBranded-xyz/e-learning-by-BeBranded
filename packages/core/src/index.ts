@@ -11,6 +11,8 @@ export {
   learnerIdSchema,
   lessonIdSchema,
   tenantIdSchema,
+  quizAttemptIdSchema,
+  quizIdSchema,
   videoAssetIdSchema,
 } from "./content/ids.js";
 export type {
@@ -21,6 +23,8 @@ export type {
   LearnerId,
   LessonId,
   TenantId,
+  QuizAttemptId,
+  QuizId,
   VideoAssetId,
 } from "./content/ids.js";
 
@@ -196,6 +200,15 @@ export type {
   VideoStorageReads,
   VideoStorageWrites,
 } from "./ports/video-storage.types.js";
+
+export type {
+  Quiz,
+  QuizAttempt,
+  QuizAttemptStatus,
+  QuizStanding,
+  QuizStorageReads,
+  QuizStorageWrites,
+} from "./ports/quiz-storage.types.js";
 
 export type {
   ApiChapter,
