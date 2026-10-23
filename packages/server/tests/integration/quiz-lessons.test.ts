@@ -291,21 +291,4 @@ describe("submitting an attempt", () => {
     expect((await submit(lesson, randomUUID(), {}, "manager")).response.status).toBe(404);
     expect((await submit(lesson, "not-an-id", {}, "manager")).response.status).toBe(404);
   });
-
-  it("keeps the lesson completed and the best score when a passed learner retakes it", async () => {
-    const lesson = await aQuizLesson();
-    const first = await openOk(lesson);
-    await submit(lesson, first.id, rightAnswers(first.survey));
-    const second = await openOk(lesson);
-
-    const { body } = await submit(lesson, second.id, wrongAnswers(second.survey));
-
-    expect(body).toMatchObject({
-      attempt_number: 2,
-      passed: false,
-      status: "completed",
-      best_score: 1,
-    });
-    expect(body.corrections).not.toBeNull();
-  });
 });

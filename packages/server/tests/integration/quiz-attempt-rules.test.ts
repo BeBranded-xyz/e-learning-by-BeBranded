@@ -195,3 +195,22 @@ describe("corrections and shuffling", () => {
     expect(body).toMatchObject({ score: 1, passed: true });
   });
 });
+
+describe("retaking a passed quiz", () => {
+  it("keeps the lesson completed and the best score when a passed learner retakes it", async () => {
+    const lesson = await aQuizLesson({});
+    const first = await open(lesson);
+    await submit(lesson, first.id, rightAnswers(first.survey));
+    const second = await open(lesson);
+
+    const { body } = await submit(lesson, second.id, wrongAnswers(second.survey));
+
+    expect(body).toMatchObject({
+      attempt_number: 2,
+      passed: false,
+      status: "completed",
+      best_score: 1,
+    });
+    expect(body.corrections).not.toBeNull();
+  });
+});
