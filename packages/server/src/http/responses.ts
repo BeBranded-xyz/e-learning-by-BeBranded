@@ -34,9 +34,14 @@ export function errorResponse(error: AppError, requestId: string): Response {
       ? { code: "internal_error", message: "Something went wrong. Try again later." }
       : error;
   const details = status < 500 && error.details !== undefined ? { details: error.details } : {};
-  return json(
+  const response = json(
     { error: { code: safe.code, message: safe.message, ...details, request_id: requestId } },
     requestId,
     status,
   );
+  const retryAfter = error.details?.retry_after_seconds;
+  if (status === 429 && typeof retryAfter === "number") {
+    response.headers.set("retry-after", String(Math.max(1, Math.ceil(retryAfter))));
+  }
+  return response;
 }

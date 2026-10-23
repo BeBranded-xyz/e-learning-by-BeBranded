@@ -4,15 +4,35 @@ import { testUuid } from "../../tests/factories/access.js";
 import { eventTypes, parseEventPayload } from "./events.js";
 
 describe("domain events", () => {
-  it("lists every event type of spec 04 handled in phase 1", () => {
+  it("lists every event type of spec 04 handled so far", () => {
     expect(eventTypes).toEqual([
       "lesson.started",
       "lesson.completed",
       "course.started",
       "course.completed",
       "enrollment.assigned",
+      "quiz.attempt_submitted",
       "content.published",
     ]);
+  });
+
+  it("bounds the score of a quiz attempt", () => {
+    const payload = {
+      learnerId: "user-1",
+      lessonId: testUuid(),
+      courseId: testUuid(),
+      attemptId: testUuid(),
+      attemptNumber: 2,
+      outcome: "graded",
+      score: 0.75,
+      passed: false,
+    };
+
+    expect(parseEventPayload("quiz.attempt_submitted", payload)).toEqual(payload);
+    expect(() => parseEventPayload("quiz.attempt_submitted", { ...payload, score: 1.5 })).toThrow();
+    expect(() =>
+      parseEventPayload("quiz.attempt_submitted", { ...payload, outcome: "voided" }),
+    ).toThrow();
   });
 
   it("parses a valid payload", () => {
