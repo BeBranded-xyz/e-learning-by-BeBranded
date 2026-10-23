@@ -7,6 +7,7 @@ build/
 out/
 .turbo/
 coverage/
+apps/demo/.demo-video/
 *.tsbuildinfo
 
 # Secrets and local environment — never commit

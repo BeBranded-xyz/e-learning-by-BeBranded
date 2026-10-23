@@ -8,6 +8,7 @@ import {
   courseIdSchema,
   lessonIdSchema,
   validateLessonDocument,
+  videoAssetIdSchema,
 } from "@bebranded/elearning-core";
 import type {
   AccessRule,
@@ -18,9 +19,17 @@ import type {
   LessonDetail,
   StorageAdapter,
   StorageTransaction,
+  VideoAsset,
 } from "@bebranded/elearning-core";
 
-import { fireLesson, leadershipLesson, readingLesson, welcomeLesson } from "./demo-content.js";
+import { DEMO_VIDEO_SECONDS } from "../lib/demo-video.js";
+import {
+  extinguisherNotes,
+  fireLesson,
+  leadershipLesson,
+  readingLesson,
+  welcomeLesson,
+} from "./demo-content.js";
 
 const scope = { tenantId: null, includeShared: false };
 
@@ -91,14 +100,18 @@ function allow(target: Course, audience: Audience): AccessRule {
   };
 }
 
-async function insert(
-  tx: StorageTransaction,
-  entry: { course: Course; chapters: Chapter[]; lessons: LessonDetail[]; rules: AccessRule[] },
-) {
-  await tx.insertCourse(entry.course);
-  for (const item of entry.chapters) await tx.insertChapter(scope, item);
-  for (const item of entry.lessons) await tx.insertLesson(scope, item);
-  for (const rule of entry.rules) await tx.insertAccessRule(rule);
+/** Every demo video plays the local test pattern (lib/demo-video.ts), already "processed". */
+function readyVideo(owner: LessonDetail): VideoAsset {
+  return {
+    id: videoAssetIdSchema.parse(randomUUID()),
+    lessonId: owner.id,
+    provider: "fake",
+    providerAssetId: `demo-${owner.id}`,
+    status: "ready",
+    durationSeconds: DEMO_VIDEO_SECONDS,
+    thumbnailUrl: null,
+    captions: [],
+  };
 }
 
 type CatalogEntry = {
@@ -108,7 +121,39 @@ type CatalogEntry = {
   rules: AccessRule[];
 };
 
-/** Three courses: one for everyone, one for managers only, one draft nobody sees. */
+async function insert(tx: StorageTransaction, entry: CatalogEntry) {
+  await tx.insertCourse(entry.course);
+  for (const item of entry.chapters) await tx.insertChapter(scope, item);
+  for (const item of entry.lessons) await tx.insertLesson(scope, item);
+  for (const item of entry.lessons.filter((candidate) => candidate.type === "video"))
+    await tx.saveVideoAsset(scope, readyVideo(item));
+  for (const rule of entry.rules) await tx.insertAccessRule(rule);
+}
+
+/** A course with one required video lesson that cannot be skipped through (spec 06). */
+function videoCourse(): CatalogEntry {
+  const videos = course("video-basics", "Video basics", {
+    summary: "Watch the whole video to complete the lesson.",
+  });
+  const equipment = chapter(videos, "Equipment", 0);
+  const extinguisher = lesson(
+    equipment,
+    { title: "Using a fire extinguisher", position: 0, content: extinguisherNotes },
+    {
+      type: "video",
+      estimatedMinutes: 1,
+      settings: { allowSeeking: false, maxPlaybackRate: 2, completionThreshold: 0.95 },
+    },
+  );
+  return {
+    course: videos,
+    chapters: [equipment],
+    lessons: [extinguisher],
+    rules: [allow(videos, { type: "everyone" })],
+  };
+}
+
+/** Four courses: one for everyone, one for managers only, a draft nobody sees, and a video course. */
 function demoCatalog(): CatalogEntry[] {
   const safety = course("workplace-safety", "Workplace safety", {
     summary: "The basics everyone at Acme Corp needs.",
@@ -149,15 +194,18 @@ function demoCatalog(): CatalogEntry[] {
       rules: [allow(leading, { type: "role", role: "manager" })],
     },
     { course: draft, chapters: [], lessons: [], rules: [allow(draft, { type: "everyone" })] },
+    videoCourse(),
   ];
 }
 
-/** Creates the demo catalog unless it already exists. Returns false when it was already there. */
-export async function seedDemo(storage: StorageAdapter): Promise<boolean> {
-  if ((await storage.findCourseBySlug(scope, "workplace-safety")) !== null) return false;
-  const catalog = demoCatalog();
+/** Creates the demo courses that do not exist yet, by slug. Returns the slugs it created. */
+export async function seedDemo(storage: StorageAdapter): Promise<string[]> {
+  const missing: CatalogEntry[] = [];
+  for (const entry of demoCatalog()) {
+    if ((await storage.findCourseBySlug(scope, entry.course.slug)) === null) missing.push(entry);
+  }
   await storage.transaction(async (tx) => {
-    for (const entry of catalog) await insert(tx, entry);
+    for (const entry of missing) await insert(tx, entry);
   });
-  return true;
+  return missing.map((entry) => entry.course.slug);
 }
