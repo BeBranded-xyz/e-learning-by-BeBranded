@@ -4,6 +4,8 @@ import { getCourse, listCatalog } from "./catalog.js";
 import { enroll } from "./enroll.js";
 import { completeLesson, getLesson, startLesson } from "./lessons.js";
 import { myProgress } from "./my-progress.js";
+import { openQuizAttempt } from "./quiz-open.js";
+import { submitQuizAttempt } from "./quiz-submit.js";
 import { recordVideoHeartbeat } from "./video-progress.js";
 
 /** Learner API (spec 04, section 8). Paths are relative to the mount point. */
@@ -38,6 +40,16 @@ export const learnerRoutes: readonly Route<RequestContext>[] = [
     method: "POST",
     pattern: "/v1/lessons/:id/video-progress",
     handle: (context, { id }) => recordVideoHeartbeat(context, id),
+  },
+  {
+    method: "POST",
+    pattern: "/v1/lessons/:id/quiz/attempts",
+    handle: (context, { id }) => openQuizAttempt(context, id),
+  },
+  {
+    method: "POST",
+    pattern: "/v1/lessons/:id/quiz/attempts/:attemptId/submit",
+    handle: (context, { id, attemptId }) => submitQuizAttempt(context, { lessonId: id, attemptId }),
   },
   { method: "GET", pattern: "/v1/me/progress", handle: (context) => myProgress(context) },
 ];

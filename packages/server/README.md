@@ -29,6 +29,10 @@ Video lessons need a video provider, for example
 `video: cloudflareStream({ ... })` from `@bebranded/elearning-video`. The
 provider's webhooks go to `POST <basePath>/v1/webhooks/video`.
 
+Quiz lessons need no extra option. They are graded on the server: learners
+receive questions without their answers, and every attempt limit, cooldown
+and time limit is enforced here, whatever the browser sends.
+
 Options are validated at startup. The identity resolver runs on every
 request; the module never creates users or sessions. State-changing requests
 from another origin are refused (`allowedOrigins` to configure).

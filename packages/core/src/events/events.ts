@@ -5,6 +5,7 @@ import {
   courseIdSchema,
   learnerIdSchema,
   lessonIdSchema,
+  quizAttemptIdSchema,
 } from "../content/ids.js";
 import type { TenantId } from "../content/ids.js";
 import { accessTargetTypeSchema } from "../access/access.schemas.js";
@@ -32,6 +33,17 @@ const payloads = {
     courseId: courseIdSchema,
     assignedBy: learnerIdSchema.nullable(),
     dueAt: z.iso.datetime().nullable(),
+  }),
+  "quiz.attempt_submitted": z.strictObject({
+    learnerId: learnerIdSchema,
+    lessonId: lessonIdSchema,
+    courseId: courseIdSchema,
+    attemptId: quizAttemptIdSchema,
+    attemptNumber: z.int().min(1),
+    /** `expired` when submitted after the time limit: the attempt scores 0. */
+    outcome: z.enum(["graded", "expired"]),
+    score: z.number().min(0).max(1),
+    passed: z.boolean(),
   }),
   "content.published": z.strictObject({
     targetType: accessTargetTypeSchema,

@@ -10,6 +10,7 @@ import {
   learnerIdSchema,
   lessonIdSchema,
   lessonStatusSchema,
+  lessonTypeSchema,
   localeSchema,
   slugSchema,
 } from "@bebranded/elearning-core";
@@ -72,10 +73,10 @@ const lessonFields = {
   settings: z.record(z.string(), z.unknown()),
 };
 
-/** Text and video lessons; quiz lessons come with phase 3. */
+/** Text, video and quiz lessons; a quiz lesson gets its questions through `PUT /admin/lessons/:id/quiz`. */
 export const createLessonBody = z.strictObject({
   chapter_id: chapterIdSchema,
-  type: z.enum(["text", "video"]).default("text"),
+  type: lessonTypeSchema.default("text"),
   ...lessonFields,
   status: lessonStatusSchema.default("draft"),
   is_required: lessonFields.is_required.default(true),

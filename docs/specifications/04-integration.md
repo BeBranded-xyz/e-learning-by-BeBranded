@@ -147,7 +147,7 @@ The module emits business events. The host subscribes to them to trigger its own
 |-------|--------------|
 | `lesson.started` | learnerId, lessonId, courseId |
 | `lesson.completed` | learnerId, lessonId, courseId |
-| `quiz.attempt_submitted` | learnerId, quizId, score, passed, attemptNumber |
+| `quiz.attempt_submitted` | learnerId, lessonId, courseId, attemptId, attemptNumber, outcome (`graded` \| `expired`), score, passed |
 | `course.started` | learnerId, courseId |
 | `course.completed` | learnerId, courseId, completedAt |
 | `enrollment.assigned` | learnerId, courseId, assignedBy, dueAt |
@@ -201,12 +201,12 @@ All routes are relative to the mount point (e.g. `/api/elearning`) and versioned
 | GET | `/v1/courses` | Catalog filtered by access rules, with the learner's enrollment |
 | GET | `/v1/courses/:slug` | Accessible chapters › lessons tree, with lesson statuses and progress |
 | POST | `/v1/courses/:id/enroll` | Self-enroll (201, or 200 when already enrolled) |
-| GET | `/v1/lessons/:id` | Lesson rendered to HTML, settings with defaults filled; for a video lesson, `video` with status, duration, captions, a signed `playback` URL once ready, and the learner's progress (resume position, watched ranges) |
+| GET | `/v1/lessons/:id` | Lesson rendered to HTML, settings with defaults filled; for a video lesson, `video` with status, duration, captions, a signed `playback` URL once ready, and the learner's progress (resume position, watched ranges); for a quiz lesson, `quiz` with its rules and the learner's standing (attempts used and remaining, next attempt time, best score, `passed`, open attempt), never a question |
 | POST | `/v1/lessons/:id/start` | Record that the learner opened the lesson (enrolls on first start in a self-enroll course) |
 | POST | `/v1/lessons/:id/complete` | Mark a text lesson as done |
 | POST | `/v1/lessons/:id/video-progress` | Video heartbeat: `{ session_id, seq, ranges, position, playback_rate }`. Answers `{ accepted, status, progress }`; `accepted` is false for a replayed `seq`. Completes the lesson at its threshold |
-| GET | `/v1/quizzes/:id` | Redacted definition, remaining attempts (phase 3) |
-| POST | `/v1/quizzes/:id/attempts` | Submit an attempt (phase 3) |
+| POST | `/v1/lessons/:id/quiz/attempts` | Open an attempt (201), or resume the open one (200): `{ id, attempt_number, started_at, expires_at, survey }`, where `survey` is SurveyJS JSON without answers ([07](07-quizzes.md#security-correct-answers-never-reach-the-client)) |
+| POST | `/v1/lessons/:id/quiz/attempts/:attemptId/submit` | `{ answers }` in SurveyJS shape. Answers `{ outcome, score, passed, points_earned, points_possible, status, best_score, attempts_remaining, next_attempt_at, corrections }`; a passing attempt completes the lesson. A retried submission gets the stored result |
 | GET | `/v1/me/progress` | Learner dashboard ("My training") |
 
 Content the learner cannot see answers **404, exactly like content that does not exist**, so ids reveal nothing. An assignment-only course stays invisible until the learner is assigned.
@@ -219,13 +219,14 @@ Content the learner cannot see answers **404, exactly like content that does not
 | GET, PATCH, DELETE | `/v1/admin/courses/:id` | Tree with drafts and rules; edit or publish (`published_at` set once); delete with its tree |
 | POST | `/v1/admin/chapters` | Create in an owned course |
 | PATCH, DELETE | `/v1/admin/chapters/:id` | Edit or publish; delete with its lessons |
-| POST | `/v1/admin/lessons` | Create a text or video lesson; content and settings validated against the type. A video lesson starts as a draft |
-| GET, PATCH, DELETE | `/v1/admin/lessons/:id` | Stored document and video for the editor; edit or publish (a video lesson only once its video is ready); delete |
+| POST | `/v1/admin/lessons` | Create a text, video or quiz lesson; content and settings validated against the type. Video and quiz lessons start as drafts |
+| GET, PATCH, DELETE | `/v1/admin/lessons/:id` | Stored document and video for the editor; edit or publish (a video lesson only once its video is ready, a quiz lesson once its questions are saved); delete |
+| GET, PUT | `/v1/admin/lessons/:id/quiz` | The quiz editor document, its version and `learners_attempted` (the edit warning); `PUT { document }` validates it and derives the graded definition |
 | POST | `/v1/admin/videos/uploads` | `{ lesson_id, max_duration_seconds }`: a one-time direct upload URL; uploading again replaces the lesson's video |
 | POST | `/v1/admin/access-rules` | Rule on an owned course, chapter or lesson |
 | DELETE | `/v1/admin/access-rules/:id` | Remove a rule |
 
-Publishing a course, chapter or lesson emits `content.published` once. Admins only write their own tenant's content: shared-catalog and other tenants' content answers 404. Then `/v1/admin/quizzes` and `/v1/admin/enrollments` in their phases. Plus `POST /v1/admin/files/uploads` (editor images and attachments), `POST /v1/admin/reorder` and `GET /v1/admin/reports/*` (tracking per course or per learner, CSV export).
+Publishing a course, chapter or lesson emits `content.published` once. Admins only write their own tenant's content: shared-catalog and other tenants' content answers 404. Then `/v1/admin/enrollments`, and extra quiz attempts, in phase 4. Plus `POST /v1/admin/files/uploads` (editor images and attachments), `POST /v1/admin/reorder` and `GET /v1/admin/reports/*` (tracking per course or per learner, CSV export).
 
 **System**
 
@@ -242,7 +243,8 @@ Every input is validated with Zod. Every error uses one envelope, `{ "error": { 
 | 403 | `forbidden` (admin route without `isAdmin`), `origin_not_allowed` (CSRF check) |
 | 404 | `not_found` |
 | 405 | `method_not_allowed` |
-| 409 | `completion_not_manual` (a video or quiz lesson cannot be marked as done), `slug_taken`, `not_a_video_lesson`, `video_not_ready`, `video_asset_in_use` |
+| 409 | `completion_not_manual` (a video or quiz lesson cannot be marked as done), `slug_taken`, `not_a_video_lesson`, `video_not_ready`, `video_asset_in_use`, `not_a_quiz_lesson`, `quiz_not_ready`, `attempts_exhausted`, `quiz_changed` (the quiz was edited while the attempt was open; the attempt is voided), `quiz_attempt_open` |
 | 413 | `payload_too_large` |
+| 429 | `cooldown` (with `Retry-After` and `details.next_attempt_at`) |
 | 415 | `unsupported_media_type` |
 | 500 | `internal_error` |

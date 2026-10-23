@@ -6,6 +6,7 @@ import { json } from "../http/responses.js";
 import { presentEnrollment, presentLesson } from "../presenters/learner.presenters.js";
 import { loadAccessibleLesson } from "../services/lesson-access.js";
 import { recordLessonProgress } from "../services/progress.js";
+import { loadLessonQuiz } from "../services/quiz.js";
 import { loadLessonVideo } from "../services/video.js";
 
 /**
@@ -26,7 +27,8 @@ function renderContent(context: RequestContext, lessonId: string, content: unkno
 
 /**
  * GET /v1/lessons/:id: the lesson rendered to HTML, with the learner's status
- * and, for a video lesson, a signed playback URL. Never mutates state.
+ * and, for a video lesson, a signed playback URL; for a quiz lesson, its rules
+ * and the learner's standing, never a question. Never mutates state.
  */
 export async function getLesson(
   context: RequestContext,
@@ -38,7 +40,11 @@ export async function getLesson(
     .find((entry) => entry.lesson.id === lesson.id)?.status;
   const html = renderContent(context, lesson.id, lesson.content);
   const video = lesson.type === "video" ? await loadLessonVideo(context, lesson) : null;
-  return json(presentLesson(lesson, html, status ?? "not_started", video), context.requestId);
+  const quiz = lesson.type === "quiz" ? await loadLessonQuiz(context, lesson) : null;
+  return json(
+    presentLesson(lesson, html, status ?? "not_started", { video, quiz, now: context.now() }),
+    context.requestId,
+  );
 }
 
 async function progress(

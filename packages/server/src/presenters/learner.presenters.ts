@@ -18,7 +18,9 @@ import type {
 
 import type { ChapterView, CourseView } from "../services/course-view.js";
 import { effectiveSettings } from "../services/lesson-settings.js";
+import type { LessonQuiz } from "../services/quiz.js";
 import type { LessonVideo } from "../services/video.js";
+import { presentLessonQuiz } from "./quiz.presenters.js";
 
 // API bodies use snake_case fields and ISO 8601 UTC dates (modules/api-design.mdc).
 
@@ -126,8 +128,9 @@ export function presentLesson(
   lesson: LessonDetail,
   html: string,
   status: LessonProgressStatus,
-  video: LessonVideo | null,
+  extras: { video: LessonVideo | null; quiz: LessonQuiz | null; now: Date },
 ): ApiLesson {
+  const { video, quiz } = extras;
   return {
     id: lesson.id,
     course_id: lesson.courseId,
@@ -140,6 +143,6 @@ export function presentLesson(
     settings: effectiveSettings(lesson.type, lesson.settings),
     status,
     video: video === null ? null : presentLessonVideo(video),
-    quiz: null,
+    quiz: quiz === null ? null : presentLessonQuiz(quiz, extras.now),
   };
 }

@@ -1,6 +1,6 @@
 import { httpErrors } from "./http-error.js";
 
-type Method = "GET" | "POST" | "PATCH" | "DELETE";
+type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 type RouteParams = Readonly<Record<string, string>>;
 
 export type Route<C> = {

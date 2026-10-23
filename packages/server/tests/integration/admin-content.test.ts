@@ -218,26 +218,6 @@ describe("validation", () => {
     ).toBeGreaterThan(0);
   });
 
-  it("refuses quiz lessons until phase 3", async () => {
-    const course = await create("courses", { slug: "types", title: "Types" });
-    const chapter = await create("chapters", {
-      course_id: String(course.body.id),
-      title: "C",
-      position: 0,
-    });
-
-    expect(
-      (
-        await create("lessons", {
-          chapter_id: String(chapter.body.id),
-          type: "quiz",
-          title: "V",
-          position: 0,
-        })
-      ).status,
-    ).toBe(400);
-  });
-
   it("answers 400 for an empty patch, 415 without JSON and 413 for an oversized body", async () => {
     const course = await create("courses", { slug: "patch-me", title: "Patch" });
     const url = `/v1/admin/courses/${String(course.body.id)}`;

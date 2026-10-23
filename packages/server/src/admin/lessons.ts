@@ -14,6 +14,7 @@ import { json, noContent } from "../http/responses.js";
 import { presentLessonDetail } from "../presenters/admin.presenters.js";
 import { parseLessonSettings } from "../services/lesson-settings.js";
 import { emitIfPublished } from "../services/publishing.js";
+import { quizNotReady } from "../services/quiz.js";
 import { createLessonBody, updateLessonBody } from "./admin.schemas.js";
 import { found, parseId } from "./ids.js";
 import { BODY_LIMITS, assertNotEmpty, parseBody } from "./parse-body.js";
@@ -43,15 +44,22 @@ function validContent(content: unknown): JsonValue | null {
 const videoNotReady = () =>
   new AppError("conflict", "video_not_ready", "Publish a video lesson once its video is ready.");
 
-/** A video lesson cannot be published until its video is ready (spec 06, "Upload", step 5). */
+/**
+ * A video lesson cannot be published until its video is ready (spec 06,
+ * "Upload", step 5), nor a quiz lesson before its questions are saved.
+ */
 async function assertPublishable(
   reads: StorageReads,
   scope: TenantScope,
   lesson: { id: LessonId; type: LessonDetail["type"] },
 ): Promise<void> {
-  if (lesson.type !== "video") return;
-  const asset = await reads.findVideoAsset(scope, lesson.id);
-  if (asset?.status !== "ready") throw videoNotReady();
+  if (lesson.type === "video") {
+    const asset = await reads.findVideoAsset(scope, lesson.id);
+    if (asset?.status !== "ready") throw videoNotReady();
+  }
+  if (lesson.type === "quiz" && (await reads.findQuiz(scope, lesson.id)) === null) {
+    throw quizNotReady();
+  }
 }
 
 /** POST /v1/admin/lessons: 404 when the chapter does not exist or belongs to another tenant. */
@@ -59,8 +67,9 @@ export async function createLesson(context: RequestContext): Promise<Response> {
   const body = await parseBody(context, createLessonBody, BODY_LIMITS.lesson);
   const content = validContent(body.content);
   const settings = parseLessonSettings(body.type, body.settings);
-  // A new video lesson has no video yet, so it starts as a draft.
+  // A new video lesson has no video yet, and a new quiz lesson no questions: both start as drafts.
   if (body.type === "video" && body.status === "published") throw videoNotReady();
+  if (body.type === "quiz" && body.status === "published") throw quizNotReady();
   const chapter = found(await context.storage.findChapter(context.scope, body.chapter_id));
   const lesson: LessonDetail = {
     id: lessonIdSchema.parse(context.newId()),
