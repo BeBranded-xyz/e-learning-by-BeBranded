@@ -223,10 +223,11 @@ Content the learner cannot see answers **404, exactly like content that does not
 | GET, PATCH, DELETE | `/v1/admin/lessons/:id` | Stored document and video for the editor; edit or publish (a video lesson only once its video is ready, a quiz lesson once its questions are saved); delete |
 | GET, PUT | `/v1/admin/lessons/:id/quiz` | The quiz editor document, its version and `learners_attempted` (the edit warning); `PUT { document }` validates it and derives the graded definition |
 | POST | `/v1/admin/videos/uploads` | `{ lesson_id, max_duration_seconds }`: a one-time direct upload URL; uploading again replaces the lesson's video |
+| POST | `/v1/admin/reorder` | `{ course_id, chapters: [{ id, lesson_ids }] }`: the full new order of one owned course. Chapters and lessons are renumbered from 0 and lessons may move between chapters of the course, in one transaction. The body must name every chapter and lesson of the course exactly once: an unknown or missing id answers 409 `tree_out_of_date` (reload and retry), a repeated id 400. Answers the course tree. A moved lesson inherits its new chapter's access rules |
 | POST | `/v1/admin/access-rules` | Rule on an owned course, chapter or lesson |
 | DELETE | `/v1/admin/access-rules/:id` | Remove a rule |
 
-Publishing a course, chapter or lesson emits `content.published` once. Admins only write their own tenant's content: shared-catalog and other tenants' content answers 404. Then `/v1/admin/enrollments`, and extra quiz attempts, in phase 4. Plus `POST /v1/admin/files/uploads` (editor images and attachments), `POST /v1/admin/reorder` and `GET /v1/admin/reports/*` (tracking per course or per learner, CSV export).
+Publishing a course, chapter or lesson emits `content.published` once. Admins only write their own tenant's content: shared-catalog and other tenants' content answers 404. Then `/v1/admin/enrollments`, and extra quiz attempts, in phase 4. Plus `POST /v1/admin/files/uploads` (editor images and attachments) and `GET /v1/admin/reports/*` (tracking per course or per learner, CSV export).
 
 **System**
 

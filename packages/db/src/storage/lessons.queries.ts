@@ -118,10 +118,11 @@ export async function updateLesson(
   patch: LessonPatch,
 ): Promise<boolean> {
   if (!hasChanges(patch)) return false;
-  const { content, settings } = patch;
-  const result = await db
+  const { chapterId, content, settings } = patch;
+  let query = db
     .updateTable("lessons")
     .set({
+      chapter_id: chapterId,
       title: patch.title,
       position: patch.position,
       status: patch.status,
@@ -132,8 +133,21 @@ export async function updateLesson(
       settings: settings === undefined ? undefined : JSON.stringify(settings),
     })
     .where("id", "=", id)
-    .where(ownedBy("tenant_id", scope))
-    .executeTakeFirst();
+    .where(ownedBy("tenant_id", scope));
+  if (chapterId !== undefined) {
+    // lessons.course_id is a copy of the chapter's course: a move never leaves the course.
+    query = query.where((eb) =>
+      eb.exists(
+        eb
+          .selectFrom("chapters")
+          .select("chapters.id")
+          .where("chapters.id", "=", chapterId)
+          .whereRef("chapters.course_id", "=", "lessons.course_id")
+          .where(ownedBy("chapters.tenant_id", scope)),
+      ),
+    );
+  }
+  const result = await query.executeTakeFirst();
   return result.numUpdatedRows > 0n;
 }
 
