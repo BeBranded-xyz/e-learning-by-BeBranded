@@ -6,9 +6,15 @@ export type JsonSizeCheck =
   | { readonly kind: "too_large" }
   | { readonly kind: "too_deep" };
 
+const encoder = new TextEncoder();
+
+/**
+ * Exact UTF-8 size of a scalar as JSON writes it, escapes included (a control
+ * character takes 6 bytes). Stringifying one scalar is linear and cannot recurse.
+ */
 function scalarSize(value: unknown): number {
-  if (typeof value === "string") return new TextEncoder().encode(value).length + 2;
-  if (typeof value === "number" || typeof value === "boolean") return String(value).length;
+  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean")
+    return encoder.encode(JSON.stringify(value)).length;
   return 4; // null, and anything JSON would write as null
 }
 

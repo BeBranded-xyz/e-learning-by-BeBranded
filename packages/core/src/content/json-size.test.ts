@@ -19,6 +19,24 @@ describe("measureJson", () => {
     );
   });
 
+  it.each([
+    ["control characters", "\u0000\u0001\u001f".repeat(20)],
+    ["quotes and backslashes", '"\\'.repeat(20)],
+    ["a line separator", "\u2028"],
+    ["a lone surrogate", "\ud800"],
+  ])("counts the escapes JSON writes for %s", (_name, value) => {
+    const check = measureJson(value, Number.MAX_SAFE_INTEGER);
+
+    expect(check).toEqual({
+      kind: "ok",
+      bytes: new TextEncoder().encode(JSON.stringify(value)).length,
+    });
+  });
+
+  it("refuses a string whose escaped form is over the limit", () => {
+    expect(measureJson("\u0000".repeat(20), 100)).toEqual({ kind: "too_large" });
+  });
+
   it("counts UTF-8 bytes, not characters", () => {
     expect(measureJson("é", 100)).toEqual({ kind: "ok", bytes: 4 });
   });
