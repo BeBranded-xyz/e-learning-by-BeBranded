@@ -1,2 +1,2 @@
-export { lessonEditorSchema } from "./schema.js";
-export type { LessonEditorSchema } from "./schema.js";
+export { lessonEditorSchema, quizEditorSchema } from "./schema.js";
+export type { LessonEditorSchema, QuizEditorSchema } from "./schema.js";
