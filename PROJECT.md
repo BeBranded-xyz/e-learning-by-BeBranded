@@ -171,8 +171,8 @@ No deployed environment yet.
 ### Domain ownership and data governance
 
 - **Authoritative rules**: pure functions in `@bebranded/elearning-core`
-  (`canAccess`, progress, interval merging, plausibility, `scoreQuiz`,
-  `redactQuiz`, content validation).
+  (`canAccess`, progress, interval merging, plausibility, `gradeQuiz`,
+  `toSurveyJson`, content validation).
 - **Data lifecycle**: `deleteLearnerData`, `exportLearnerData`, configurable
   retention (`docs/specifications/08-non-functional-requirements.md`).
 

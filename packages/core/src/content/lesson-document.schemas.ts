@@ -65,7 +65,7 @@ const linkSchema = z.strictObject({
   content: z.array(styledTextSchema).max(100),
 });
 
-const inlineContentSchema = z
+export const inlineContentSchema = z
   .array(z.discriminatedUnion("type", [styledTextSchema, linkSchema]))
   .max(500);
 const plainContentSchema = z

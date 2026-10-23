@@ -140,5 +140,6 @@ export function presentLesson(
     settings: effectiveSettings(lesson.type, lesson.settings),
     status,
     video: video === null ? null : presentLessonVideo(video),
+    quiz: null,
   };
 }

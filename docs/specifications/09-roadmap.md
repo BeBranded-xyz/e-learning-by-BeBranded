@@ -32,7 +32,7 @@
 
 ### Phase 3: quizzes
 
-- Question custom blocks in the editor, `editorDocumentToSurvey()` conversion
+- Question custom blocks in the editor, `editorDocumentToQuiz()` conversion
 - Redaction and server-side grading, attempts, cooldown, shuffling
 - `<Quiz>` built on SurveyJS Form Library
 - Corrections and explanations

@@ -1,5 +1,6 @@
 import type { JsonValue } from "../ports/storage.types.js";
 import type { LessonProgressStatus } from "../progress/progress.js";
+import type { ApiLessonQuiz } from "./quiz-api.types.js";
 
 /**
  * The learner API contract (spec 04, section 8): JSON bodies with snake_case
@@ -76,6 +77,8 @@ export type ApiLesson = {
   readonly status: LessonProgressStatus;
   /** Video lessons only; null for other types. */
   readonly video: ApiLessonVideo | null;
+  /** Quiz lessons only; null for other types. Never contains a question or an answer. */
+  readonly quiz: ApiLessonQuiz | null;
 };
 
 export type ApiVideoAssetStatus = "uploading" | "processing" | "ready" | "error";
