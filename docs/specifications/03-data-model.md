@@ -132,7 +132,7 @@ erDiagram
 | watched_seconds | numeric | length of the union, denormalized |
 | coverage | numeric | `watched_seconds / duration_seconds` |
 | last_position | numeric | to resume playback |
-| last_heartbeat_at | timestamptz | used by the plausibility check |
+| last_heartbeat_at | timestamptz | last accepted heartbeat across all player sessions, used by the plausibility check |
 | suspicious_events | int | count of rejected or truncated heartbeats |
 
 **`quiz_attempts`**: `id`, `quiz_id`, `learner_id`, `started_at`, `submitted_at`, `shuffle_seed`, `answers` jsonb, `score` numeric, `passed` bool, `quiz_version` (hash of the definition at the time of the attempt).

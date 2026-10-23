@@ -98,6 +98,17 @@ export type { IdentityResolver, Learner, LearnerInput } from "./identity/learner
 export { advanceLessonStatus, computeProgress } from "./progress/progress.js";
 export type { CourseProgress, LessonProgressStatus, ProgressLesson } from "./progress/progress.js";
 
+export { videoAssetStatusSchema, videoLessonSettingsSchema } from "./video/video.schemas.js";
+export type { VideoAssetStatus, VideoLessonSettings, WatchedRange } from "./video/video.schemas.js";
+export { clampRanges, computeCoverage, mergeRanges, rangesLength } from "./video/ranges.js";
+export { VIDEO_TRACKING, applyHeartbeat } from "./video/heartbeat.js";
+export type {
+  Heartbeat,
+  HeartbeatOutcome,
+  HeartbeatVideo,
+  VideoProgressState,
+} from "./video/heartbeat.js";
+
 export { eventTypes, parseEventPayload } from "./events/events.js";
 export type { DomainEvent, EventHandlers, EventPayload, EventType } from "./events/events.js";
 
@@ -119,6 +130,13 @@ export type {
   StorageWrites,
   TenantScope,
 } from "./ports/storage.types.js";
+
+export type {
+  PlaybackSource,
+  VideoAssetSnapshot,
+  VideoProvider,
+  VideoWebhookEvent,
+} from "./ports/video-provider.types.js";
 
 export type {
   ApiChapter,
