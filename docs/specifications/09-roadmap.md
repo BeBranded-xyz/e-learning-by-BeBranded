@@ -30,7 +30,7 @@
 
 **Deliverable**: video lessons with verified completion.
 
-### Phase 3: quizzes
+### Phase 3: quizzes *(done)*
 
 - Question custom blocks in the editor, `editorDocumentToQuiz()` conversion
 - Redaction and server-side grading, attempts, cooldown, shuffling

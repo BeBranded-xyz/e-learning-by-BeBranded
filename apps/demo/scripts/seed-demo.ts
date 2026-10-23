@@ -23,6 +23,7 @@ import type {
 } from "@bebranded/elearning-core";
 
 import { DEMO_VIDEO_SECONDS } from "../lib/demo-video.js";
+import { demoQuiz } from "./demo-quiz.js";
 import {
   extinguisherNotes,
   fireLesson,
@@ -127,6 +128,8 @@ async function insert(tx: StorageTransaction, entry: CatalogEntry) {
   for (const item of entry.lessons) await tx.insertLesson(scope, item);
   for (const item of entry.lessons.filter((candidate) => candidate.type === "video"))
     await tx.saveVideoAsset(scope, readyVideo(item));
+  for (const item of entry.lessons.filter((candidate) => candidate.type === "quiz"))
+    await tx.saveQuiz(scope, demoQuiz(item));
   for (const rule of entry.rules) await tx.insertAccessRule(rule);
 }
 
@@ -153,7 +156,35 @@ function videoCourse(): CatalogEntry {
   };
 }
 
-/** Four courses: one for everyone, one for managers only, a draft nobody sees, and a video course. */
+/** A course with one required quiz, graded on the server, with two attempts (spec 07). */
+function quizCourse(): CatalogEntry {
+  const quizzes = course("fire-safety-check", "Fire safety check", {
+    summary: "Pass the quiz to complete the course.",
+  });
+  const check = chapter(quizzes, "Check", 0);
+  const fireQuiz = lesson(
+    check,
+    { title: "Fire safety quiz", position: 0, content: [] },
+    {
+      type: "quiz",
+      estimatedMinutes: 3,
+      settings: {
+        passingScore: 0.75,
+        maxAttempts: 2,
+        shuffleOptions: true,
+        showCorrection: "after_pass",
+      },
+    },
+  );
+  return {
+    course: quizzes,
+    chapters: [check],
+    lessons: [fireQuiz],
+    rules: [allow(quizzes, { type: "everyone" })],
+  };
+}
+
+/** Five courses: for everyone, for managers only, a draft nobody sees, a video and a quiz course. */
 function demoCatalog(): CatalogEntry[] {
   const safety = course("workplace-safety", "Workplace safety", {
     summary: "The basics everyone at Acme Corp needs.",
@@ -195,6 +226,7 @@ function demoCatalog(): CatalogEntry[] {
     },
     { course: draft, chapters: [], lessons: [], rules: [allow(draft, { type: "everyone" })] },
     videoCourse(),
+    quizCourse(),
   ];
 }
 
