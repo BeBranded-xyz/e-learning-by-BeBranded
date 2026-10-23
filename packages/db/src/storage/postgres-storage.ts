@@ -19,6 +19,7 @@ import * as content from "./content.queries.js";
 import * as lessons from "./lessons.queries.js";
 import * as outbox from "./outbox.queries.js";
 import * as progress from "./progress.queries.js";
+import * as quiz from "./quiz.queries.js";
 import * as video from "./video.queries.js";
 
 const optionsSchema = z.union([
@@ -60,6 +61,10 @@ function reads(db: Kysely<DB>): StorageReads {
     findVideoAsset: (scope, lessonId) => video.findVideoAsset(db, scope, lessonId),
     findVideoProgress: (scope, learnerId, lessonId) =>
       video.findVideoProgress(db, scope, { learnerId, lessonId }),
+    findQuiz: (scope, lessonId) => quiz.findQuiz(db, scope, lessonId),
+    findQuizStanding: (scope, learnerId, lessonId) =>
+      quiz.findQuizStanding(db, scope, { learnerId, lessonId }),
+    countQuizLearners: (scope, lessonId) => quiz.countQuizLearners(db, scope, lessonId),
   };
 }
 
@@ -90,6 +95,12 @@ function writes(db: Kysely<DB>): StorageWrites {
     lockOrCreateVideoProgress: (scope, learnerId, lessonId) =>
       video.lockOrCreateVideoProgress(db, scope, { learnerId, lessonId }),
     saveVideoProgress: (scope, value) => video.saveVideoProgress(db, scope, value),
+    saveQuiz: (scope, value) => quiz.saveQuiz(db, scope, value),
+    insertQuizAttempt: (scope, attempt) =>
+      withConflicts(() => quiz.insertQuizAttempt(db, scope, attempt)),
+    lockQuizAttempt: (scope, learnerId, attemptId) =>
+      quiz.lockQuizAttempt(db, scope, learnerId, attemptId),
+    closeQuizAttempt: (scope, attempt) => quiz.closeQuizAttempt(db, scope, attempt),
   };
 }
 

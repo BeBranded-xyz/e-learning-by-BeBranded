@@ -9,6 +9,8 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
+export type Int8 = ColumnType<string, bigint | number | string, bigint | number | string>;
+
 export type Json = JsonValue;
 
 export type JsonArray = JsonValue[];
@@ -172,6 +174,74 @@ export interface Lessons {
   updated_at: Generated<Timestamp>;
 }
 
+export interface QuizAttempts {
+  /**
+   * Raw answers as submitted; null until submitted.
+   */
+  answers: Json | null;
+  attempt_number: number;
+  /**
+   * When the attempt was submitted, expired or voided; null while open.
+   */
+  closed_at: Timestamp | null;
+  created_at: Generated<Timestamp>;
+  /**
+   * Null without a time limit.
+   */
+  expires_at: Timestamp | null;
+  id: Generated<string>;
+  lesson_progress_id: string;
+  passed: boolean | null;
+  /**
+   * Points earned per question; null until graded.
+   */
+  question_results: Json | null;
+  quiz_id: string;
+  quiz_version: string;
+  /**
+   * Between 0 and 1; null while open or voided.
+   */
+  score: Numeric | null;
+  /**
+   * Rebuilds the order of questions and options the learner saw.
+   */
+  shuffle_seed: Int8;
+  started_at: Timestamp;
+  /**
+   * open; submitted (graded); expired (past the time limit, score 0); voided (the quiz changed while open, does not count).
+   */
+  status: string;
+  /**
+   * Tenant of the learner, as on lesson_progress.
+   */
+  tenant_id: string | null;
+  updated_at: Generated<Timestamp>;
+}
+
+export interface Quizzes {
+  created_at: Generated<Timestamp>;
+  /**
+   * Graded definition derived from the editor document on save (editorDocumentToQuiz).
+   */
+  definition: Json;
+  /**
+   * BlockNote document of the quiz editor, the source of the definition.
+   */
+  editor_document: Json;
+  id: Generated<string>;
+  lesson_id: string;
+  question_count: number;
+  /**
+   * Copy of the lesson tenant.
+   */
+  tenant_id: string | null;
+  updated_at: Generated<Timestamp>;
+  /**
+   * SHA-256 of the definition; attempts store the version they were opened with.
+   */
+  version: string;
+}
+
 export interface SchemaMigrations {
   applied_at: Generated<Timestamp>;
   checksum: string;
@@ -246,6 +316,8 @@ export interface DB {
   event_outbox: EventOutbox;
   lesson_progress: LessonProgress;
   lessons: Lessons;
+  quiz_attempts: QuizAttempts;
+  quizzes: Quizzes;
   schema_migrations: SchemaMigrations;
   video_assets: VideoAssets;
   video_progress: VideoProgress;
