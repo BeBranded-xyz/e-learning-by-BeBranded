@@ -4,15 +4,21 @@ import type {
   ApiCourseSummary,
   ApiEnrollment,
   ApiLesson,
+  ApiLessonVideo,
   ApiProgress,
+  ApiVideoHeartbeat,
+  ApiVideoProgress,
   Course,
   CourseProgress,
   Enrollment,
   LessonDetail,
   LessonProgressStatus,
+  VideoProgress,
 } from "@bebranded/elearning-core";
 
 import type { ChapterView, CourseView } from "../services/course-view.js";
+import { effectiveSettings } from "../services/lesson-settings.js";
+import type { LessonVideo } from "../services/video.js";
 
 // API bodies use snake_case fields and ISO 8601 UTC dates (modules/api-design.mdc).
 
@@ -81,10 +87,46 @@ export function presentCourseView(view: CourseView): ApiCourse {
   };
 }
 
+function presentVideoProgress(progress: VideoProgress | null): ApiVideoProgress {
+  return {
+    watched_seconds: progress?.watchedSeconds ?? 0,
+    coverage: progress?.coverage ?? 0,
+    last_position: progress?.lastPosition ?? 0,
+    watched_ranges: progress?.watchedRanges ?? [],
+  };
+}
+
+function presentLessonVideo({ asset, progress, playback }: LessonVideo): ApiLessonVideo {
+  return {
+    status: asset?.status ?? "uploading",
+    duration_seconds: asset?.durationSeconds ?? null,
+    thumbnail_url: asset?.thumbnailUrl ?? null,
+    captions: asset?.captions ?? [],
+    playback:
+      playback === null
+        ? null
+        : { type: playback.type, url: playback.url, expires_at: playback.expiresAt.toISOString() },
+    progress: presentVideoProgress(progress),
+  };
+}
+
+export function presentHeartbeat(outcome: {
+  accepted: boolean;
+  status: LessonProgressStatus;
+  progress: VideoProgress | null;
+}): ApiVideoHeartbeat {
+  return {
+    accepted: outcome.accepted,
+    status: outcome.status,
+    progress: presentVideoProgress(outcome.progress),
+  };
+}
+
 export function presentLesson(
   lesson: LessonDetail,
   html: string,
   status: LessonProgressStatus,
+  video: LessonVideo | null,
 ): ApiLesson {
   return {
     id: lesson.id,
@@ -95,7 +137,8 @@ export function presentLesson(
     estimated_minutes: lesson.estimatedMinutes,
     is_required: lesson.isRequired,
     html,
-    settings: lesson.settings,
+    settings: effectiveSettings(lesson.type, lesson.settings),
     status,
+    video: video === null ? null : presentLessonVideo(video),
   };
 }

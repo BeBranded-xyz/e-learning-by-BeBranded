@@ -36,6 +36,8 @@ export const httpErrors = {
   originNotAllowed: () =>
     new AppError("forbidden", "origin_not_allowed", "Requests from this origin are not allowed."),
   unauthenticated: () => new AppError("unauthenticated", "unauthenticated", "Sign in to continue."),
+  invalidSignature: () =>
+    new AppError("unauthenticated", "invalid_signature", "The webhook signature is invalid."),
   forbidden: () => new AppError("forbidden", "forbidden", "You are not allowed to do this."),
 };
 

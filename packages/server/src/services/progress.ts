@@ -17,7 +17,7 @@ import type {
 import type { RequestContext } from "../context.js";
 import { emit } from "./events.js";
 
-type ProgressInput = {
+export type ProgressInput = {
   readonly course: Course;
   readonly lesson: LessonSummary;
   /** Course lessons with the learner's access, computed before the transaction. */
@@ -107,32 +107,39 @@ async function saveLesson(
 
 /**
  * Moves a lesson forward for the learner and keeps the enrollment in sync,
- * in one transaction with the enrollment row locked (no lost update when the
+ * inside `tx`, with the enrollment row locked first (no lost update when the
  * same learner completes two lessons at once). Never moves backwards.
  */
-export async function recordLessonProgress(
+export async function applyLessonProgress(
+  tx: StorageTransaction,
   context: RequestContext,
   input: ProgressInput,
 ): Promise<ProgressOutcome> {
-  return context.storage.transaction(async (tx) => {
-    let enrollment = await tx.lockOrCreateEnrollment(
-      context.scope,
-      newEnrollment(context, input.course),
-    );
-    const [current] = await tx.listLessonProgress(context.scope, context.learner.learnerId, [
-      input.lesson.id,
-    ]);
-    const status = await saveLesson(tx, context, input, current);
-    if (enrollment.startedAt === null) {
-      enrollment = { ...enrollment, startedAt: context.now() };
-      await emit(tx, context, "course.started", {
-        learnerId: enrollment.learnerId,
-        courseId: enrollment.courseId,
-      });
-    }
-    return {
-      status,
-      enrollment: await refreshEnrollment(tx, context, enrollment, input.progressLessons),
-    };
-  });
+  let enrollment = await tx.lockOrCreateEnrollment(
+    context.scope,
+    newEnrollment(context, input.course),
+  );
+  const [current] = await tx.listLessonProgress(context.scope, context.learner.learnerId, [
+    input.lesson.id,
+  ]);
+  const status = await saveLesson(tx, context, input, current);
+  if (enrollment.startedAt === null) {
+    enrollment = { ...enrollment, startedAt: context.now() };
+    await emit(tx, context, "course.started", {
+      learnerId: enrollment.learnerId,
+      courseId: enrollment.courseId,
+    });
+  }
+  return {
+    status,
+    enrollment: await refreshEnrollment(tx, context, enrollment, input.progressLessons),
+  };
+}
+
+/** `applyLessonProgress` in its own transaction. */
+export function recordLessonProgress(
+  context: RequestContext,
+  input: ProgressInput,
+): Promise<ProgressOutcome> {
+  return context.storage.transaction((tx) => applyLessonProgress(tx, context, input));
 }

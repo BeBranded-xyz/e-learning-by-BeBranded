@@ -1,6 +1,11 @@
 import { z } from "zod";
 
-import type { EventHandlers, IdentityResolver, StorageAdapter } from "@bebranded/elearning-core";
+import type {
+  EventHandlers,
+  IdentityResolver,
+  StorageAdapter,
+  VideoProvider,
+} from "@bebranded/elearning-core";
 
 export type Logger = {
   warn(message: string, meta?: Record<string, unknown>): void;
@@ -27,6 +32,13 @@ const optionsSchema = z.strictObject({
   allowedOrigins: z
     .array(z.url({ protocol: /^https?$/ }).transform((url) => new URL(url).origin))
     .optional(),
+  /** Video hosting for video lessons, e.g. cloudflareStream() (spec 06). */
+  video: z
+    .custom<VideoProvider>(
+      (value) => typeof value === "object" && value !== null && "createPlaybackToken" in value,
+      "video must be a VideoProvider, e.g. cloudflareStream()",
+    )
+    .optional(),
   events: z.record(z.string(), fn<(event: never) => Promise<void>>("event handler")).default({}),
   logger: z.custom<Logger>((value) => typeof value === "object" && value !== null).optional(),
   clock: fn<() => Date>("clock").optional(),
@@ -41,6 +53,7 @@ export type ResolvedOptions = {
   readonly basePath: string;
   readonly sharedCatalog: boolean;
   readonly allowedOrigins: readonly string[] | undefined;
+  readonly video: VideoProvider | null;
   readonly events: EventHandlers;
   readonly logger: Logger;
   readonly clock: () => Date;
@@ -67,6 +80,7 @@ export function resolveOptions(input: ElearningOptions): ResolvedOptions {
     basePath: options.basePath,
     sharedCatalog: options.sharedCatalog,
     allowedOrigins: options.allowedOrigins,
+    video: options.video ?? null,
     events: input.events ?? {},
     logger: options.logger ?? consoleLogger,
     clock: options.clock ?? (() => new Date()),

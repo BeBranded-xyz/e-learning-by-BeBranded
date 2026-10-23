@@ -220,6 +220,9 @@ importers:
       '@bebranded/elearning-db':
         specifier: workspace:^
         version: link:../db
+      '@bebranded/elearning-video':
+        specifier: workspace:^
+        version: link:../video
       kysely:
         specifier: ^0.29.7
         version: 0.29.7

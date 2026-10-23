@@ -35,6 +35,7 @@ Paths are relative to the host's mount point. Auth: `client` = the host's sessio
 | `getLesson` | GET `/v1/lessons/:id` | Lesson HTML and status | `@bebranded/elearning-react` | client | active | maintainers | spec 04, section 8 |
 | `startLesson` | POST `/v1/lessons/:id/start` | Lesson opened | `@bebranded/elearning-react` | client | active | maintainers | spec 04, section 8 |
 | `completeLesson` | POST `/v1/lessons/:id/complete` | Text lesson done | `@bebranded/elearning-react` | client | active | maintainers | spec 04, section 8 |
+| `recordVideoHeartbeat` | POST `/v1/lessons/:id/video-progress` | Video heartbeat, watch verification | `@bebranded/elearning-react` | client | active | maintainers | spec 06 |
 | `myProgress` | GET `/v1/me/progress` | Learner's enrollments | `@bebranded/elearning-react` | client | active | maintainers | spec 04, section 8 |
 | `listAdminCourses` | GET `/v1/admin/courses` | All courses of the tenant and the shared catalog | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8 |
 | `createCourse` | POST `/v1/admin/courses` | Create a draft course | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8 |
@@ -48,6 +49,8 @@ Paths are relative to the host's mount point. Auth: `client` = the host's sessio
 | `getAdminLesson` | GET `/v1/admin/lessons/:id` | Lesson with its stored document | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8 |
 | `updateLesson` | PATCH `/v1/admin/lessons/:id` | Edit or publish a lesson | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8 |
 | `deleteLesson` | DELETE `/v1/admin/lessons/:id` | Delete a lesson | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8 |
+| `createVideoUpload` | POST `/v1/admin/videos/uploads` | One-time direct upload URL for a video lesson | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 06 |
+| `handleVideoWebhook` | POST `/v1/webhooks/video` | Provider processing state of a video | video provider | provider signature | active | maintainers | spec 06 |
 | `createAccessRule` | POST `/v1/admin/access-rules` | Add an audience rule | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8 |
 | `deleteAccessRule` | DELETE `/v1/admin/access-rules/:id` | Remove an audience rule | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8 |
 

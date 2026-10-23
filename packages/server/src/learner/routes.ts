@@ -4,6 +4,7 @@ import { getCourse, listCatalog } from "./catalog.js";
 import { enroll } from "./enroll.js";
 import { completeLesson, getLesson, startLesson } from "./lessons.js";
 import { myProgress } from "./my-progress.js";
+import { recordVideoHeartbeat } from "./video-progress.js";
 
 /** Learner API (spec 04, section 8). Paths are relative to the mount point. */
 export const learnerRoutes: readonly Route<RequestContext>[] = [
@@ -32,6 +33,11 @@ export const learnerRoutes: readonly Route<RequestContext>[] = [
     method: "POST",
     pattern: "/v1/lessons/:id/complete",
     handle: (context, { id }) => completeLesson(context, id),
+  },
+  {
+    method: "POST",
+    pattern: "/v1/lessons/:id/video-progress",
+    handle: (context, { id }) => recordVideoHeartbeat(context, id),
   },
   { method: "GET", pattern: "/v1/me/progress", handle: (context) => myProgress(context) },
 ];

@@ -5,6 +5,7 @@ import type {
   LessonDetail,
   LessonSummary,
   TenantScope,
+  VideoAsset,
 } from "@bebranded/elearning-core";
 
 const iso = (date: Date | null) => (date === null ? null : date.toISOString());
@@ -53,12 +54,25 @@ function presentLessonSummary(lesson: LessonSummary) {
   };
 }
 
-export function presentLessonDetail(lesson: LessonDetail) {
+export function presentVideoAsset(asset: VideoAsset) {
+  return {
+    id: asset.id,
+    provider: asset.provider,
+    status: asset.status,
+    duration_seconds: asset.durationSeconds,
+    thumbnail_url: asset.thumbnailUrl,
+    captions: asset.captions,
+  };
+}
+
+/** `video` is null for other lesson types, and for a video lesson nothing was uploaded to yet. */
+export function presentLessonDetail(lesson: LessonDetail, video: VideoAsset | null = null) {
   return {
     ...presentLessonSummary(lesson),
     content: lesson.content,
     content_schema_version: lesson.contentSchemaVersion,
     settings: lesson.settings,
+    video: video === null ? null : presentVideoAsset(video),
   };
 }
 

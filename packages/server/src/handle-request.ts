@@ -8,6 +8,7 @@ import { assertAllowedOrigin } from "./http/request.js";
 import { errorResponse, statusOf } from "./http/responses.js";
 import { matchRoute, relativePath } from "./http/router.js";
 import type { Route } from "./http/router.js";
+import { VIDEO_WEBHOOK_PATH, handleVideoWebhook } from "./webhooks/video-webhook.js";
 
 const REQUEST_ID = /^[A-Za-z0-9._-]{8,128}$/;
 
@@ -76,6 +77,8 @@ export async function handleRequest(
   try {
     const path = relativePath(request, options.basePath);
     if (path === null) throw httpErrors.notFound();
+    // Server-to-server: no learner session and no browser Origin to check.
+    if (path === VIDEO_WEBHOOK_PATH) return await handleVideoWebhook(request, options, requestId);
     const { route, params } = matchRoute(routes, request.method, path);
     assertAllowedOrigin(request, options.allowedOrigins);
     const learner = await authenticate(request, options);

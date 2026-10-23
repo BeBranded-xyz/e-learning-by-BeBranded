@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@bebranded/elearning-db": "workspace:^",
+    "@bebranded/elearning-video": "workspace:^",
     "kysely": "^0.29.7"
   }
 }

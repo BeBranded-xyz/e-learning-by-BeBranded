@@ -25,6 +25,10 @@ export const elearning = createElearning({
 await elearning.deliverEvents();
 ```
 
+Video lessons need a video provider, for example
+`video: cloudflareStream({ ... })` from `@bebranded/elearning-video`. The
+provider's webhooks go to `POST <basePath>/v1/webhooks/video`.
+
 Options are validated at startup. The identity resolver runs on every
 request; the module never creates users or sessions. State-changing requests
 from another origin are refused (`allowedOrigins` to configure).

@@ -201,10 +201,10 @@ All routes are relative to the mount point (e.g. `/api/elearning`) and versioned
 | GET | `/v1/courses` | Catalog filtered by access rules, with the learner's enrollment |
 | GET | `/v1/courses/:slug` | Accessible chapters › lessons tree, with lesson statuses and progress |
 | POST | `/v1/courses/:id/enroll` | Self-enroll (201, or 200 when already enrolled) |
-| GET | `/v1/lessons/:id` | Lesson rendered to HTML (plus video token or redacted quiz later) |
+| GET | `/v1/lessons/:id` | Lesson rendered to HTML, settings with defaults filled; for a video lesson, `video` with status, duration, captions, a signed `playback` URL once ready, and the learner's progress (resume position, watched ranges) |
 | POST | `/v1/lessons/:id/start` | Record that the learner opened the lesson (enrolls on first start in a self-enroll course) |
 | POST | `/v1/lessons/:id/complete` | Mark a text lesson as done |
-| POST | `/v1/lessons/:id/video-progress` | Video heartbeat (phase 2) |
+| POST | `/v1/lessons/:id/video-progress` | Video heartbeat: `{ session_id, seq, ranges, position, playback_rate }`. Answers `{ accepted, status, progress }`; `accepted` is false for a replayed `seq`. Completes the lesson at its threshold |
 | GET | `/v1/quizzes/:id` | Redacted definition, remaining attempts (phase 3) |
 | POST | `/v1/quizzes/:id/attempts` | Submit an attempt (phase 3) |
 | GET | `/v1/me/progress` | Learner dashboard ("My training") |
@@ -219,16 +219,17 @@ Content the learner cannot see answers **404, exactly like content that does not
 | GET, PATCH, DELETE | `/v1/admin/courses/:id` | Tree with drafts and rules; edit or publish (`published_at` set once); delete with its tree |
 | POST | `/v1/admin/chapters` | Create in an owned course |
 | PATCH, DELETE | `/v1/admin/chapters/:id` | Edit or publish; delete with its lessons |
-| POST | `/v1/admin/lessons` | Create a text lesson; content validated |
-| GET, PATCH, DELETE | `/v1/admin/lessons/:id` | Stored document for the editor; edit or publish; delete |
+| POST | `/v1/admin/lessons` | Create a text or video lesson; content and settings validated against the type. A video lesson starts as a draft |
+| GET, PATCH, DELETE | `/v1/admin/lessons/:id` | Stored document and video for the editor; edit or publish (a video lesson only once its video is ready); delete |
+| POST | `/v1/admin/videos/uploads` | `{ lesson_id, max_duration_seconds }`: a one-time direct upload URL; uploading again replaces the lesson's video |
 | POST | `/v1/admin/access-rules` | Rule on an owned course, chapter or lesson |
 | DELETE | `/v1/admin/access-rules/:id` | Remove a rule |
 
-Publishing a course, chapter or lesson emits `content.published` once. Admins only write their own tenant's content: shared-catalog and other tenants' content answers 404. Then `/v1/admin/quizzes` and `/v1/admin/enrollments` in their phases. Plus `POST /v1/admin/videos/uploads` (direct upload), `POST /v1/admin/files/uploads` (editor images and attachments), `POST /v1/admin/reorder` and `GET /v1/admin/reports/*` (tracking per course or per learner, CSV export).
+Publishing a course, chapter or lesson emits `content.published` once. Admins only write their own tenant's content: shared-catalog and other tenants' content answers 404. Then `/v1/admin/quizzes` and `/v1/admin/enrollments` in their phases. Plus `POST /v1/admin/files/uploads` (editor images and attachments), `POST /v1/admin/reorder` and `GET /v1/admin/reports/*` (tracking per course or per learner, CSV export).
 
 **System**
 
-`POST /v1/webhooks/video` receives the video provider's webhooks (signature verified).
+`POST /v1/webhooks/video` receives the video provider's webhooks. It needs no learner session and no `Origin`: the provider's signature authenticates it (401 `invalid_signature` otherwise, logged as an error). Verified events are answered 200, even for unknown assets, so the provider stops retrying. A late `processing` event never moves a ready video back.
 
 **Errors**
 
@@ -236,12 +237,12 @@ Every input is validated with Zod. Every error uses one envelope, `{ "error": { 
 
 | Status | Codes |
 |--------|-------|
-| 400 | `validation_failed`, `invalid_json`, `invalid_content` |
-| 401 | `unauthenticated` |
+| 400 | `validation_failed`, `invalid_json`, `invalid_content`, `invalid_settings` |
+| 401 | `unauthenticated`, `invalid_signature` (video webhook) |
 | 403 | `forbidden` (admin route without `isAdmin`), `origin_not_allowed` (CSRF check) |
 | 404 | `not_found` |
 | 405 | `method_not_allowed` |
-| 409 | `completion_not_manual` (a video or quiz lesson cannot be marked as done), `slug_taken` |
+| 409 | `completion_not_manual` (a video or quiz lesson cannot be marked as done), `slug_taken`, `not_a_video_lesson`, `video_not_ready`, `video_asset_in_use` |
 | 413 | `payload_too_large` |
 | 415 | `unsupported_media_type` |
 | 500 | `internal_error` |
