@@ -77,3 +77,23 @@ export function useEnroll() {
     onSuccess: invalidate,
   });
 }
+
+export function useOpenQuizAttempt(lessonId: string) {
+  const { api } = useElearning();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => api.openQuizAttempt(lessonId),
+    // Opening starts the lesson and may close an expired attempt.
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.lesson(lessonId) }),
+  });
+}
+
+export function useSubmitQuizAttempt(lessonId: string) {
+  const { api } = useElearning();
+  const invalidate = useInvalidateAll();
+  return useMutation({
+    mutationFn: (input: { attemptId: string; answers: unknown }) =>
+      api.submitQuizAttempt(lessonId, input.attemptId, input.answers),
+    onSuccess: invalidate,
+  });
+}

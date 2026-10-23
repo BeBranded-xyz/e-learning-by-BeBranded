@@ -3,14 +3,33 @@ export class ElearningApiError extends Error {
   readonly status: number;
   readonly code: string;
   readonly requestId: string | null;
+  /** The envelope's `details`, e.g. `next_attempt_at` of a quiz cooldown. */
+  readonly details: Readonly<Record<string, unknown>>;
 
-  constructor(status: number, code: string, message: string, requestId: string | null) {
+  constructor(
+    status: number,
+    code: string,
+    message: string,
+    context: {
+      readonly requestId: string | null;
+      readonly details?: Readonly<Record<string, unknown>>;
+    },
+  ) {
     super(message);
     this.name = "ElearningApiError";
     this.status = status;
     this.code = code;
-    this.requestId = requestId;
+    this.requestId = context.requestId;
+    this.details = context.details ?? {};
   }
+}
+
+function detailsOf(error: object): Readonly<Record<string, unknown>> {
+  if (!("details" in error)) return {};
+  const { details } = error;
+  return typeof details === "object" && details !== null && !Array.isArray(details)
+    ? Object.fromEntries(Object.entries(details))
+    : {};
 }
 
 function isErrorBody(value: unknown): value is { error: { code: string; message: string } } {
@@ -30,12 +49,17 @@ function isErrorBody(value: unknown): value is { error: { code: string; message:
 export async function toApiError(response: Response): Promise<ElearningApiError> {
   const requestId = response.headers.get("x-request-id");
   const body: unknown = await response.json().catch(() => null);
-  if (isErrorBody(body))
-    return new ElearningApiError(response.status, body.error.code, body.error.message, requestId);
+  if (isErrorBody(body)) {
+    const { code, message } = body.error;
+    return new ElearningApiError(response.status, code, message, {
+      requestId,
+      details: detailsOf(body.error),
+    });
+  }
   return new ElearningApiError(
     response.status,
     "unexpected_response",
     `Unexpected response (${response.status})`,
-    requestId,
+    { requestId },
   );
 }

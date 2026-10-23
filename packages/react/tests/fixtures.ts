@@ -2,7 +2,10 @@ import type {
   ApiCourse,
   ApiCourseSummary,
   ApiLesson,
+  ApiLessonQuiz,
   ApiLessonVideo,
+  ApiQuizAttempt,
+  ApiQuizResult,
 } from "@bebranded/elearning-core";
 
 // Synthetic API payloads, shaped by the contract types of elearning-core.
@@ -107,4 +110,82 @@ export const videoLesson: ApiLesson = {
     pauseWhenHidden: false,
   },
   video: readyVideo,
+};
+
+export const quizStanding: ApiLessonQuiz = {
+  ready: true,
+  question_count: 2,
+  passing_score: 0.8,
+  max_attempts: 3,
+  attempts_used: 0,
+  attempts_remaining: 3,
+  cooldown_minutes: 0,
+  next_attempt_at: null,
+  time_limit_minutes: null,
+  best_score: null,
+  passed: false,
+  show_correction: "after_attempt",
+  open_attempt: null,
+};
+
+export const quizLesson: ApiLesson = {
+  ...lesson,
+  id: "00000000-0000-4000-8000-000000000032",
+  type: "quiz",
+  title: "Safety check",
+  html: "",
+  quiz: quizStanding,
+};
+
+/** An attempt as the server sends it: opaque values, no answer. */
+export const quizAttempt: ApiQuizAttempt = {
+  id: "00000000-0000-4000-8000-000000000040",
+  attempt_number: 1,
+  started_at: "2026-10-23T09:00:00.000Z",
+  expires_at: null,
+  survey: {
+    pages: [
+      {
+        name: "quiz",
+        elements: [
+          { type: "html", name: "q1_intro", html: "<p>Look at the poster.</p>" },
+          { type: "boolean", name: "q1", title: "Exit signs are green." },
+          {
+            type: "radiogroup",
+            name: "q2",
+            title: "Which color marks an exit?",
+            choices: [
+              { value: "o1", text: "Red" },
+              { value: "o2", text: "Green" },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+};
+
+export const quizResult: ApiQuizResult = {
+  attempt_id: quizAttempt.id,
+  attempt_number: 1,
+  outcome: "graded",
+  score: 0.5,
+  passed: false,
+  points_earned: 1,
+  points_possible: 2,
+  status: "in_progress",
+  best_score: 0.5,
+  attempts_remaining: 2,
+  next_attempt_at: null,
+  corrections: [
+    { name: "q1", correct: true, earned: 1, possible: 1, correct_answer: true, explanation: "" },
+    {
+      name: "q2",
+      correct: false,
+      earned: 0,
+      possible: 1,
+      correct_answer: "o2",
+      explanation: "Green means safe.",
+    },
+  ],
 };

@@ -103,4 +103,34 @@ describe("createApiClient", () => {
       requestId: null,
     });
   });
+
+  it("opens and submits quiz attempts on their routes", async () => {
+    const { fetcher, requests } = recordingFetcher(ok({}));
+    const api = createApiClient("/api", fetcher);
+
+    await api.openQuizAttempt("lesson-1");
+    await api.submitQuizAttempt("lesson-1", "attempt/1", { q1: true });
+
+    expect(requests.map((request) => [request.url, request.init.body])).toEqual([
+      ["/api/v1/lessons/lesson-1/quiz/attempts", "{}"],
+      ["/api/v1/lessons/lesson-1/quiz/attempts/attempt%2F1/submit", '{"answers":{"q1":true}}'],
+    ]);
+  });
+
+  it("keeps the details of an error, and nothing that is not an object", async () => {
+    const reply = (details: unknown) => () =>
+      new Response(JSON.stringify({ error: { code: "cooldown", message: "Wait", details } }), {
+        status: 429,
+      });
+    const errorFor = (details: unknown) =>
+      createApiClient("/api", recordingFetcher(reply(details)).fetcher)
+        .openQuizAttempt("l")
+        .catch((caught: unknown) => caught);
+
+    expect(await errorFor({ next_attempt_at: "2026-10-23T10:00:00.000Z" })).toMatchObject({
+      details: { next_attempt_at: "2026-10-23T10:00:00.000Z" },
+    });
+    expect(await errorFor(["x"])).toMatchObject({ details: {} });
+    expect(await errorFor(undefined)).toMatchObject({ details: {} });
+  });
 });

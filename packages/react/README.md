@@ -20,6 +20,21 @@ import "@bebranded/elearning-react/styles.css";
 - Containers: `CourseCatalog`, `CoursePage`, `LessonPlayer`, `MyTraining`.
 - `VideoPlayer` (inside `LessonPlayer` for video lessons): HLS playback with watch
   verification. hls.js is loaded on demand, only in browsers without native HLS.
+- `Quiz` (inside `LessonPlayer` for quiz lessons): the rules, then the attempt
+  rendered by [SurveyJS Form Library](https://surveyjs.io/form-library) (MIT),
+  then the score graded by the server and, when the lesson allows it, the
+  corrections. SurveyJS is loaded on demand when an attempt opens. It is an
+  optional peer dependency: hosts with quiz lessons install it and import two
+  more stylesheets.
+
+  ```sh
+  pnpm add survey-core@^3.1.1 survey-react-ui@^3.1.1
+  ```
+
+  ```ts
+  import "survey-core/survey-core.min.css";
+  import "@bebranded/elearning-react/quiz.css";
+  ```
 - Presentational pieces for your own layouts: `CourseList`, `CourseOutline`,
   `LessonView`, `LessonContent`, `ProgressBar`.
 - Headless hooks: `useCatalog`, `useCourse`, `useLesson`, `useMyProgress`,

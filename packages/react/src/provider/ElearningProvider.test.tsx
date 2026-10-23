@@ -35,11 +35,11 @@ describe("ElearningProvider", () => {
 
 describe("shouldRetry", () => {
   it.each([
-    [0, new ElearningApiError(500, "internal_error", "x", null), true],
+    [0, new ElearningApiError(500, "internal_error", "x", { requestId: null }), true],
     [0, new TypeError("Failed to fetch"), true],
-    [1, new ElearningApiError(503, "x", "x", null), false],
-    [0, new ElearningApiError(404, "not_found", "x", null), false],
-    [0, new ElearningApiError(401, "unauthenticated", "x", null), false],
+    [1, new ElearningApiError(503, "x", "x", { requestId: null }), false],
+    [0, new ElearningApiError(404, "not_found", "x", { requestId: null }), false],
+    [0, new ElearningApiError(401, "unauthenticated", "x", { requestId: null }), false],
   ])("after %i failures with %o retries: %s", (count, error, expected) => {
     expect(shouldRetry(count, error)).toBe(expected);
   });

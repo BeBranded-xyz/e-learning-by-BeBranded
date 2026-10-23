@@ -5,3 +5,20 @@ import { afterEach } from "vitest";
 afterEach(() => {
   cleanup();
 });
+
+// jsdom has no ResizeObserver; SurveyJS observes its container size for responsive layout.
+// Nothing resizes in jsdom, so observing does nothing.
+class NoopResizeObserver {
+  observe(): void {
+    return undefined;
+  }
+  unobserve(): void {
+    return undefined;
+  }
+  disconnect(): void {
+    return undefined;
+  }
+}
+if (!("ResizeObserver" in globalThis)) {
+  Object.assign(globalThis, { ResizeObserver: NoopResizeObserver });
+}

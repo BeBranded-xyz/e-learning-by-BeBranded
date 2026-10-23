@@ -4,6 +4,7 @@ import type { ApiLesson } from "@bebranded/elearning-core";
 
 import { useElearning } from "../provider/context.js";
 import { LessonContent } from "./LessonContent.js";
+import { Quiz } from "./Quiz.js";
 import { VideoPlayer } from "./VideoPlayer.js";
 
 export type LessonViewProps = {
@@ -24,6 +25,7 @@ export function LessonView({ lesson, onMarkDone, marking = false }: LessonViewPr
       )}
       {lesson.video === null ? null : <VideoPlayer lesson={lesson} video={lesson.video} />}
       <LessonContent html={lesson.html} />
+      {lesson.quiz === null ? null : <Quiz lesson={lesson} quiz={lesson.quiz} />}
       <footer className="el-lesson-footer">
         <p role="status" aria-live="polite" className="el-meta">
           {done ? i18n.t("lesson.done") : null}
