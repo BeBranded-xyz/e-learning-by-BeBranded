@@ -218,7 +218,7 @@ describe("validation", () => {
     ).toBeGreaterThan(0);
   });
 
-  it("refuses video and quiz lessons until their phases", async () => {
+  it("refuses quiz lessons until phase 3", async () => {
     const course = await create("courses", { slug: "types", title: "Types" });
     const chapter = await create("chapters", {
       course_id: String(course.body.id),
@@ -230,7 +230,7 @@ describe("validation", () => {
       (
         await create("lessons", {
           chapter_id: String(chapter.body.id),
-          type: "video",
+          type: "quiz",
           title: "V",
           position: 0,
         })

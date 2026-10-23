@@ -1,11 +1,18 @@
 import { z } from "zod";
 
 import { AppError, lessonIdSchema, validateLessonDocument } from "@bebranded/elearning-core";
-import type { JsonValue, LessonDetail } from "@bebranded/elearning-core";
+import type {
+  JsonValue,
+  LessonDetail,
+  LessonId,
+  StorageReads,
+  TenantScope,
+} from "@bebranded/elearning-core";
 
 import type { RequestContext } from "../context.js";
 import { json, noContent } from "../http/responses.js";
 import { presentLessonDetail } from "../presenters/admin.presenters.js";
+import { parseLessonSettings } from "../services/lesson-settings.js";
 import { emitIfPublished } from "../services/publishing.js";
 import { createLessonBody, updateLessonBody } from "./admin.schemas.js";
 import { found, parseId } from "./ids.js";
@@ -33,10 +40,27 @@ function validContent(content: unknown): JsonValue | null {
   });
 }
 
+const videoNotReady = () =>
+  new AppError("conflict", "video_not_ready", "Publish a video lesson once its video is ready.");
+
+/** A video lesson cannot be published until its video is ready (spec 06, "Upload", step 5). */
+async function assertPublishable(
+  reads: StorageReads,
+  scope: TenantScope,
+  lesson: { id: LessonId; type: LessonDetail["type"] },
+): Promise<void> {
+  if (lesson.type !== "video") return;
+  const asset = await reads.findVideoAsset(scope, lesson.id);
+  if (asset?.status !== "ready") throw videoNotReady();
+}
+
 /** POST /v1/admin/lessons: 404 when the chapter does not exist or belongs to another tenant. */
 export async function createLesson(context: RequestContext): Promise<Response> {
   const body = await parseBody(context, createLessonBody, BODY_LIMITS.lesson);
   const content = validContent(body.content);
+  const settings = parseLessonSettings(body.type, body.settings);
+  // A new video lesson has no video yet, so it starts as a draft.
+  if (body.type === "video" && body.status === "published") throw videoNotReady();
   const chapter = found(await context.storage.findChapter(context.scope, body.chapter_id));
   const lesson: LessonDetail = {
     id: lessonIdSchema.parse(context.newId()),
@@ -50,7 +74,7 @@ export async function createLesson(context: RequestContext): Promise<Response> {
     estimatedMinutes: body.estimated_minutes,
     content,
     contentSchemaVersion: CONTENT_SCHEMA_VERSION,
-    settings: body.settings,
+    settings,
   };
   found(await context.storage.transaction((tx) => tx.insertLesson(context.scope, lesson)));
   return json(presentLessonDetail(lesson), context.requestId, 201);
@@ -64,7 +88,8 @@ export async function getAdminLesson(
   const lesson = found(
     await context.storage.findLesson(context.scope, parseId(lessonIdSchema, rawId)),
   );
-  return json(presentLessonDetail(lesson), context.requestId);
+  const video = await context.storage.findVideoAsset(context.scope, lesson.id);
+  return json(presentLessonDetail(lesson, video), context.requestId);
 }
 
 /** PATCH /v1/admin/lessons/:id. Editing a published lesson keeps learners' progress (spec 03). */
@@ -81,6 +106,8 @@ export async function updateLesson(
       : {};
   const updated = await context.storage.transaction(async (tx) => {
     const before = found(await tx.findLesson(context.scope, id));
+    if (body.status === "published" && before.status !== "published")
+      await assertPublishable(tx, context.scope, before);
     found(
       await tx.updateLesson(context.scope, id, {
         title: body.title,
@@ -88,7 +115,8 @@ export async function updateLesson(
         status: body.status,
         isRequired: body.is_required,
         estimatedMinutes: body.estimated_minutes,
-        settings: body.settings,
+        settings:
+          body.settings === undefined ? undefined : parseLessonSettings(before.type, body.settings),
         ...content,
       }),
     );
@@ -98,9 +126,10 @@ export async function updateLesson(
       before: before.status,
       after: body.status,
     });
-    return found(await tx.findLesson(context.scope, id));
+    const lesson = found(await tx.findLesson(context.scope, id));
+    return { lesson, video: await tx.findVideoAsset(context.scope, id) };
   });
-  return json(presentLessonDetail(updated), context.requestId);
+  return json(presentLessonDetail(updated.lesson, updated.video), context.requestId);
 }
 
 /** DELETE /v1/admin/lessons/:id. Learners' progress on it is removed with it (foreign key cascade). */

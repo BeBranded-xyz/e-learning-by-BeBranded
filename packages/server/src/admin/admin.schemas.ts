@@ -12,7 +12,6 @@ import {
   lessonStatusSchema,
   localeSchema,
   slugSchema,
-  textLessonSettingsSchema,
 } from "@bebranded/elearning-core";
 
 // Request bodies of the admin API (snake_case, unknown fields rejected).
@@ -69,19 +68,20 @@ const lessonFields = {
   estimated_minutes: z.int().min(1).max(10_000).nullable(),
   /** Validated by validateLessonDocument after parsing (size, nesting, blocks). */
   content: z.unknown(),
-  settings: textLessonSettingsSchema,
+  /** Validated against the lesson type after parsing (`parseLessonSettings`). */
+  settings: z.record(z.string(), z.unknown()),
 };
 
-/** Phase 1 creates text lessons only; video and quiz lessons come with their phases. */
+/** Text and video lessons; quiz lessons come with phase 3. */
 export const createLessonBody = z.strictObject({
   chapter_id: chapterIdSchema,
-  type: z.literal("text").default("text"),
+  type: z.enum(["text", "video"]).default("text"),
   ...lessonFields,
   status: lessonStatusSchema.default("draft"),
   is_required: lessonFields.is_required.default(true),
   estimated_minutes: lessonFields.estimated_minutes.default(null),
   content: lessonFields.content.default(null),
-  settings: lessonFields.settings.default({ requireScrollToEnd: false }),
+  settings: lessonFields.settings.default({}),
 });
 
 export const updateLessonBody = z
@@ -98,6 +98,13 @@ const audienceBody = z.discriminatedUnion("type", [
 const ruleFields = { effect: z.enum(["allow", "deny"]), audience: audienceBody };
 
 /** One variant per target type, so the target id keeps its branded type. */
+/** Body of `POST /v1/admin/videos/uploads` (spec 06, "Upload"). */
+export const createVideoUploadBody = z.strictObject({
+  lesson_id: lessonIdSchema,
+  /** Reserved against storage by the provider; uploads longer than this are refused. */
+  max_duration_seconds: z.int().min(1).max(36_000).default(3_600),
+});
+
 export const createAccessRuleBody = z.discriminatedUnion("target_type", [
   z.strictObject({ target_type: z.literal("course"), target_id: courseIdSchema, ...ruleFields }),
   z.strictObject({ target_type: z.literal("chapter"), target_id: chapterIdSchema, ...ruleFields }),

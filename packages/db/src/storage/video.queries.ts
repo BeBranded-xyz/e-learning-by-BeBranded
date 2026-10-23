@@ -88,7 +88,7 @@ export async function applyVideoWebhook(
   provider: string,
   event: VideoWebhookEvent,
 ): Promise<VideoAsset | null> {
-  const row = await db
+  let query = db
     .updateTable("video_assets")
     .set({
       status: event.status,
@@ -96,9 +96,11 @@ export async function applyVideoWebhook(
       thumbnail_url: event.thumbnailUrl,
     })
     .where("provider", "=", provider)
-    .where("provider_asset_id", "=", event.assetId)
-    .returningAll()
-    .executeTakeFirst();
+    .where("provider_asset_id", "=", event.assetId);
+  // Webhooks can arrive out of order: a late "processing" never hides a ready video.
+  if (event.status === "uploading" || event.status === "processing")
+    query = query.where("status", "<>", "ready");
+  const row = await query.returningAll().executeTakeFirst();
   return row === undefined ? null : toVideoAsset(row);
 }
 

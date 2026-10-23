@@ -159,5 +159,10 @@ export type {
   ApiLesson,
   ApiLessonProgress,
   ApiLessonType,
+  ApiLessonVideo,
+  ApiPlayback,
+  ApiVideoAssetStatus,
+  ApiVideoHeartbeat,
+  ApiVideoProgress,
   ApiProgress,
 } from "./api/api.types.js";

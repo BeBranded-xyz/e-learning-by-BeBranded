@@ -71,8 +71,48 @@ export type ApiLesson = {
   readonly is_required: boolean;
   /** Rendered and sanitized on the server; safe to insert as HTML. */
   readonly html: string;
+  /** The lesson's settings, with the defaults of its type filled in. */
   readonly settings: Readonly<Record<string, JsonValue>>;
   readonly status: LessonProgressStatus;
+  /** Video lessons only; null for other types. */
+  readonly video: ApiLessonVideo | null;
+};
+
+export type ApiVideoAssetStatus = "uploading" | "processing" | "ready" | "error";
+
+export type ApiPlayback = {
+  readonly type: "hls";
+  /** Signed for this learner; stops working at `expires_at`. */
+  readonly url: string;
+  readonly expires_at: string;
+};
+
+export type ApiVideoProgress = {
+  readonly watched_seconds: number;
+  /** Between 0 and 1. */
+  readonly coverage: number;
+  /** Where to resume playback, in seconds. */
+  readonly last_position: number;
+  /** Sorted, merged intervals already watched, in seconds. */
+  readonly watched_ranges: readonly (readonly [number, number])[];
+};
+
+export type ApiLessonVideo = {
+  readonly status: ApiVideoAssetStatus;
+  readonly duration_seconds: number | null;
+  readonly thumbnail_url: string | null;
+  readonly captions: readonly { readonly lang: string; readonly url: string }[];
+  /** Null until the video is ready. */
+  readonly playback: ApiPlayback | null;
+  readonly progress: ApiVideoProgress;
+};
+
+/** Answer to `POST /lessons/:id/video-progress`. */
+export type ApiVideoHeartbeat = {
+  /** False when the heartbeat was a replay of one already received. */
+  readonly accepted: boolean;
+  readonly status: LessonProgressStatus;
+  readonly progress: ApiVideoProgress;
 };
 
 export type ApiLessonProgress = {

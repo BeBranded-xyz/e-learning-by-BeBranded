@@ -149,6 +149,23 @@ describe("video webhooks", () => {
     expect(await database.storage.findVideoAsset(tenantA, lesson.id)).toEqual(expected);
   });
 
+  it("ignores a late processing webhook for a ready video, but accepts an error", async () => {
+    const lesson = await aVideoLesson();
+    const asset = aVideoAsset(lesson, { status: "ready", durationSeconds: 30 });
+    await database.storage.transaction((tx) => tx.saveVideoAsset(tenantA, asset));
+    const event = { assetId: asset.providerAssetId, durationSeconds: null, thumbnailUrl: null };
+
+    const late = await database.storage.transaction((tx) =>
+      tx.applyVideoWebhook("fake", { ...event, status: "processing" }),
+    );
+    const failed = await database.storage.transaction((tx) =>
+      tx.applyVideoWebhook("fake", { ...event, status: "error" }),
+    );
+
+    expect(late).toBeNull();
+    expect(failed?.status).toBe("error");
+  });
+
   it("returns null for an unknown asset or another provider's asset", async () => {
     const lesson = await aVideoLesson();
     const asset = aVideoAsset(lesson);

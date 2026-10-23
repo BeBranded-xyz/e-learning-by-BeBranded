@@ -53,7 +53,8 @@ export type VideoStorageWrites = {
   /**
    * Applies a verified provider webhook. Not tenant-scoped: the provider's
    * signature authenticates the call and the asset id selects the row. Null
-   * when the module has no such asset.
+   * when the module has no such asset, or when a late `uploading` or
+   * `processing` event would move a ready asset back.
    */
   applyVideoWebhook(provider: string, event: VideoWebhookEvent): Promise<VideoAsset | null>;
   /**

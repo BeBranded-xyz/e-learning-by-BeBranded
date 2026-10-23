@@ -50,6 +50,8 @@ POST /lessons/:id/video-progress
 
 ### Server side (source of truth)
 
+The player calls `POST /lessons/:id/start` when the lesson opens: the first heartbeat is measured from that moment. A heartbeat for a lesson that was not started starts it, and its playback is not credited.
+
 On each heartbeat, the server:
 
 1. Checks access to the lesson.

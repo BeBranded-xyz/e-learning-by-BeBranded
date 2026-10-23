@@ -6,6 +6,7 @@ import { json } from "../http/responses.js";
 import { presentEnrollment, presentLesson } from "../presenters/learner.presenters.js";
 import { loadAccessibleLesson } from "../services/lesson-access.js";
 import { recordLessonProgress } from "../services/progress.js";
+import { loadLessonVideo } from "../services/video.js";
 
 /**
  * Stored content was validated on write; it is validated again before
@@ -23,7 +24,10 @@ function renderContent(context: RequestContext, lessonId: string, content: unkno
   return "";
 }
 
-/** GET /v1/lessons/:id: the lesson rendered to HTML, with the learner's status. Never mutates state. */
+/**
+ * GET /v1/lessons/:id: the lesson rendered to HTML, with the learner's status
+ * and, for a video lesson, a signed playback URL. Never mutates state.
+ */
 export async function getLesson(
   context: RequestContext,
   lessonId: string | undefined,
@@ -33,7 +37,8 @@ export async function getLesson(
     .flatMap((chapter) => chapter.lessons)
     .find((entry) => entry.lesson.id === lesson.id)?.status;
   const html = renderContent(context, lesson.id, lesson.content);
-  return json(presentLesson(lesson, html, status ?? "not_started"), context.requestId);
+  const video = lesson.type === "video" ? await loadLessonVideo(context, lesson) : null;
+  return json(presentLesson(lesson, html, status ?? "not_started", video), context.requestId);
 }
 
 async function progress(

@@ -10,6 +10,7 @@ import {
   updateCourse,
 } from "./courses.js";
 import { createLesson, deleteLesson, getAdminLesson, updateLesson } from "./lessons.js";
+import { createVideoUpload } from "./videos.js";
 
 /** Admin API (spec 04, section 8). `handleRequest` refuses these routes to non-admins. */
 export const adminRoutes: readonly Route<RequestContext>[] = [
@@ -56,6 +57,11 @@ export const adminRoutes: readonly Route<RequestContext>[] = [
     method: "DELETE",
     pattern: "/v1/admin/lessons/:id",
     handle: (context, { id }) => deleteLesson(context, id),
+  },
+  {
+    method: "POST",
+    pattern: "/v1/admin/videos/uploads",
+    handle: (context) => createVideoUpload(context),
   },
   {
     method: "POST",
