@@ -60,6 +60,7 @@ export default defineConfig({
         "packages/core/src/**": { lines: 95, branches: 95, functions: 95, statements: 95 },
         "packages/db/src/**": { lines: 95, branches: 95, functions: 95, statements: 95 },
         "packages/editor/src/**": { lines: 95, branches: 95, functions: 95, statements: 95 },
+        "packages/video/src/**": { lines: 95, branches: 95, functions: 95, statements: 95 },
         "packages/server/src/**": { lines: 90, branches: 90, functions: 90, statements: 90 },
         "packages/next/src/**": { lines: 90, branches: 90, functions: 90, statements: 90 },
         "packages/react/src/**": { lines: 85, branches: 85, functions: 85, statements: 85 },

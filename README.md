@@ -34,6 +34,7 @@ Open http://localhost:3000/sign-in and pick a demo user. Sign-in is fake and the
 | `@bebranded/elearning-editor` | BlockNote block schema, server-side lesson HTML rendering |
 | `@bebranded/elearning-server` | Learner and admin HTTP API (Web Request/Response), event delivery |
 | `@bebranded/elearning-next` | Next.js App Router route handlers |
+| `@bebranded/elearning-video` | Video provider adapters: Cloudflare Stream, plus an in-memory fake for tests |
 | `@bebranded/elearning-react` | Learner components, hooks and styles |
 
 ## What it does

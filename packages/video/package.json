@@ -1,0 +1,44 @@
+{
+  "name": "@bebranded/elearning-video",
+  "version": "0.0.0",
+  "description": "Video provider adapters (Cloudflare Stream) of the BeBranded e-learning module.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BeBranded-xyz/e-learning-by-BeBranded.git",
+    "directory": "packages/video"
+  },
+  "homepage": "https://github.com/BeBranded-xyz/e-learning-by-BeBranded#readme",
+  "bugs": "https://github.com/BeBranded-xyz/e-learning-by-BeBranded/issues",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "exports": {
+    ".": {
+      "@bebranded/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "browser": "./dist/browser-guard.js",
+      "import": "./dist/index.js"
+    },
+    "./testing": {
+      "@bebranded/source": "./src/testing/index.ts",
+      "types": "./dist/testing/index.d.ts",
+      "browser": "./dist/browser-guard.js",
+      "import": "./dist/testing/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@bebranded/elearning-core": "workspace:^",
+    "zod": "^4.6.7"
+  }
+}
