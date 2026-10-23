@@ -89,11 +89,24 @@ export const updateLessonBody = z
   .strictObject({ ...lessonFields, status: lessonStatusSchema })
   .partial();
 
+export const roleAudienceBody = z.strictObject({
+  type: z.literal("role"),
+  role: z.string().trim().min(1).max(100),
+});
+export const gradeAudienceBody = z.strictObject({
+  type: z.literal("grade_min"),
+  grade: z.int().min(0).max(1000),
+});
+export const learnerAudienceBody = z.strictObject({
+  type: z.literal("learner"),
+  learner_id: learnerIdSchema,
+});
+
 const audienceBody = z.discriminatedUnion("type", [
   z.strictObject({ type: z.literal("everyone") }),
-  z.strictObject({ type: z.literal("role"), role: z.string().trim().min(1).max(100) }),
-  z.strictObject({ type: z.literal("grade_min"), grade: z.int().min(0).max(1000) }),
-  z.strictObject({ type: z.literal("learner"), learner_id: learnerIdSchema }),
+  roleAudienceBody,
+  gradeAudienceBody,
+  learnerAudienceBody,
 ]);
 
 const ruleFields = { effect: z.enum(["allow", "deny"]), audience: audienceBody };

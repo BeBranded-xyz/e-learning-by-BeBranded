@@ -1,5 +1,6 @@
 import type {
   AccessRule,
+  Audience,
   Chapter,
   Course,
   LessonDetail,
@@ -76,8 +77,7 @@ export function presentLessonDetail(lesson: LessonDetail, video: VideoAsset | nu
   };
 }
 
-function presentAudience(rule: AccessRule) {
-  const { audience } = rule;
+function presentAudience(audience: Audience) {
   return audience.type === "learner"
     ? { type: "learner", learner_id: audience.learnerId }
     : audience;
@@ -89,7 +89,7 @@ export function presentAccessRule(rule: AccessRule) {
     target_type: rule.targetType,
     target_id: rule.targetId,
     effect: rule.effect,
-    audience: presentAudience(rule),
+    audience: presentAudience(rule.audience),
   };
 }
 
