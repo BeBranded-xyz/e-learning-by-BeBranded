@@ -119,6 +119,8 @@ interface VideoProvider {
 }
 ```
 
+`assetId` is always the provider's identifier, never the module's `video_assets.id`. `createPlaybackToken` returns a `PlaybackSource` (`{ type: "hls", url, expiresAt }`), and `verifyWebhook` returns `null` when the signature or timestamp is invalid. The types live in `elearning-core`.
+
 Details in [06 — Video](06-video.md).
 
 ## 4. Files: `FileStorage`

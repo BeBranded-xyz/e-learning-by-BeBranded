@@ -42,25 +42,27 @@ POST /lessons/:id/video-progress
 }
 ```
 
-- Per-lesson options (`lessons.settings`):
-  - `allowSeeking`: `false` forbids moving past the furthest position already watched. Seeking backwards stays free.
-  - `maxPlaybackRate`: highest speed offered (default 2).
-  - `pauseWhenHidden`: pauses the video when the tab is not visible.
-  - `completionThreshold`: required coverage (default 0.95, to tolerate end credits and occasional lost heartbeats).
+- Per-lesson options (`lessons.settings`, `videoLessonSettingsSchema` in `elearning-core`):
+  - `allowSeeking` (default `true`): `false` forbids moving past the furthest position already watched. Seeking backwards stays free. The server enforces it too.
+  - `maxPlaybackRate` (1 to 4, default 2): highest speed offered.
+  - `pauseWhenHidden` (default `false`): pauses the video when the tab is not visible.
+  - `completionThreshold` (0.5 to 1, default 0.95): required coverage, to tolerate end credits and occasional lost heartbeats.
 
 ### Server side (source of truth)
 
 On each heartbeat, the server:
 
 1. Checks access to the lesson.
-2. Rejects intervals outside `[0, duration_seconds]`. The duration must come from the provider.
-3. **Plausibility check**: the total length of the new intervals cannot exceed `(now − last heartbeat of the session) × maxPlaybackRate × 1.1`. Nobody can claim 10 minutes of video in 15 seconds. An implausible heartbeat is **truncated** to what the elapsed time allows, and `suspicious_events` is incremented.
-4. Ignores `seq` values already received (idempotency, beacon replays).
-5. Merges the intervals into `watched_ranges` (sorted union) and recomputes `watched_seconds` and `coverage`.
-6. When `coverage ≥ completionThreshold`, sets the lesson to `completed` and emits `lesson.completed`. This transition is final.
-7. Updates `last_position` to resume playback.
+2. Ignores `seq` values already received for the session (idempotency, beacon replays).
+3. Clamps intervals to `[0, duration_seconds]`. The duration must come from the provider. An interval reaching more than 1 s outside the video is suspicious.
+4. With `allowSeeking = false`, drops intervals that start more than 2 s past the furthest point watched.
+5. **Plausibility check**: the total length of the new intervals cannot exceed `elapsed × maxPlaybackRate × 1.1`. `elapsed` is the time since the learner's last accepted heartbeat for the lesson, across all player sessions (since the lesson start for the first one), capped at 60 s. Nobody can claim 10 minutes of video in 15 seconds, by opening several sessions, or after leaving the page idle for an hour. An implausible heartbeat is **truncated** to its earliest intervals that the elapsed time allows. The playback rate reported by the client is ignored.
+6. Increments `suspicious_events` once for a heartbeat that was clamped, had intervals dropped, or was truncated.
+7. Merges the intervals into `watched_ranges` (sorted union) and recomputes `watched_seconds` and `coverage`.
+8. When `coverage ≥ completionThreshold`, sets the lesson to `completed` and emits `lesson.completed`. This transition is final.
+9. Updates `last_position`, kept inside the video, to resume playback.
 
-Interval merging and the plausibility check are pure functions in `elearning-core`, with property-based tests: the union is idempotent and commutative, and coverage is always ≤ 1.
+Interval merging and steps 3 to 9 are pure functions in `elearning-core` (`mergeRanges`, `applyHeartbeat`), with property-based tests: the union is idempotent and commutative, coverage is always between 0 and 1, and a sequence of heartbeats never credits more playback than the elapsed time allows.
 
 ### What this does and does not guarantee
 
