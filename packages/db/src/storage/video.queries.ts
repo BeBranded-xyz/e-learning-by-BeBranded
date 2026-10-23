@@ -176,7 +176,7 @@ export async function saveVideoProgress(
       watched_seconds: progress.watchedSeconds,
       coverage: progress.coverage,
       last_position: progress.lastPosition,
-      last_heartbeat_at: progress.lastHeartbeatAt,
+      last_heartbeat_at: progress.budgetBaselineAt,
       suspicious_events: progress.suspiciousEvents,
     })
     .where(

@@ -100,3 +100,10 @@ export const leadershipLesson = [
   heading(2, "Your first week as a manager"),
   paragraph(text("Meet each person on your team one to one.")),
 ];
+
+export const extinguisherNotes = [
+  heading(2, "What to remember"),
+  bullet("Pull the pin, aim at the base of the fire, squeeze, sweep."),
+  bullet("Keep your back to an exit."),
+  callout("warning", "Never fight a fire that is spreading: leave and raise the alarm."),
+];

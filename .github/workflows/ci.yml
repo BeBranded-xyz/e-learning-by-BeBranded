@@ -97,6 +97,9 @@ jobs:
       - run: pnpm build
       - name: Install Chromium for Playwright
         run: pnpm --filter @bebranded/elearning-demo exec playwright install --with-deps chromium
+      # The demo video is a synthetic test pattern generated at test time (no media in git).
+      - name: Install ffmpeg
+        run: sudo apt-get install -y --no-install-recommends ffmpeg
       # PostgreSQL starts with Testcontainers; the demo is already built above.
       - name: Run the journeys
         run: pnpm --filter @bebranded/elearning-demo test:e2e

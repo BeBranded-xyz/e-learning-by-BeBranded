@@ -6,9 +6,9 @@ export const VIDEO_TRACKING = {
   /** Slack on top of `maxPlaybackRate` for timer jitter and network delay. */
   plausibilityMargin: 1.1,
   /**
-   * Longest wall-clock gap a single heartbeat is credited for. The player
-   * reports every 15 s, so this tolerates lost heartbeats without letting a
-   * long idle period pay for a forged one.
+   * Most wall-clock time the budget can hold. The player reports every 15 s,
+   * so this tolerates lost heartbeats without letting a long idle period pay
+   * for a forged one.
    */
   maxCreditedGapSeconds: 60,
   /** How far past the furthest watched point a range may start when seeking is forbidden. */
@@ -20,8 +20,13 @@ export const VIDEO_TRACKING = {
 export type VideoProgressState = {
   readonly watchedRanges: readonly WatchedRange[];
   readonly lastPosition: number;
-  /** Last accepted heartbeat for this learner and lesson, across player sessions. */
-  readonly lastHeartbeatAt: Date | null;
+  /**
+   * Baseline of the time budget, across player sessions: the last accepted
+   * heartbeat, moved back by the wall-clock time it did not use. Heartbeats
+   * sent close together (pause, then end) keep the slack of the previous one.
+   * Null before the first heartbeat.
+   */
+  readonly budgetBaselineAt: Date | null;
   readonly suspiciousEvents: number;
 };
 
@@ -84,12 +89,23 @@ function withinBudget(ranges: readonly WatchedRange[], budgetSeconds: number): F
   return { ranges: kept, suspicious: rangesLength(kept) < rangesLength(ranges) };
 }
 
-/** Seconds of playback the elapsed wall-clock time can explain. */
-function playbackBudget(previous: VideoProgressState, beat: Heartbeat, video: HeartbeatVideo) {
-  const baseline = previous.lastHeartbeatAt ?? video.lessonStartedAt;
+/** Wall-clock time the budget holds at this heartbeat, and its baseline. */
+function availableTime(previous: VideoProgressState, beat: Heartbeat, video: HeartbeatVideo) {
+  const baseline = previous.budgetBaselineAt ?? video.lessonStartedAt;
   const elapsedSeconds = (beat.receivedAt.getTime() - baseline.getTime()) / 1000;
-  const credited = Math.min(Math.max(elapsedSeconds, 0), VIDEO_TRACKING.maxCreditedGapSeconds);
-  return credited * video.settings.maxPlaybackRate * VIDEO_TRACKING.plausibilityMargin;
+  const seconds = Math.min(Math.max(elapsedSeconds, 0), VIDEO_TRACKING.maxCreditedGapSeconds);
+  return { seconds, baseline, clockWentBack: elapsedSeconds < 0 };
+}
+
+/** The next baseline keeps the unused time, so it is never lost between close heartbeats. */
+function nextBaseline(
+  available: ReturnType<typeof availableTime>,
+  beat: Heartbeat,
+  unusedSeconds: number,
+): Date {
+  if (available.clockWentBack) return available.baseline;
+  // Dates hold whole milliseconds: round towards less credit, never more.
+  return new Date(Math.ceil(beat.receivedAt.getTime() - unusedSeconds * 1000));
 }
 
 /**
@@ -107,7 +123,10 @@ export function applyHeartbeat(
   const ordered = video.settings.allowSeeking
     ? bounded
     : withoutSkips(bounded.ranges, previous.watchedRanges);
-  const plausible = withinBudget(ordered.ranges, playbackBudget(previous, beat, video));
+  const rate = video.settings.maxPlaybackRate * VIDEO_TRACKING.plausibilityMargin;
+  const available = availableTime(previous, beat, video);
+  const plausible = withinBudget(ordered.ranges, available.seconds * rate);
+  const unusedSeconds = available.seconds - rangesLength(plausible.ranges) / rate;
   const suspicious = bounded.suspicious || ordered.suspicious || plausible.suspicious;
 
   const watchedRanges = mergeRanges(previous.watchedRanges, plausible.ranges);
@@ -116,7 +135,7 @@ export function applyHeartbeat(
     state: {
       watchedRanges,
       lastPosition: Math.min(Math.max(beat.position, 0), video.durationSeconds),
-      lastHeartbeatAt: beat.receivedAt,
+      budgetBaselineAt: nextBaseline(available, beat, unusedSeconds),
       suspiciousEvents: previous.suspiciousEvents + (suspicious ? 1 : 0),
     },
     watchedSeconds: rangesLength(watchedRanges),

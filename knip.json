@@ -3,7 +3,7 @@
   "workspaces": {
     ".": {
       "entry": ["scripts/*.mjs"],
-      "ignoreBinaries": ["playwright"]
+      "ignoreBinaries": ["playwright", "ffmpeg"]
     },
     "packages/*": {
       "project": ["src/**/*.ts", "tests/**/*.ts"]

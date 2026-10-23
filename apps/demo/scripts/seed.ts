@@ -5,6 +5,7 @@ import pg from "pg";
 import { DEFAULT_SCHEMA, migrate, postgresStorage } from "@bebranded/elearning-db";
 
 import { readEnv } from "../lib/env.js";
+import { ensureDemoVideo } from "./demo-video.js";
 import { seedDemo } from "./seed-demo.js";
 
 const { ELEARNING_DATABASE_URL: url } = readEnv();
@@ -14,8 +15,13 @@ const db = new Kysely<Record<string, never>>({
 const storage = postgresStorage({ connectionString: url });
 try {
   await migrate(db, { schema: DEFAULT_SCHEMA });
+  ensureDemoVideo();
   const created = await seedDemo(storage);
-  process.stdout.write(created ? "Demo content created.\n" : "Demo content already present.\n");
+  process.stdout.write(
+    created.length > 0
+      ? `Demo courses created: ${created.join(", ")}.\n`
+      : "Demo content already present.\n",
+  );
 } finally {
   await storage.close();
   await db.destroy();

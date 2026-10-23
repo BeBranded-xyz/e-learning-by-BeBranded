@@ -15,7 +15,6 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 
 | ID | Task | Type | Priority | Owner | Link | Added | Notes |
 |---|---|---|---|---|---|---|---|
-| B-037 | Phase 2, video: core rules (this PR), db tables and storage, `@bebranded/elearning-video` with Cloudflare Stream, server endpoints and webhook, `<VideoPlayer>`, demo and anti-cheat e2e | feature | P1 | maintainers | spec 09, phase 2 | 2026-10-23 | Six PRs, in order |
 | B-038 | Live contract test against a dedicated Cloudflare Stream test account (recorded fixtures only for now) | test | P3 | maintainers | spec 06 | 2026-10-23 | Maintainer decision: simulations first |
 | B-039 | Purge `video_sessions` rows untouched for 24 h (only live sessions need `last_seq`), as a scheduled function the host triggers; add to the data lifecycle inventory | ops | P2 | maintainers | `modules/data-lifecycle`, spec 03 | 2026-10-23 | One row per player load; cascades with lesson progress meanwhile |
 | B-040 | Resumable tus uploads (`?direct_user=true`, `Location` and `stream-media-id` headers) for videos over 200 MB, with the back-office uploader | feature | P2 | maintainers | spec 06, phase 4 | 2026-10-23 | Phase 2 uses the basic direct upload |
@@ -81,6 +80,7 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 |---|---|---|---|
 | | Technical specifications 01–10, repository security baseline | 2026-10-22 | direct commits before branch protection |
 | | AI-Dev-Rules adoption (Claude Code and Codex) | 2026-10-22 | #1 |
+| B-037 | Phase 2, video: core rules, db tables, `@bebranded/elearning-video` (Cloudflare Stream), server endpoints and webhook, `<VideoPlayer>`, demo video and anti-cheat e2e; phase 2 complete | 2026-10-23 | #11–#16, #18 |
 | B-012 | Phase 1: apps/demo with fake multi-role auth and Playwright journeys; phase 1 complete | 2026-10-23 | this PR |
 | B-023 | Content stylesheet for rendered lessons, shipped with `@bebranded/elearning-react` | 2026-10-23 | #8 |
 | | `@bebranded/elearning-react`: provider, theme, i18n (en, fr), catalog, course page, lesson player, My training | 2026-10-23 | #8 |

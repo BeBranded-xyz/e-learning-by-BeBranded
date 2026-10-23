@@ -37,7 +37,7 @@ const videoArb: fc.Arbitrary<HeartbeatVideo> = fc
 const fresh: VideoProgressState = {
   watchedRanges: [],
   lastPosition: 0,
-  lastHeartbeatAt: null,
+  budgetBaselineAt: null,
   suspiciousEvents: 0,
 };
 
