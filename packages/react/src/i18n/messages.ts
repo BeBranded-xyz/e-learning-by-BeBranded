@@ -25,6 +25,11 @@ export const en = {
   "state.signIn": "Sign in to see your training.",
   "state.retry": "Try again",
   "progress.label": "Progress",
+  "video.label": "Video: {title}",
+  "video.processing": "This video is being prepared. Come back in a few minutes.",
+  "video.watched": "{percent}% watched",
+  "video.noSkipping": "You can't skip ahead in this video.",
+  "video.error": "The video could not be played. Reload the page to try again.",
 } as const;
 
 export type MessageKey = keyof typeof en;
@@ -56,6 +61,11 @@ export const fr: Messages = {
   "state.signIn": "Connectez-vous pour voir vos formations.",
   "state.retry": "Réessayer",
   "progress.label": "Progression",
+  "video.label": "Vidéo : {title}",
+  "video.processing": "Cette vidéo est en cours de préparation. Revenez dans quelques minutes.",
+  "video.watched": "{percent} % regardés",
+  "video.noSkipping": "Vous ne pouvez pas avancer dans cette vidéo.",
+  "video.error": "La vidéo n’a pas pu être lue. Rechargez la page pour réessayer.",
 };
 
 export const builtInMessages: Record<"en" | "fr", Messages> = { en, fr };

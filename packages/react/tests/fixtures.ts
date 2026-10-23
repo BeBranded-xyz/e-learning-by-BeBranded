@@ -1,4 +1,9 @@
-import type { ApiCourse, ApiCourseSummary, ApiLesson } from "@bebranded/elearning-core";
+import type {
+  ApiCourse,
+  ApiCourseSummary,
+  ApiLesson,
+  ApiLessonVideo,
+} from "@bebranded/elearning-core";
 
 // Synthetic API payloads, shaped by the contract types of elearning-core.
 
@@ -73,4 +78,32 @@ export const lesson: ApiLesson = {
   settings: {},
   status: "in_progress",
   video: null,
+};
+
+export const readyVideo: ApiLessonVideo = {
+  status: "ready",
+  duration_seconds: 60,
+  thumbnail_url: "https://videos.example.com/thumb.jpg",
+  captions: [{ lang: "fr", url: "https://videos.example.com/fr.vtt" }],
+  playback: {
+    type: "hls",
+    url: "https://videos.example.com/video.m3u8",
+    expires_at: "2026-10-23T10:00:00.000Z",
+  },
+  progress: { watched_seconds: 0, coverage: 0, last_position: 0, watched_ranges: [] },
+};
+
+export const videoLesson: ApiLesson = {
+  ...lesson,
+  id: "00000000-0000-4000-8000-000000000031",
+  type: "video",
+  title: "Safety video",
+  html: "<p>Notes</p>",
+  settings: {
+    completionThreshold: 0.95,
+    allowSeeking: true,
+    maxPlaybackRate: 2,
+    pauseWhenHidden: false,
+  },
+  video: readyVideo,
 };

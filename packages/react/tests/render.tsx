@@ -13,11 +13,16 @@ export type FakeApi = Record<string, Reply | (() => Reply)>;
  * Fake HTTP boundary: answers by "METHOD /path" and records every request.
  * Components and hooks run for real against it.
  */
+export type RecordedRequest = { key: string; body: unknown; keepalive: boolean };
+
 function fakeFetcher(api: FakeApi) {
   const calls: string[] = [];
+  const requests: RecordedRequest[] = [];
   const fetcher = (input: string, init: RequestInit): Promise<Response> => {
     const key = `${init.method ?? "GET"} ${new URL(input, "https://host.example.com").pathname.replace("/api/elearning/v1", "")}`;
     calls.push(key);
+    const body = typeof init.body === "string" ? (JSON.parse(init.body) as unknown) : null;
+    requests.push({ key, body, keepalive: init.keepalive === true });
     const entry = api[key];
     const reply =
       typeof entry === "function"
@@ -33,21 +38,21 @@ function fakeFetcher(api: FakeApi) {
       }),
     );
   };
-  return { fetcher, calls };
+  return { fetcher, calls, requests };
 }
 
 export function renderWithProvider(
   ui: ReactElement,
   api: FakeApi,
   props: Partial<ElearningProviderProps> = {},
-): RenderResult & { calls: string[] } {
-  const { fetcher, calls } = fakeFetcher(api);
+): RenderResult & { calls: string[]; requests: RecordedRequest[] } {
+  const { fetcher, calls, requests } = fakeFetcher(api);
   const result = render(
     <ElearningProvider apiBase="/api/elearning" fetcher={fetcher} {...props}>
       {ui}
     </ElearningProvider>,
   );
-  return { ...result, calls };
+  return { ...result, calls, requests };
 }
 
 /** Runs axe on the rendered DOM and returns the violations (WCAG 2.x A and AA rules). */

@@ -94,7 +94,7 @@ flowchart LR
 1. `<LessonPlayer>` calls `GET /lessons/:id`.
 2. The server resolves the learner through `IdentityResolver`, checks access (audience rules) and returns the lesson with a **short-lived signed playback token**.
 3. `<VideoPlayer>` plays the video from the provider and tracks the intervals that were actually watched.
-4. Every 15 s, on pause and on page exit (`sendBeacon`), the client sends `POST /lessons/:id/video-progress` with the new intervals.
+4. Every 15 s, on pause and on page exit (`fetch` with `keepalive`), the client sends `POST /lessons/:id/video-progress` with the new intervals.
 5. The server checks that the intervals are plausible, merges them and recomputes coverage. When coverage reaches the threshold, it sets the lesson to `completed` and emits `lesson.completed`.
 
 Details in [06 — Video](06-video.md).
