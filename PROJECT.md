@@ -6,7 +6,7 @@
 > decision changes. **This repository is public**: never put secrets, client
 > names, internal identifiers, or internal URLs here.
 
-Last updated: 2026-10-22
+Last updated: 2026-10-23
 
 ---
 
@@ -255,14 +255,15 @@ Core rules always apply.
   (`BACKLOG.md` B-001).
 - **Baseline**: no code; `make check` green.
 - **Scoped exceptions**:
-  - Dependabot instead of Renovate (the Renovate app is not installed on the
-    organization).
+  - Dependabot instead of Renovate: maintainer decision (2026-10-23). It is
+    built into GitHub and needs no organization app.
   - Workflow templates `pre-production.yml` and `release.yml` stay manual-only
     until their suites exist (`ci.yml` is live since phase 1).
   - RLS (`modules/database`): every table has RLS enabled but **no permissive
     policy**, so only the owning role used by the module can read or write.
     This is the module's default deny; the opt-in policies for direct Supabase
-    reads (spec 05, "RLS") come in a later migration (`BACKLOG.md` B-018).
+    reads (spec 05, "RLS") come in a later migration (`BACKLOG.md` B-018),
+    off by default. Confirmed by the maintainer (2026-10-23).
     Owner: maintainers. Review: when B-018 lands.
   - `exactOptionalPropertyTypes` is off in `packages/editor` only: BlockNote
     0.56's generic types (optional props such as `heading.isToggleable`) do not

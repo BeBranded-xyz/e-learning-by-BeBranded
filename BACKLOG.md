@@ -66,8 +66,7 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 
 | ID | Question | Who decides | Blocking | Asked on | Link |
 |---|---|---|---|---|---|
-| Q-001 | Which host product pilots the module? | Maxime | Phase 5 | 2026-10-22 | spec 09, Q4 |
-| Q-003 | Install the Renovate app on the organization, or keep Dependabot | Maxime | No | 2026-10-22 | `core/dependencies` |
+| Q-001 | Which host product pilots the module? Still undecided on 2026-10-23; the demo app stays the only host | Maxime | Phase 5 | 2026-10-22 | spec 09, Q4 |
 
 ## Done (last 30 days, then prune)
 
@@ -88,6 +87,8 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | Q-002 | Business email in history: acceptable, no history rewrite | 2026-10-22 | decision |
 | Q-004 | Learner export built, off by default per course (spec 09, Q12) | 2026-10-22 | decision |
 | Q-005 | Conduct contact: the maintainer's business address | 2026-10-22 | #2 |
+| Q-003 | Keep Dependabot, no Renovate | 2026-10-23 | decision |
+| | Phase 1 decisions confirmed: own HTML renderer (D11), default-deny RLS, Node >= 22.12, audit suppression until 2026-11-22 | 2026-10-23 | decision |
 | Q-006 | No phase dates: phases run in order (spec 09, Q13) | 2026-10-22 | decision |
 
 ## Conventions
