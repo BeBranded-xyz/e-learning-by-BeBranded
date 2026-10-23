@@ -1,0 +1,61 @@
+/** UI strings in English and French (spec 04, section 7). Hosts override or extend them. */
+export const en = {
+  "catalog.title": "Training",
+  "catalog.empty": "No course is available to you yet.",
+  "course.progress": "{completed} of {total} required lessons done",
+  "course.completed": "Course completed",
+  "course.enroll": "Enroll",
+  "course.lessons": "Lessons",
+  "course.continue": "Continue",
+  "course.start": "Start",
+  "lesson.status.not_started": "Not started",
+  "lesson.status.in_progress": "In progress",
+  "lesson.status.completed": "Done",
+  "lesson.optional": "Optional",
+  "lesson.minutes": "{minutes} min",
+  "lesson.markDone": "Mark as done",
+  "lesson.done": "Lesson done",
+  "lesson.notManual": "This lesson is completed by watching or passing it.",
+  "myTraining.title": "My training",
+  "myTraining.empty": "You are not enrolled in any course.",
+  "myTraining.due": "Due {date}",
+  "state.loading": "Loading…",
+  "state.error": "Something went wrong. Try again.",
+  "state.notFound": "This content does not exist or is not available to you.",
+  "state.signIn": "Sign in to see your training.",
+  "state.retry": "Try again",
+  "progress.label": "Progress",
+} as const;
+
+export type MessageKey = keyof typeof en;
+export type Messages = Record<MessageKey, string>;
+
+export const fr: Messages = {
+  "catalog.title": "Formations",
+  "catalog.empty": "Aucune formation ne vous est encore proposée.",
+  "course.progress": "{completed} leçon(s) obligatoire(s) terminée(s) sur {total}",
+  "course.completed": "Formation terminée",
+  "course.enroll": "S’inscrire",
+  "course.lessons": "Leçons",
+  "course.continue": "Continuer",
+  "course.start": "Commencer",
+  "lesson.status.not_started": "Pas commencée",
+  "lesson.status.in_progress": "En cours",
+  "lesson.status.completed": "Terminée",
+  "lesson.optional": "Facultative",
+  "lesson.minutes": "{minutes} min",
+  "lesson.markDone": "Marquer comme terminée",
+  "lesson.done": "Leçon terminée",
+  "lesson.notManual": "Cette leçon se termine en la regardant ou en la réussissant.",
+  "myTraining.title": "Mes formations",
+  "myTraining.empty": "Vous n’êtes inscrit à aucune formation.",
+  "myTraining.due": "À terminer avant le {date}",
+  "state.loading": "Chargement…",
+  "state.error": "Une erreur est survenue. Réessayez.",
+  "state.notFound": "Ce contenu n’existe pas ou ne vous est pas accessible.",
+  "state.signIn": "Connectez-vous pour voir vos formations.",
+  "state.retry": "Réessayer",
+  "progress.label": "Progression",
+};
+
+export const builtInMessages: Record<"en" | "fr", Messages> = { en, fr };

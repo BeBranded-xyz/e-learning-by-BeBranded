@@ -24,6 +24,14 @@ export default defineConfig({
       },
       {
         test: {
+          name: "component",
+          environment: "jsdom",
+          include: ["packages/*/src/**/*.test.tsx"],
+          setupFiles: ["packages/react/tests/setup.ts"],
+        },
+      },
+      {
+        test: {
           name: "integration",
           environment: "node",
           include: ["packages/*/tests/integration/**/*.test.ts"],
@@ -54,6 +62,7 @@ export default defineConfig({
         "packages/editor/src/**": { lines: 95, branches: 95, functions: 95, statements: 95 },
         "packages/server/src/**": { lines: 90, branches: 90, functions: 90, statements: 90 },
         "packages/next/src/**": { lines: 90, branches: 90, functions: 90, statements: 90 },
+        "packages/react/src/**": { lines: 85, branches: 85, functions: 85, statements: 85 },
       },
     },
   },

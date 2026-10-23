@@ -54,7 +54,7 @@ Last updated: 2026-10-22
 |---|---|---|
 | Language | TypeScript (strict) | |
 | App framework (hosts, demo) | Next.js App Router | Hosts ≥ 14 |
-| UI | React ≥ 18 | Learner and admin components |
+| UI | React ≥ 18.2 | Learner and admin components; data through TanStack Query |
 | Editor | BlockNote core (MPL-2.0, unmodified) | `@blocknote/xl-*` forbidden (GPL/commercial) |
 | Lesson rendering | Own HTML renderer + `sanitize-html` | Spec 02, D11; no DOM, runs on Node and edge |
 | Quiz rendering | SurveyJS Form Library (MIT) | SurveyJS Creator forbidden (commercial) |
@@ -90,7 +90,8 @@ Last updated: 2026-10-22
 - **Token source**: CSS custom properties prefixed `--el-*`
   (`docs/specifications/04-integration.md`, section 6). Package path decided in
   phase 1.
-- **Shared components**: `@bebranded/elearning-react` and `-admin`.
+- **Shared components**: `@bebranded/elearning-react` (learner, phase 1) and `-admin` (phase 4).
+- **API contract types**: `packages/core/src/api/api.types.ts`, implemented by the server presenters and consumed by the React client.
 - **Styling approach**: plain CSS with low specificity (`:where()`), no imposed
   framework; optional Tailwind preset.
 - **Component catalogue, themes, icons, enforcement**: to be decided in phase 1

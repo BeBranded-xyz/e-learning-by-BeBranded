@@ -54,6 +54,8 @@ import { elearning } from "@/lib/elearning";
 export const { GET, POST, PATCH, DELETE } = createElearningRouteHandler(elearning);
 ```
 
+Components are Client Components: the page that renders them can stay a Server Component. Links point to the host's own routes through `courseHref` and `lessonHref`.
+
 ```tsx
 // app/training/[courseSlug]/page.tsx
 import { ElearningProvider, CoursePage } from "@bebranded/elearning-react";
@@ -62,7 +64,7 @@ import "@bebranded/elearning-react/styles.css";
 export default function Page({ params }) {
   return (
     <ElearningProvider apiBase="/api/elearning" theme={hostTheme} locale="en">
-      <CoursePage slug={params.courseSlug} />
+      <CoursePage slug={params.courseSlug} lessonHref={(lesson) => `/training/${params.courseSlug}/${lesson.id}`} />
     </ElearningProvider>
   );
 }

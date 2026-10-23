@@ -23,6 +23,9 @@
     "packages/next": {
       "entry": ["src/browser-guard.ts"],
       "project": ["src/**/*.ts"]
+    },
+    "packages/react": {
+      "project": ["src/**/*.{ts,tsx}", "tests/**/*.{ts,tsx}"]
     }
   }
 }

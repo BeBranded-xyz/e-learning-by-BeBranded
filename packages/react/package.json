@@ -1,0 +1,54 @@
+{
+  "name": "@bebranded/elearning-react",
+  "version": "0.0.0",
+  "description": "Learner React components and hooks of the BeBranded e-learning module.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BeBranded-xyz/e-learning-by-BeBranded.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://github.com/BeBranded-xyz/e-learning-by-BeBranded#readme",
+  "bugs": "https://github.com/BeBranded-xyz/e-learning-by-BeBranded/issues",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "exports": {
+    ".": {
+      "@bebranded/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && node -e \"require('node:fs').copyFileSync('src/styles.css','dist/styles.css')\"",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.104.5",
+    "@bebranded/elearning-core": "workspace:^"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "10.4.2",
+    "@testing-library/react": "16.3.3",
+    "@testing-library/user-event": "14.6.8",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "axe-core": "4.14.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0 || ^19.0.0",
+    "react-dom": "^18.2.0 || ^19.0.0"
+  }
+}

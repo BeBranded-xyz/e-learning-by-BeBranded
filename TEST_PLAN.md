@@ -42,14 +42,14 @@ config in the same PR. Tests that cannot be written yet are listed in
 | 2 | Unit Tests | active | Vitest | `pnpm test:unit` | commit | core: access, progress, schemas, events. Other packages join as they land |
 | 3 | Property-Based Testing | active | fast-check | `pnpm test:unit` | commit | canAccess (child never wider than parent, deny wins, order independence), progress bounds, status monotony |
 | 4 | Mutation Testing | planned phase 1 | Stryker | `pnpm stryker run --incremental` | pr | core and server packages first |
-| 5 | Component / Module Tests | planned phase 1 | Vitest + Testing Library | `pnpm test:component` | pr | react and admin components |
+| 5 | Component / Module Tests | active | Vitest + Testing Library (jsdom), fake HTTP boundary | `pnpm test:component` | commit | Catalog, course page, lesson player, My training: loading, empty, error, interactions, cache refresh |
 | 6 | Integration Tests | active | Vitest + Testcontainers (PostgreSQL 14) or `ELEARNING_TEST_DATABASE_URL` | `pnpm test:integration` | commit | Real Postgres, one schema per test file, never mocked |
 | 7 | API Tests | active | Vitest with real Request/Response and PostgreSQL | `pnpm test:integration` | commit | Every learner and admin route, error envelope, status codes (400, 401, 403, 404, 405, 409, 413, 415, 500), headers, request id |
 | 8 | Contract Tests | planned phase 1 | Zod schemas + API report (API Extractor) | `pnpm test:contract` | pr | Public API and HTTP contract |
 | 9 | End-to-End (E2E) Tests | planned phase 1 | Playwright on apps/demo | `pnpm test:e2e` | pr | Desktop and mobile viewports |
-| 10 | UI / Frontend Tests | planned phase 1 | Testing Library | `pnpm test:component` | pr |  |
+| 10 | UI / Frontend Tests | active | Testing Library, user-event | `pnpm test:component` | commit | Behavior by role and label, never implementation |
 | 11 | Visual Regression Testing | planned phase 1 | Playwright screenshots | `pnpm test:visual` | pr | Includes host themes and exports (spec 10) |
-| 12 | Accessibility Testing | planned phase 1 | axe-core in Playwright and Vitest | `pnpm test:a11y` | pr | WCAG 2.1 AA |
+| 12 | Accessibility Testing | active (components) / planned phase 1 (E2E) | axe-core (WCAG 2.0 to 2.2 A and AA rules), eslint-plugin-jsx-a11y-x (strict) | `pnpm test:component` | commit | Every container audited after load; status announced with role=status, errors with role=alert |
 | 13 | Regression Testing | active | Vitest | `pnpm test:unit` | commit | Every bug fix starts with a failing test |
 | 14 | Smoke Tests | planned phase 1 | Playwright | `pnpm test:smoke` | pr | Consumer fixture apps from the packed tarball |
 | 15 | Sanity Tests | active | Vitest | `pnpm test:unit` | commit | |
@@ -125,7 +125,7 @@ config in the same PR. Tests that cannot be written yet are listed in
 
 | # | Category | Status | Tool | Command | Gate | Notes |
 |---|---|---|---|---|---|---|
-| 48 | Localization Testing | planned phase 1 | Vitest, pseudo-locale | `pnpm test:i18n` | pr | en, fr |
+| 48 | Localization Testing | active | Vitest | `pnpm test:unit` | commit | Every English message has a French one; host overrides; locale fallback; dates in UTC and percentages per locale |
 | 49 | Date / Time Testing | planned phase 1 | Vitest with fixed time zones | `pnpm test:i18n` | pr | Due dates, cooldowns, DST |
 | 50 | Currency / Number Testing | N/A: the module handles no money; numbers are scores and durations, covered by 2 |  |  |  |  |
 
