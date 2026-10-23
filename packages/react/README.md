@@ -18,6 +18,8 @@ import "@bebranded/elearning-react/styles.css";
 ```
 
 - Containers: `CourseCatalog`, `CoursePage`, `LessonPlayer`, `MyTraining`.
+- `VideoPlayer` (inside `LessonPlayer` for video lessons): HLS playback with watch
+  verification. hls.js is loaded on demand, only in browsers without native HLS.
 - Presentational pieces for your own layouts: `CourseList`, `CourseOutline`,
   `LessonView`, `LessonContent`, `ProgressBar`.
 - Headless hooks: `useCatalog`, `useCourse`, `useLesson`, `useMyProgress`,

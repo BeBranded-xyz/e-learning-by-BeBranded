@@ -16,6 +16,8 @@ export { CourseOutline } from "./components/CourseOutline.js";
 export { LessonContent } from "./components/LessonContent.js";
 export { LessonView } from "./components/LessonView.js";
 export { ProgressBar } from "./components/ProgressBar.js";
+export { VideoPlayer } from "./components/VideoPlayer.js";
+export type { VideoPlayerProps } from "./components/VideoPlayer.js";
 
 export {
   queryKeys,

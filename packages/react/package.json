@@ -34,8 +34,9 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@bebranded/elearning-core": "workspace:^",
     "@tanstack/react-query": "^5.104.5",
-    "@bebranded/elearning-core": "workspace:^"
+    "hls.js": "^1.7.3"
   },
   "devDependencies": {
     "@testing-library/dom": "10.4.2",

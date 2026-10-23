@@ -4,6 +4,7 @@ import type { ApiLesson } from "@bebranded/elearning-core";
 
 import { useElearning } from "../provider/context.js";
 import { LessonContent } from "./LessonContent.js";
+import { VideoPlayer } from "./VideoPlayer.js";
 
 export type LessonViewProps = {
   readonly lesson: ApiLesson;
@@ -21,6 +22,7 @@ export function LessonView({ lesson, onMarkDone, marking = false }: LessonViewPr
       {lesson.estimated_minutes === null ? null : (
         <p className="el-meta">{i18n.t("lesson.minutes", { minutes: lesson.estimated_minutes })}</p>
       )}
+      {lesson.video === null ? null : <VideoPlayer lesson={lesson} video={lesson.video} />}
       <LessonContent html={lesson.html} />
       <footer className="el-lesson-footer">
         <p role="status" aria-live="polite" className="el-meta">

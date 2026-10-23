@@ -27,9 +27,10 @@ All of them sit behind `VideoProvider` (see [04 — Integration](04-integration.
 
 ### Client side (`<VideoPlayer>`)
 
+- `<VideoPlayer>` uses the browser's native controls (keyboard-operable and labelled by the browser). It loads hls.js on demand, only where the browser cannot play HLS natively. It keeps the first signed URL for the whole session: each lesson fetch signs a new one, and switching would restart playback.
 - The player keeps a list of **intervals actually played**. An interval opens on `play` and extends on each `timeupdate` while playback is continuous. It closes on `pause`, `seeking`, `ended` or a jump of more than 2 s.
 - Intervals crossed during `seeking` do not count.
-- **Heartbeat** every 15 s of playback, plus on pause, on end, on tab visibility change and on `pagehide` (via `navigator.sendBeacon`):
+- **Heartbeat** every 15 s of playback, plus on pause, on end, on tab visibility change and on `pagehide`. The page-exit heartbeat uses `fetch` with `keepalive`, not `navigator.sendBeacon`: a beacon cannot send an `application/json` body, which the API requires against CSRF. Heartbeats are sent one at a time in `seq` order (the server drops a `seq` lower than one it already has); only the page-exit heartbeat skips the queue. A failed heartbeat's intervals go out with the next one:
 
 ```json
 POST /lessons/:id/video-progress
