@@ -3,7 +3,38 @@
 A **reusable, embeddable e-learning module** for existing applications (ERPs, business web apps, client portals).
 Instead of rebuilding training features in every product, we maintain **one versioned module**. Each host product adds its own branding (colors, typography, theme) and plugs in its own users and roles.
 
-> **Status: specification.** This repository currently contains the technical specifications. Code will land phase by phase (see the [roadmap](docs/specifications/09-roadmap.md)).
+> **Status: phase 1 (foundations) done, not published yet.** Text lessons, access rules, progress, the learner UI and the admin API work end to end in the demo app. Video, quizzes and the back-office come next (see the [roadmap](docs/specifications/09-roadmap.md)).
+
+## Try it locally
+
+Requires Node.js 24 (see `.node-version`), Corepack and Docker (for PostgreSQL).
+
+```sh
+corepack pnpm install
+corepack pnpm build
+docker run -d --name elearning-pg -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres:16-alpine
+export ELEARNING_DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres
+corepack pnpm --filter @bebranded/elearning-demo seed
+corepack pnpm --filter @bebranded/elearning-demo dev
+```
+
+Open http://localhost:3000/sign-in and pick a demo user. Sign-in is fake and the content is synthetic.
+
+| Command | What it runs |
+|---|---|
+| `make check` | Secret scans, doc links, format, lint, typecheck, unit, component and integration tests with coverage, dead code, licenses |
+| `corepack pnpm test:e2e` | Playwright journeys on the demo app, desktop and mobile (starts PostgreSQL with Testcontainers) |
+
+## Packages
+
+| Package | Role |
+|---|---|
+| `@bebranded/elearning-core` | Domain types, schemas, access rules, progress, lesson document validation, API contract types |
+| `@bebranded/elearning-db` | PostgreSQL migrations, `elearning migrate`, storage adapter |
+| `@bebranded/elearning-editor` | BlockNote block schema, server-side lesson HTML rendering |
+| `@bebranded/elearning-server` | Learner and admin HTTP API (Web Request/Response), event delivery |
+| `@bebranded/elearning-next` | Next.js App Router route handlers |
+| `@bebranded/elearning-react` | Learner components, hooks and styles |
 
 ## What it does
 

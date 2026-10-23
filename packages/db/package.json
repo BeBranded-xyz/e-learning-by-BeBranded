@@ -33,7 +33,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json",
-    "db:types": "tsx --conditions=@bebranded/source scripts/generate-types.ts"
+    "db:types": "tsx --conditions=@bebranded/source scripts/generate-types.ts",
+    "db:bundle": "tsx scripts/bundle-migrations.ts"
   },
   "dependencies": {
     "@bebranded/elearning-core": "workspace:^",

@@ -1,5 +1,4 @@
-import { createHash } from "node:crypto";
-import { readdir, readFile } from "node:fs/promises";
+import { BUNDLED_MIGRATIONS } from "./migrations.gen.js";
 
 export type MigrationFile = {
   readonly name: string;
@@ -7,25 +6,17 @@ export type MigrationFile = {
   readonly checksum: string;
 };
 
-const MIGRATION_NAME = /^\d{14}_[a-z0-9_]+\.sql$/;
+/** SHA-256 with Web Crypto: works on Node and edge runtimes alike. */
+async function sha256(text: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
 
-/** The migrations shipped in the package (`packages/db/migrations`). */
-const BUNDLED_MIGRATIONS_DIR = new URL("../../migrations/", import.meta.url);
-
-export async function loadMigrations(dir: URL = BUNDLED_MIGRATIONS_DIR): Promise<MigrationFile[]> {
-  const entries = (await readdir(dir)).filter((entry) => entry.endsWith(".sql")).sort();
-  const invalid = entries.find((entry) => !MIGRATION_NAME.test(entry));
-  if (invalid !== undefined) {
-    throw new Error(`Invalid migration file name: ${invalid}`);
-  }
+/** The migrations shipped in the package, in order, with their checksums. */
+export async function loadMigrations(
+  sources: readonly { readonly name: string; readonly sql: string }[] = BUNDLED_MIGRATIONS,
+): Promise<MigrationFile[]> {
   return Promise.all(
-    entries.map(async (entry) => {
-      const sql = await readFile(new URL(entry, dir), "utf8");
-      return {
-        name: entry.replace(/\.sql$/, ""),
-        sql,
-        checksum: createHash("sha256").update(sql).digest("hex"),
-      };
-    }),
+    sources.map(async (source) => ({ ...source, checksum: await sha256(source.sql) })),
   );
 }

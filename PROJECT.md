@@ -21,7 +21,7 @@ Last updated: 2026-10-22
   receives fixes through semver updates. Non-trivial parts: trustworthy
   completion (video watch verification, server-side grading), permission rules
   driven by the host's roles, and two data modes (host database or dedicated).
-- **Status**: phase 1 (foundations) in progress. See
+- **Status**: phase 1 (foundations) complete; nothing published to npm yet. See
   `docs/specifications/09-roadmap.md`.
 - **License**: MIT, copyright BeBranded. Public repository.
 
@@ -31,7 +31,8 @@ Last updated: 2026-10-22
   products; server handlers use Web `Request`/`Response`.
 - **Entry points**: the `@bebranded/elearning-*` packages; later `apps/demo`
   (fictional host, e2e bed) and `apps/docs` (public docs).
-- **Local dev command(s)**: none yet (phase 1: `pnpm dev` for `apps/demo`).
+- **Local dev command(s)**: `corepack pnpm --filter @bebranded/elearning-demo dev` (with `ELEARNING_DATABASE_URL` and the demo seed, see the README).
+- **End-to-end**: `corepack pnpm test:e2e` (Playwright on `apps/demo`, desktop and mobile, PostgreSQL through Testcontainers).
 - **Check command**: `make check`: gitleaks on history and working tree,
   relative doc links, `git diff --check`, then `pnpm check` (Prettier, ESLint,
   typecheck, Vitest with coverage floors, knip, license allowlist).
@@ -267,6 +268,10 @@ Core rules always apply.
     0.56's generic types (optional props such as `heading.isToggleable`) do not
     type-check with it. The editor package keeps every other strict option.
     Owner: maintainers. Review: on each BlockNote upgrade (`BACKLOG.md` B-021).
+  - The license allowlist covers the dependency trees of the published
+    packages (`packages/*`). The private demo app is not distributed; through
+    Next.js it pulls `@img/sharp-libvips` (LGPL-3.0, optional image
+    optimization), which never reaches a published package.
   - `Kysely<any>` in `packages/db/src/migrations/migrate.ts`: the migration
     runner only issues raw SQL and must accept any database type; documented
     inline.

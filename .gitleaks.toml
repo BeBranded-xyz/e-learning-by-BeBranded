@@ -1,0 +1,18 @@
+# gitleaks configuration: the default rules, plus an allowlist for build
+# outputs that are never committed (.gitignore). `gitleaks dir` scans the
+# working tree, where `next build` writes per-build preview keys into .next/.
+# History scans (`gitleaks git`) still cover everything that was committed.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Untracked build outputs and dependencies"
+paths = [
+  '''(^|/)\.next/''',
+  '''(^|/)node_modules/''',
+  '''(^|/)dist/''',
+  '''(^|/)coverage/''',
+  '''(^|/)\.turbo/''',
+  '''(^|/)test-results/''',
+  '''(^|/)playwright-report/''',
+]
