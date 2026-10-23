@@ -154,6 +154,8 @@ export function anAttempt(
     status: "open",
     quizVersion: quiz.version,
     seed: 4_294_967_295,
+    shuffleQuestions: true,
+    shuffleOptions: false,
     startedAt: new Date("2026-03-01T10:00:00Z"),
     expiresAt: null,
     closedAt: null,

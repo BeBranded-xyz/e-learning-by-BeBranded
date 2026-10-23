@@ -42,6 +42,8 @@ CREATE TABLE quiz_attempts (
   status text NOT NULL CHECK (status IN ('open', 'submitted', 'expired', 'voided')),
   quiz_version text NOT NULL CHECK (quiz_version ~ '^[0-9a-f]{64}$'),
   shuffle_seed bigint NOT NULL CHECK (shuffle_seed BETWEEN 0 AND 4294967295),
+  shuffle_questions boolean NOT NULL,
+  shuffle_options boolean NOT NULL,
   started_at timestamptz NOT NULL,
   expires_at timestamptz NULL CHECK (expires_at > started_at),
   closed_at timestamptz NULL CHECK (closed_at >= started_at),
@@ -68,6 +70,7 @@ COMMENT ON TABLE quiz_attempts IS 'Every attempt is kept, for the best score and
 COMMENT ON COLUMN quiz_attempts.tenant_id IS 'Tenant of the learner, as on lesson_progress.';
 COMMENT ON COLUMN quiz_attempts.status IS 'open; submitted (graded); expired (past the time limit, score 0); voided (the quiz changed while open, does not count).';
 COMMENT ON COLUMN quiz_attempts.shuffle_seed IS 'Rebuilds the order of questions and options the learner saw.';
+COMMENT ON COLUMN quiz_attempts.shuffle_questions IS 'Shuffling options of the lesson when the attempt opened, so a later settings change cannot alter its grading.';
 COMMENT ON COLUMN quiz_attempts.expires_at IS 'Null without a time limit.';
 COMMENT ON COLUMN quiz_attempts.closed_at IS 'When the attempt was submitted, expired or voided; null while open.';
 COMMENT ON COLUMN quiz_attempts.answers IS 'Raw answers as submitted; null until submitted.';

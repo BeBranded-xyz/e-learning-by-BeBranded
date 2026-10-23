@@ -141,6 +141,8 @@ export async function insertQuizAttempt(
       "status",
       "quiz_version",
       "shuffle_seed",
+      "shuffle_questions",
+      "shuffle_options",
       "started_at",
       "expires_at",
     ])
@@ -154,6 +156,8 @@ export async function insertQuizAttempt(
         eb.val(attempt.status).as("status"),
         eb.val(attempt.quizVersion).as("quiz_version"),
         eb.val(attempt.seed).as("shuffle_seed"),
+        eb.val(attempt.shuffleQuestions).as("shuffle_questions"),
+        eb.val(attempt.shuffleOptions).as("shuffle_options"),
         eb.val(attempt.startedAt).as("started_at"),
         eb.val(attempt.expiresAt).as("expires_at"),
       ]),

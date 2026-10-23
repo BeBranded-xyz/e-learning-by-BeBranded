@@ -27,6 +27,9 @@ export type QuizAttempt = {
   readonly quizVersion: string;
   /** Unsigned 32-bit seed of the attempt's presentation. */
   readonly seed: number;
+  /** The lesson's shuffling options when the attempt opened; grading rebuilds the same order. */
+  readonly shuffleQuestions: boolean;
+  readonly shuffleOptions: boolean;
   readonly startedAt: Date;
   readonly expiresAt: Date | null;
   /** Null while open. */

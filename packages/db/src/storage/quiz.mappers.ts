@@ -47,6 +47,8 @@ export function toQuizAttempt(row: AttemptRow): QuizAttempt {
     status: statusSchema.parse(row.status),
     quizVersion: row.quiz_version,
     seed: numberSchema.parse(row.shuffle_seed),
+    shuffleQuestions: row.shuffle_questions,
+    shuffleOptions: row.shuffle_options,
     startedAt: row.started_at,
     expiresAt: row.expires_at,
     closedAt: row.closed_at,

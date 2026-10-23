@@ -50,7 +50,7 @@ A SurveyJS definition normally contains `correctAnswer`. If it were sent to the 
 
 - `shuffleQuestions` shuffles questions (each with its intro blocks); `shuffleOptions` shuffles choices and matching rows.
 - **Ordering items and matching columns are always shuffled**, never into the correct order or lined up with their rows: their authored order is the answer.
-- The seed is generated server-side and stored with the attempt, so grading sees exactly what the learner saw. The shuffle is deterministic (seeded PRNG), not a secret.
+- The seed is generated server-side and stored with the attempt, together with the shuffling options in force, so grading sees exactly what the learner saw even if the options change meanwhile. The shuffle is deterministic (seeded PRNG), not a secret.
 
 ## Per-lesson options
 

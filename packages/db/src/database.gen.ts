@@ -202,6 +202,11 @@ export interface QuizAttempts {
    * Between 0 and 1; null while open or voided.
    */
   score: Numeric | null;
+  shuffle_options: boolean;
+  /**
+   * Shuffling options of the lesson when the attempt opened, so a later settings change cannot alter its grading.
+   */
+  shuffle_questions: boolean;
   /**
    * Rebuilds the order of questions and options the learner saw.
    */
