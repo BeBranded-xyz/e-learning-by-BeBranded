@@ -1,6 +1,7 @@
 import type { RequestContext } from "../context.js";
 import { json } from "../http/responses.js";
 import { presentCourseSummary } from "../presenters/learner.presenters.js";
+import { applyPendingAssignments } from "../services/assignments.js";
 import { isCourseVisible } from "../services/course-view.js";
 
 /**
@@ -8,6 +9,7 @@ import { isCourseVisible } from "../services/course-view.js";
  * that are no longer visible keep their progress but are not listed (spec 05).
  */
 export async function myProgress(context: RequestContext): Promise<Response> {
+  await applyPendingAssignments(context);
   const { storage, scope, learner } = context;
   const [enrollments, courses] = await Promise.all([
     storage.listEnrollments(scope, learner.learnerId),

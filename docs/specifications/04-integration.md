@@ -192,7 +192,7 @@ const hostTheme = {
 
 ## 8. API surface
 
-All routes are relative to the mount point (e.g. `/api/elearning`) and versioned with a `/v1` prefix. `/v1/admin/*` routes require `isAdmin`. Request and response bodies are JSON with `snake_case` fields and ISO 8601 UTC dates; collections are wrapped as `{ "data": [...], "next_cursor": null }`. `GET` never changes state.
+All routes are relative to the mount point (e.g. `/api/elearning`) and versioned with a `/v1` prefix. `/v1/admin/*` routes require `isAdmin`. Request and response bodies are JSON with `snake_case` fields and ISO 8601 UTC dates; collections are wrapped as `{ "data": [...], "next_cursor": null }`. `GET` never changes state, with one exception: the catalog, a course page and My training first turn the learner's pending course assignments into enrollments (spec 05), which is idempotent.
 
 **Learner**
 
@@ -226,8 +226,11 @@ Content the learner cannot see answers **404, exactly like content that does not
 | POST | `/v1/admin/reorder` | `{ course_id, chapters: [{ id, lesson_ids }] }`: the full new order of one owned course. Chapters and lessons are renumbered from 0 and lessons may move between chapters of the course, in one transaction. The body must name every chapter and lesson of the course exactly once: an unknown or missing id answers 409 `tree_out_of_date` (reload and retry), a repeated id 400. Answers the course tree. A moved lesson inherits its new chapter's access rules |
 | POST | `/v1/admin/access-rules` | Rule on an owned course, chapter or lesson |
 | DELETE | `/v1/admin/access-rules/:id` | Remove a rule |
+| POST | `/v1/admin/assignments` | `{ course_id, audience, due_at? }`: assign a course of the tenant or of the shared catalog to a `role`, a `grade_min` or a `learner` (`{ type: "learner", learner_id }`). 409 `audience_without_access` when the course rules do not let that audience in (spec 05). A learner is enrolled at once (`source: assigned`, taking over an existing enrollment and keeping its progress); a role or grade enrolls matching learners on their next visit (`source: auto`, never changing an existing enrollment). Emits `enrollment.assigned` per enrolled learner. 201, or 200 when the same audience was already assigned (the due date is updated) |
+| GET | `/v1/admin/courses/:id/assignments` | The tenant's assignments of a readable course |
+| DELETE | `/v1/admin/assignments/:id` | Remove an assignment; the enrollments it created are kept |
 
-Publishing a course, chapter or lesson emits `content.published` once. Admins only write their own tenant's content: shared-catalog and other tenants' content answers 404. Then `/v1/admin/enrollments`, and extra quiz attempts, in phase 4. Plus `POST /v1/admin/files/uploads` (editor images and attachments) and `GET /v1/admin/reports/*` (tracking per course or per learner, CSV export).
+Publishing a course, chapter or lesson emits `content.published` once. Admins only write their own tenant's content: shared-catalog and other tenants' content answers 404. Then extra quiz attempts in phase 4. Plus `POST /v1/admin/files/uploads` (editor images and attachments) and `GET /v1/admin/reports/*` (tracking per course or per learner, CSV export).
 
 **System**
 

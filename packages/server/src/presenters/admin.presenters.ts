@@ -1,6 +1,8 @@
 import type {
   AccessRule,
+  Audience,
   Chapter,
+  CourseAssignment,
   Course,
   LessonDetail,
   LessonSummary,
@@ -76,8 +78,7 @@ export function presentLessonDetail(lesson: LessonDetail, video: VideoAsset | nu
   };
 }
 
-function presentAudience(rule: AccessRule) {
-  const { audience } = rule;
+function presentAudience(audience: Audience) {
   return audience.type === "learner"
     ? { type: "learner", learner_id: audience.learnerId }
     : audience;
@@ -89,7 +90,18 @@ export function presentAccessRule(rule: AccessRule) {
     target_type: rule.targetType,
     target_id: rule.targetId,
     effect: rule.effect,
-    audience: presentAudience(rule),
+    audience: presentAudience(rule.audience),
+  };
+}
+
+export function presentAssignment(assignment: CourseAssignment) {
+  return {
+    id: assignment.id,
+    course_id: assignment.courseId,
+    audience: presentAudience(assignment.audience),
+    due_at: iso(assignment.dueAt),
+    assigned_by: assignment.assignedBy,
+    created_at: assignment.createdAt.toISOString(),
   };
 }
 
