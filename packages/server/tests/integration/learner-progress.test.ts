@@ -79,6 +79,21 @@ describe("GET /v1/lessons/:id", () => {
     expect(body.html).toBe("<p><strong>Wear &lt;gloves&gt;</strong></p>");
   });
 
+  it("renders nothing and logs an error when stored content is invalid (written around the API)", async () => {
+    await sql`UPDATE ${sql.id(t.database.schema, "lessons")} SET content = ${JSON.stringify([{ id: "x", type: "html", props: {}, content: "<script>alert(1)</script>", children: [] }])}::jsonb WHERE id = ${optional.id}`.execute(
+      t.database.admin,
+    );
+
+    const body = await readJson(
+      await t.request("GET", `/v1/lessons/${optional.id}`, { as: "staff" }),
+    );
+
+    expect(body.html).toBe("");
+    expect(t.logs).toContainEqual(
+      expect.objectContaining({ level: "error", message: "stored lesson content is invalid" }),
+    );
+  });
+
   it("does not change any state (GET is safe)", async () => {
     await t.request("GET", `/v1/lessons/${second.id}`, { as: "staff" });
 

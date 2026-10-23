@@ -11,27 +11,27 @@ export const learnerRoutes: readonly Route<RequestContext>[] = [
   {
     method: "GET",
     pattern: "/v1/courses/:slug",
-    handle: (context, params) => getCourse(context, params.slug ?? ""),
+    handle: (context, { slug }) => getCourse(context, slug),
   },
   {
     method: "POST",
     pattern: "/v1/courses/:id/enroll",
-    handle: (context, params) => enroll(context, params.id ?? ""),
+    handle: (context, { id }) => enroll(context, id),
   },
   {
     method: "GET",
     pattern: "/v1/lessons/:id",
-    handle: (context, params) => getLesson(context, params.id ?? ""),
+    handle: (context, { id }) => getLesson(context, id),
   },
   {
     method: "POST",
     pattern: "/v1/lessons/:id/start",
-    handle: (context, params) => startLesson(context, params.id ?? ""),
+    handle: (context, { id }) => startLesson(context, id),
   },
   {
     method: "POST",
     pattern: "/v1/lessons/:id/complete",
-    handle: (context, params) => completeLesson(context, params.id ?? ""),
+    handle: (context, { id }) => completeLesson(context, id),
   },
   { method: "GET", pattern: "/v1/me/progress", handle: (context) => myProgress(context) },
 ];

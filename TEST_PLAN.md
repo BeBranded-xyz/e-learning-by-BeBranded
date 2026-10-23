@@ -44,7 +44,7 @@ config in the same PR. Tests that cannot be written yet are listed in
 | 4 | Mutation Testing | planned phase 1 | Stryker | `pnpm stryker run --incremental` | pr | core and server packages first |
 | 5 | Component / Module Tests | planned phase 1 | Vitest + Testing Library | `pnpm test:component` | pr | react and admin components |
 | 6 | Integration Tests | active | Vitest + Testcontainers (PostgreSQL 14) or `ELEARNING_TEST_DATABASE_URL` | `pnpm test:integration` | commit | Real Postgres, one schema per test file, never mocked |
-| 7 | API Tests | active (learner) / planned phase 1 (admin) | Vitest with real Request/Response and PostgreSQL | `pnpm test:integration` | commit | Every learner route, error envelope, status codes, headers, request id |
+| 7 | API Tests | active | Vitest with real Request/Response and PostgreSQL | `pnpm test:integration` | commit | Every learner and admin route, error envelope, status codes (400, 401, 403, 404, 405, 409, 413, 415, 500), headers, request id |
 | 8 | Contract Tests | planned phase 1 | Zod schemas + API report (API Extractor) | `pnpm test:contract` | pr | Public API and HTTP contract |
 | 9 | End-to-End (E2E) Tests | planned phase 1 | Playwright on apps/demo | `pnpm test:e2e` | pr | Desktop and mobile viewports |
 | 10 | UI / Frontend Tests | planned phase 1 | Testing Library | `pnpm test:component` | pr |  |
@@ -84,7 +84,7 @@ config in the same PR. Tests that cannot be written yet are listed in
 | 29 | DAST | planned phase 5 | ZAP baseline on apps/demo |  | pre-prod |  |
 | 30 | Dependency Security Testing | active | Dependabot alerts and updates (npm, actions), pnpm audit, license allowlist | `pnpm audit --audit-level=high && pnpm check:licenses` | pr | |
 | 31 | Authentication Testing | active | Vitest | `pnpm test:integration` | commit | No identity gives 401; invalid identity gives a generic 500; the resolver runs on every request |
-| 32 | Authorization Testing | active (storage, learner routes) / planned phase 1 (admin routes) | Vitest + Testcontainers | `pnpm test:integration` | commit | Every audience type, deny wins, drafts and archived hidden, child never wider than parent, tenant crossing, 404 instead of 403 for hidden content, assignment-only courses |
+| 32 | Authorization Testing | active | Vitest + Testcontainers | `pnpm test:integration` | commit | Every audience type, deny wins, drafts and archived hidden, child never wider than parent, tenant crossing on reads and admin writes, shared catalog read-only, admin routes refused to non-admins, 404 instead of 403 for hidden content |
 | 33 | Injection Testing | active (content, SQL) / planned phase 1 (handlers) | Vitest, fast-check | `pnpm test:unit` | commit | XSS payloads and fuzzed text through the renderer, hostile links and schemes, CSS values in props, SQL injection through tenant filters. SSRF in exports: phase 4b |
 | 34 | Web Security Testing | planned phase 1 | Playwright | `pnpm test:security` | pr | Recommended CSP and headers in apps/demo |
 | 35 | Secret Scanning | active | gitleaks (CI full history + pre-commit hook), GitHub push protection | `make check` | commit | Workflow `Secret scan`, required check |

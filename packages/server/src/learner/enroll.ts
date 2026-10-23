@@ -9,7 +9,10 @@ import { findVisibleCourseById } from "./catalog.js";
  * existing enrollment is returned with 200, a new one with 201. An
  * assignment-only course is invisible until assigned, so it answers 404.
  */
-export async function enroll(context: RequestContext, courseId: string): Promise<Response> {
+export async function enroll(
+  context: RequestContext,
+  courseId: string | undefined,
+): Promise<Response> {
   const view = await findVisibleCourseById(context, courseId);
   if (view.enrollment !== null) return json(presentEnrollment(view.enrollment), context.requestId);
   const enrollment = await context.storage.transaction(async (tx) => {

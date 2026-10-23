@@ -24,7 +24,10 @@ function renderContent(context: RequestContext, lessonId: string, content: unkno
 }
 
 /** GET /v1/lessons/:id: the lesson rendered to HTML, with the learner's status. Never mutates state. */
-export async function getLesson(context: RequestContext, lessonId: string): Promise<Response> {
+export async function getLesson(
+  context: RequestContext,
+  lessonId: string | undefined,
+): Promise<Response> {
   const { lesson, view } = await loadAccessibleLesson(context, lessonId);
   const status = view.chapters
     .flatMap((chapter) => chapter.lessons)
@@ -35,7 +38,7 @@ export async function getLesson(context: RequestContext, lessonId: string): Prom
 
 async function progress(
   context: RequestContext,
-  lessonId: string,
+  lessonId: string | undefined,
   target: "in_progress" | "completed",
 ) {
   const { lesson, course, view } = await loadAccessibleLesson(context, lessonId);
@@ -59,11 +62,17 @@ async function progress(
 }
 
 /** POST /v1/lessons/:id/start: records that the learner opened the lesson. Idempotent. */
-export function startLesson(context: RequestContext, lessonId: string): Promise<Response> {
+export function startLesson(
+  context: RequestContext,
+  lessonId: string | undefined,
+): Promise<Response> {
   return progress(context, lessonId, "in_progress");
 }
 
 /** POST /v1/lessons/:id/complete: "Mark as done" on a text lesson. Idempotent. */
-export function completeLesson(context: RequestContext, lessonId: string): Promise<Response> {
+export function completeLesson(
+  context: RequestContext,
+  lessonId: string | undefined,
+): Promise<Response> {
   return progress(context, lessonId, "completed");
 }
