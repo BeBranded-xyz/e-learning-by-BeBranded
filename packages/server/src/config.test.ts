@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { postgresStorage } from "@bebranded/elearning-db";
 
@@ -45,5 +45,20 @@ describe("resolveOptions", () => {
     ],
   ])("rejects %s at startup", (_label, input) => {
     expect(() => resolveOptions(input as never)).toThrow();
+  });
+});
+
+describe("default logger", () => {
+  it("writes warnings and errors to the console with their metadata", () => {
+    const options = resolveOptions({ storage, identity });
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    options.logger.warn("slow", { ms: 5 });
+    options.logger.error("failed");
+
+    expect(warn).toHaveBeenCalledWith("slow", { ms: 5 });
+    expect(error).toHaveBeenCalledWith("failed", {});
+    vi.restoreAllMocks();
   });
 });

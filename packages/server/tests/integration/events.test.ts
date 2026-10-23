@@ -9,16 +9,20 @@ import type { TestApp } from "../support/test-app.js";
 let t: TestApp;
 const received: DomainEvent[] = [];
 let failures = 0;
+// A host handler may reject with anything, not only an Error.
+let rejection: unknown = new Error("host webhook timed out");
 
 beforeEach(async () => {
   received.length = 0;
   failures = 0;
+  rejection = new Error("host webhook timed out");
   t = await createTestApp({
     events: {
       "lesson.completed": (event) => {
         if (failures > 0) {
           failures -= 1;
-          return Promise.reject(new Error("host webhook timed out"));
+          // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors -- hosts may reject with anything
+          return Promise.reject(rejection);
         }
         received.push(event);
         return Promise.resolve();
@@ -67,6 +71,13 @@ describe("deliverEvents", () => {
     t.advance(31_000);
     expect(await t.app.deliverEvents()).toEqual({ delivered: 1, failed: 0 });
     expect(received.filter((event) => event.type === "lesson.completed")).toHaveLength(1);
+  });
+
+  it("records a readable error for a handler that rejects with a non-Error value", async () => {
+    failures = 1;
+    rejection = "timeout";
+
+    expect(await t.app.deliverEvents()).toEqual({ delivered: 3, failed: 1 });
   });
 
   it("respects the batch limit", async () => {

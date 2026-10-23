@@ -3,6 +3,7 @@ import type { ElearningOptions } from "./config.js";
 import { deliverEvents } from "./events/deliver-events.js";
 import type { DeliveryReport } from "./events/deliver-events.js";
 import { handleRequest } from "./handle-request.js";
+import { adminRoutes } from "./admin/routes.js";
 import { learnerRoutes } from "./learner/routes.js";
 
 export type Elearning = {
@@ -15,7 +16,7 @@ export type Elearning = {
 /** Creates the module from the host's configuration, validated once here (spec 04). */
 export function createElearning(input: ElearningOptions): Elearning {
   const options = resolveOptions(input);
-  const routes = [...learnerRoutes];
+  const routes = [...learnerRoutes, ...adminRoutes];
   return {
     handle: (request) => handleRequest(request, options, routes),
     deliverEvents: (delivery) => deliverEvents(options, delivery?.limit),

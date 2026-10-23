@@ -59,15 +59,24 @@ export type Enrollment = {
 
 export type PendingEvent = DomainEvent & { readonly attempts: number };
 
-export type CoursePatch = Partial<Omit<Course, "id" | "tenantId">>;
-export type ChapterPatch = Partial<Pick<Chapter, "title" | "position" | "status">>;
-export type LessonPatch = Partial<
-  Pick<LessonDetail, "title" | "position" | "status" | "isRequired" | "estimatedMinutes">
-> & {
-  readonly content?: JsonValue | null;
-  readonly contentSchemaVersion?: number;
-  readonly settings?: Readonly<Record<string, JsonValue>>;
-};
+/** Patches may carry `undefined` for "unchanged" (fields of a partial request body). */
+type Patch<T> = { readonly [K in keyof T]?: T[K] | undefined };
+
+export type CoursePatch = Patch<Omit<Course, "id" | "tenantId">>;
+export type ChapterPatch = Patch<Pick<Chapter, "title" | "position" | "status">>;
+export type LessonPatch = Patch<
+  Pick<
+    LessonDetail,
+    | "title"
+    | "position"
+    | "status"
+    | "isRequired"
+    | "estimatedMinutes"
+    | "content"
+    | "contentSchemaVersion"
+    | "settings"
+  >
+>;
 
 export type StorageReads = {
   listCourses(scope: TenantScope): Promise<Course[]>;

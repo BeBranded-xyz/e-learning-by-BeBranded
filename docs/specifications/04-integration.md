@@ -209,7 +209,18 @@ Content the learner cannot see answers **404, exactly like content that does not
 
 **Admin**
 
-CRUD on `/v1/admin/courses`, `/v1/admin/chapters`, `/v1/admin/lessons`, `/v1/admin/access-rules`, then `/v1/admin/quizzes` and `/v1/admin/enrollments` in their phases. Plus `POST /v1/admin/videos/uploads` (direct upload), `POST /v1/admin/files/uploads` (editor images and attachments), `POST /v1/admin/reorder` and `GET /v1/admin/reports/*` (tracking per course or per learner, CSV export).
+| Method | Route | Purpose |
+|--------|-------|---------|
+| GET, POST | `/v1/admin/courses` | List (tenant and shared catalog, with `editable`), create a draft |
+| GET, PATCH, DELETE | `/v1/admin/courses/:id` | Tree with drafts and rules; edit or publish (`published_at` set once); delete with its tree |
+| POST | `/v1/admin/chapters` | Create in an owned course |
+| PATCH, DELETE | `/v1/admin/chapters/:id` | Edit or publish; delete with its lessons |
+| POST | `/v1/admin/lessons` | Create a text lesson; content validated |
+| GET, PATCH, DELETE | `/v1/admin/lessons/:id` | Stored document for the editor; edit or publish; delete |
+| POST | `/v1/admin/access-rules` | Rule on an owned course, chapter or lesson |
+| DELETE | `/v1/admin/access-rules/:id` | Remove a rule |
+
+Publishing a course, chapter or lesson emits `content.published` once. Admins only write their own tenant's content: shared-catalog and other tenants' content answers 404. Then `/v1/admin/quizzes` and `/v1/admin/enrollments` in their phases. Plus `POST /v1/admin/videos/uploads` (direct upload), `POST /v1/admin/files/uploads` (editor images and attachments), `POST /v1/admin/reorder` and `GET /v1/admin/reports/*` (tracking per course or per learner, CSV export).
 
 **System**
 
@@ -226,7 +237,7 @@ Every input is validated with Zod. Every error uses one envelope, `{ "error": { 
 | 403 | `forbidden` (admin route without `isAdmin`), `origin_not_allowed` (CSRF check) |
 | 404 | `not_found` |
 | 405 | `method_not_allowed` |
-| 409 | `completion_not_manual` (a video or quiz lesson cannot be marked as done) |
+| 409 | `completion_not_manual` (a video or quiz lesson cannot be marked as done), `slug_taken` |
 | 413 | `payload_too_large` |
 | 415 | `unsupported_media_type` |
 | 500 | `internal_error` |

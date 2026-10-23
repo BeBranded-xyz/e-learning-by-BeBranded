@@ -19,7 +19,7 @@ export type AccessibleLesson = {
  */
 export async function loadAccessibleLesson(
   context: RequestContext,
-  rawId: string,
+  rawId: string | undefined,
 ): Promise<AccessibleLesson> {
   const id = lessonIdSchema.safeParse(rawId);
   if (!id.success) throw httpErrors.notFound();

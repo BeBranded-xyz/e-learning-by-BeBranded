@@ -39,14 +39,17 @@ async function findVisibleCourse(context: RequestContext, find: () => Promise<Co
 }
 
 /** GET /v1/courses/:slug: the course tree the learner may see, with progress. */
-export async function getCourse(context: RequestContext, slug: string): Promise<Response> {
+export async function getCourse(
+  context: RequestContext,
+  slug: string | undefined,
+): Promise<Response> {
   const view = await findVisibleCourse(context, () =>
-    context.storage.findCourseBySlug(context.scope, slug),
+    context.storage.findCourseBySlug(context.scope, slug ?? ""),
   );
   return json(presentCourseView(view), context.requestId);
 }
 
-export async function findVisibleCourseById(context: RequestContext, rawId: string) {
+export async function findVisibleCourseById(context: RequestContext, rawId: string | undefined) {
   const id = courseIdSchema.safeParse(rawId);
   if (!id.success) throw httpErrors.notFound();
   return findVisibleCourse(context, () => context.storage.findCourseById(context.scope, id.data));

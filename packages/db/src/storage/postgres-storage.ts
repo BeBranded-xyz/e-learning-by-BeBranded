@@ -14,6 +14,7 @@ import type { DB } from "../database.gen.js";
 import { assertSchemaUpToDate } from "../migrations/migrate.js";
 import { DEFAULT_SCHEMA, assertSchemaName } from "../schema-name.js";
 import * as rules from "./access-rules.queries.js";
+import { withConflicts } from "./database-errors.js";
 import * as content from "./content.queries.js";
 import * as lessons from "./lessons.queries.js";
 import * as outbox from "./outbox.queries.js";
@@ -67,8 +68,9 @@ function writes(db: Kysely<DB>): StorageWrites {
     saveEnrollment: (scope, enrollment) => progress.saveEnrollment(db, scope, enrollment),
     saveLessonProgress: (scope, value) => progress.saveLessonProgress(db, scope, value),
     appendEvent: (event) => outbox.appendEvent(db, event),
-    insertCourse: (course) => content.insertCourse(db, course),
-    updateCourse: (scope, id, patch) => content.updateCourse(db, scope, id, patch),
+    insertCourse: (course) => withConflicts(() => content.insertCourse(db, course)),
+    updateCourse: (scope, id, patch) =>
+      withConflicts(() => content.updateCourse(db, scope, id, patch)),
     deleteCourse: (scope, id) => content.deleteCourse(db, scope, id),
     insertChapter: (scope, chapter) => content.insertChapter(db, scope, chapter),
     updateChapter: (scope, id, patch) => content.updateChapter(db, scope, id, patch),
