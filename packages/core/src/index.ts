@@ -5,6 +5,7 @@ export type { Err, Ok, Result } from "./result.js";
 
 export {
   accessRuleIdSchema,
+  assignmentIdSchema,
   chapterIdSchema,
   courseIdSchema,
   enrollmentIdSchema,
@@ -17,6 +18,7 @@ export {
 } from "./content/ids.js";
 export type {
   AccessRuleId,
+  AssignmentId,
   ChapterId,
   CourseId,
   EnrollmentId,
@@ -83,15 +85,18 @@ export {
   accessEffectSchema,
   accessRuleSchema,
   accessTargetTypeSchema,
+  assignmentAudienceSchema,
   audienceSchema,
 } from "./access/access.schemas.js";
 export type {
   AccessEffect,
   AccessRule,
   AccessTargetType,
+  AssignmentAudience,
   Audience,
 } from "./access/access.schemas.js";
 export { audienceMatches, canAccess } from "./access/can-access.js";
+export { canAssign } from "./access/can-assign.js";
 export type {
   AccessDecision,
   AccessDenialReason,
@@ -200,6 +205,12 @@ export type {
   VideoStorageReads,
   VideoStorageWrites,
 } from "./ports/video-storage.types.js";
+
+export type {
+  AssignmentStorageReads,
+  AssignmentStorageWrites,
+  CourseAssignment,
+} from "./ports/assignment-storage.types.js";
 
 export type {
   Quiz,

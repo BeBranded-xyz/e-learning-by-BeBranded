@@ -8,7 +8,7 @@
 > If the project uses an external tracker (GitHub Issues, Linear, Notion),
 > this file lists the tracker link per item and stays the index.
 
-Last updated: 2026-10-23
+Last updated: 2026-10-24
 Tracker: this file only (GitHub Issues once outside contributors arrive)
 
 ## Now (committed for the current iteration)
@@ -54,6 +54,8 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | B-034 | Upstream to AI-Dev-Rules: the pre-commit hook mistakes `grep -n` (or any `-n`) in a chained command for `git commit -n` and blocks it | debt | P3 | | | 2026-10-23 | Hit while committing a fix |
 | B-035 | Nonce-based Content Security Policy in apps/demo and in the integration guide (spec 08) | feature | P2 | maintainers | spec 08 | 2026-10-23 | Needs Next.js proxy middleware |
 | B-036 | E2E on Firefox and WebKit (iOS Safari ≥ 16 target) | test | P2 | maintainers | `TEST_PLAN.md` #44, #45 | 2026-10-23 | |
+| B-051 | Admin assignments API: `POST/GET/DELETE /v1/admin/assignments` (refused with `canAssign`), immediate enrollment for a learner audience, enrollments created on the next visit for roles and grades, `enrollment.assigned` | feature | P1 | maintainers | spec 05, phase 4 | 2026-10-24 | Storage and `canAssign` exist |
+| B-052 | Role and grade assignments do not set a due date on an existing self enrollment; decide whether they should | question | P3 | maintainers | spec 05 | 2026-10-24 | Pending lookup skips enrolled courses |
 | B-003 | Write the delivery plan (packages as units, trusted publishing, one publisher) before adding a release workflow | docs | P2 | maintainers | `modules/library-publishing` | 2026-10-22 | `release.yml` template is manual-only until then |
 | B-004 | Design-system decisions: component catalogue, themes, icon set, enforcement | docs | P2 | maintainers | `PROJECT.md` section 4 | 2026-10-22 | |
 | B-005 | Evaluate the `audit-trail` module for admin actions (content publishing, access rules, assignments) | question | P2 | maintainers | | 2026-10-22 | |

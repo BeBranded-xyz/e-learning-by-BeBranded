@@ -14,6 +14,7 @@ import type { DB } from "../database.gen.js";
 import { assertSchemaUpToDate } from "../migrations/migrate.js";
 import { DEFAULT_SCHEMA, assertSchemaName } from "../schema-name.js";
 import * as rules from "./access-rules.queries.js";
+import * as assignments from "./assignments.queries.js";
 import { withConflicts } from "./database-errors.js";
 import * as content from "./content.queries.js";
 import * as lessons from "./lessons.queries.js";
@@ -65,6 +66,10 @@ function reads(db: Kysely<DB>): StorageReads {
     findQuizStanding: (scope, learnerId, lessonId) =>
       quiz.findQuizStanding(db, scope, { learnerId, lessonId }),
     countQuizLearners: (scope, lessonId) => quiz.countQuizLearners(db, scope, lessonId),
+    listCourseAssignments: (scope, courseId) =>
+      assignments.listCourseAssignments(db, scope, courseId),
+    listPendingAssignments: (scope, learner) =>
+      assignments.listPendingAssignments(db, scope, learner),
   };
 }
 
@@ -102,6 +107,9 @@ function writes(db: Kysely<DB>): StorageWrites {
     lockQuizAttempt: (scope, learnerId, attemptId) =>
       quiz.lockQuizAttempt(db, scope, learnerId, attemptId),
     closeQuizAttempt: (scope, attempt) => quiz.closeQuizAttempt(db, scope, attempt),
+    saveCourseAssignment: (scope, assignment) =>
+      assignments.saveCourseAssignment(db, scope, assignment),
+    deleteCourseAssignment: (scope, id) => assignments.deleteCourseAssignment(db, scope, id),
   };
 }
 

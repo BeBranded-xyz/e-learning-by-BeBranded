@@ -91,7 +91,7 @@ export function toLessonDetail(row: Selectable<Lessons>): LessonDetail {
   };
 }
 
-function toAudience(type: string, value: string | null): unknown {
+export function toAudience(type: string, value: string | null): unknown {
   switch (type) {
     case "role":
       return { type, role: value };

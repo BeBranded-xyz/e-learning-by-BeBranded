@@ -60,7 +60,10 @@ Access (being allowed to see a course) is separate from enrollment (the course a
 
 - A course is either **self-enroll** (learners enroll themselves) or **assignment-only**.
 - An admin can assign a course to a learner, a role or a grade, with an optional due date. Assigning to a role creates the enrollments on the learner's next visit (`source = auto`).
-- The back-office refuses to assign a course to someone who cannot access it.
+- The back-office refuses to assign a course to someone who cannot access it (`canAssign` in `elearning-core`). Only the course's own rules count, and a draft course is judged as if published, so an assignment can be prepared before publication:
+  - **a role or a grade**: a member with only that role, or exactly that grade, must be allowed;
+  - **a learner**: the back-office does not know their roles and grade, so it refuses only when no rule could ever let them in (no `allow` rule that may match them, or a `deny` rule for `everyone` or for them).
+- Access is checked again with the learner's real identity before an enrollment is created, and on every request after that.
 
 ## RLS
 

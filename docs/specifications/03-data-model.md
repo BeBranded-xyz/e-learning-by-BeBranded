@@ -108,6 +108,8 @@ The quiz options (passing score, attempts, cooldown, time limit, shuffling, corr
 | audience_type | enum `everyone` \| `role` \| `grade_min` \| `learner` | |
 | audience_value | text null | role name, grade level or `learner_id`. In code, the pair is one typed `audience` value (`{ type: "role", role }`…) |
 
+**`course_assignments`**: `id`, `tenant_id` (the assigning admin's, also for a shared course), `course_id` FK, `audience_type` (`role` \| `grade_min` \| `learner`, never `everyone`), `audience_value`, `due_at` null, `assigned_by` (the admin's `learner_id`), `created_at`. Unique on (tenant, `course_id`, audience): assigning the same audience again updates its due date. A learner matching an assignment gets an enrollment on their next visit (see [05 — Permissions](05-permissions.md#enrollment-and-assignment)); deleting the assignment keeps the enrollments it created.
+
 ### Progress
 
 **`enrollments`**: `id`, `tenant_id`, `course_id`, `learner_id`, `source` (`self` \| `assigned` \| `auto`), `assigned_by` null, `due_at` null, `started_at` null (set when the first lesson starts), `completed_at` null, `progress` numeric (0–1, denormalized). Unique on (`course_id`, `learner_id`). `tenant_id` is the learner's tenant, which can differ from a shared course's.

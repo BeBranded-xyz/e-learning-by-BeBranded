@@ -4,7 +4,7 @@
 > (`modules/database.mdc`). One entry per migration file, added in the same PR.
 > Applied migrations are never modified; a correction is a new migration.
 
-Last updated: 2026-10-23
+Last updated: 2026-10-24
 
 ## Format
 
@@ -88,3 +88,14 @@ Last updated: 2026-10-23
 - RLS: enabled on both tables, no policy (default deny, as every table)
 - Types regenerated: yes
 - PR: #21
+
+## 20261024000100_course_assignments
+- Date: 2026-10-24
+- Type: schema
+- Tables: course_assignments
+- Summary: courses assigned by an admin to a learner, a role or a minimum grade, with an optional due date (spec 03, spec 05). One row per tenant, course and audience; rows cascade with their course. An index on (tenant, audience) serves the lookup of a visiting learner's pending assignments.
+- Breaking: no
+- Rollback: documented in header
+- RLS: enabled, no policy (default deny, as every table)
+- Types regenerated: yes
+- PR: this PR

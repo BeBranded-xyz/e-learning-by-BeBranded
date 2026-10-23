@@ -5,9 +5,10 @@
 
 import type { ColumnType } from "kysely";
 
-export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
-  ? ColumnType<S, I | undefined, U>
-  : ColumnType<T, T | undefined, T>;
+export type Generated<T> =
+  T extends ColumnType<infer S, infer I, infer U>
+    ? ColumnType<S, I | undefined, U>
+    : ColumnType<T, T | undefined, T>;
 
 export type Int8 = ColumnType<string, bigint | number | string, bigint | number | string>;
 
@@ -56,6 +57,30 @@ export interface Chapters {
    */
   tenant_id: string | null;
   title: string;
+  updated_at: Generated<Timestamp>;
+}
+
+export interface CourseAssignments {
+  /**
+   * learner_id of the admin who assigned the course last.
+   */
+  assigned_by: string;
+  audience_type: string;
+  /**
+   * Role name, minimum grade or learner_id.
+   */
+  audience_value: string;
+  course_id: string;
+  created_at: Generated<Timestamp>;
+  /**
+   * Copied to the enrollments it creates; null without a due date.
+   */
+  due_at: Timestamp | null;
+  id: Generated<string>;
+  /**
+   * Tenant of the admin and the assigned learners (the course may be shared).
+   */
+  tenant_id: string | null;
   updated_at: Generated<Timestamp>;
 }
 
@@ -316,6 +341,7 @@ export interface VideoSessions {
 export interface DB {
   access_rules: AccessRules;
   chapters: Chapters;
+  course_assignments: CourseAssignments;
   courses: Courses;
   enrollments: Enrollments;
   event_outbox: EventOutbox;
