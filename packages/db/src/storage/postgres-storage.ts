@@ -19,6 +19,7 @@ import * as content from "./content.queries.js";
 import * as lessons from "./lessons.queries.js";
 import * as outbox from "./outbox.queries.js";
 import * as progress from "./progress.queries.js";
+import * as video from "./video.queries.js";
 
 const optionsSchema = z.union([
   z.strictObject({
@@ -56,6 +57,9 @@ function reads(db: Kysely<DB>): StorageReads {
     findEnrollment: (scope, courseId, learnerId) =>
       progress.findEnrollment(db, scope, { courseId, learnerId }, { forUpdate: false }),
     listEnrollments: (scope, learnerId) => progress.listEnrollments(db, scope, learnerId),
+    findVideoAsset: (scope, lessonId) => video.findVideoAsset(db, scope, lessonId),
+    findVideoProgress: (scope, learnerId, lessonId) =>
+      video.findVideoProgress(db, scope, { learnerId, lessonId }),
   };
 }
 
@@ -80,6 +84,12 @@ function writes(db: Kysely<DB>): StorageWrites {
     deleteLesson: (scope, id) => lessons.deleteLesson(db, scope, id),
     insertAccessRule: (rule) => rules.insertAccessRule(db, rule),
     deleteAccessRule: (scope, id) => rules.deleteAccessRule(db, scope, id),
+    saveVideoAsset: (scope, asset) => withConflicts(() => video.saveVideoAsset(db, scope, asset)),
+    applyVideoWebhook: (provider, event) => video.applyVideoWebhook(db, provider, event),
+    acceptVideoHeartbeat: (scope, key) => video.acceptVideoHeartbeat(db, scope, key),
+    lockOrCreateVideoProgress: (scope, learnerId, lessonId) =>
+      video.lockOrCreateVideoProgress(db, scope, { learnerId, lessonId }),
+    saveVideoProgress: (scope, value) => video.saveVideoProgress(db, scope, value),
   };
 }
 

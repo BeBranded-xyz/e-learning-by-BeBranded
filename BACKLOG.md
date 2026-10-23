@@ -17,6 +17,7 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 |---|---|---|---|---|---|---|---|
 | B-037 | Phase 2, video: core rules (this PR), db tables and storage, `@bebranded/elearning-video` with Cloudflare Stream, server endpoints and webhook, `<VideoPlayer>`, demo and anti-cheat e2e | feature | P1 | maintainers | spec 09, phase 2 | 2026-10-23 | Six PRs, in order |
 | B-038 | Live contract test against a dedicated Cloudflare Stream test account (recorded fixtures only for now) | test | P3 | maintainers | spec 06 | 2026-10-23 | Maintainer decision: simulations first |
+| B-039 | Purge `video_sessions` rows untouched for 24 h (only live sessions need `last_seq`), as a scheduled function the host triggers; add to the data lifecycle inventory | ops | P2 | maintainers | `modules/data-lifecycle`, spec 03 | 2026-10-23 | One row per player load; cascades with lesson progress meanwhile |
 | B-001 | Re-run `init.sh --target claude,codex --update` from AI-Dev-Rules `main` once its PRs #1, #2, #3 are merged; commit the new `.ruleset-version` | ops | P1 | maintainers | AI-Dev-Rules #1–#3 | 2026-10-22 | Current install comes from a local integration of those PRs |
 
 ## Next

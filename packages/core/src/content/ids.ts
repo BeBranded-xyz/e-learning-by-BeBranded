@@ -6,12 +6,14 @@ export const chapterIdSchema = z.uuid().brand<"ChapterId">();
 export const lessonIdSchema = z.uuid().brand<"LessonId">();
 export const accessRuleIdSchema = z.uuid().brand<"AccessRuleId">();
 export const enrollmentIdSchema = z.uuid().brand<"EnrollmentId">();
+export const videoAssetIdSchema = z.uuid().brand<"VideoAssetId">();
 
 export type CourseId = z.infer<typeof courseIdSchema>;
 export type ChapterId = z.infer<typeof chapterIdSchema>;
 export type LessonId = z.infer<typeof lessonIdSchema>;
 export type AccessRuleId = z.infer<typeof accessRuleIdSchema>;
 export type EnrollmentId = z.infer<typeof enrollmentIdSchema>;
+export type VideoAssetId = z.infer<typeof videoAssetIdSchema>;
 
 /** Opaque identifiers coming from the host product. */
 export const learnerIdSchema = z.string().trim().min(1).max(255).brand<"LearnerId">();

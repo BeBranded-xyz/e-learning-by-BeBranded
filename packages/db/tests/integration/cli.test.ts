@@ -5,6 +5,7 @@ import pg from "pg";
 import { afterAll, describe, expect, inject, it } from "vitest";
 
 import { runCli } from "../../src/cli.js";
+import { loadMigrations } from "../../src/migrations/migration-files.js";
 
 const schema = `cli_${randomUUID().replaceAll("-", "").slice(0, 12)}`;
 // The default schema is created in the shared test database: no other test uses it.
@@ -39,15 +40,18 @@ afterAll(async () => {
 describe("elearning CLI", () => {
   it("migrates the given schema, then reports nothing left to apply", async () => {
     const env = { ELEARNING_DATABASE_URL: inject("databaseUrl") };
+    const count = (await loadMigrations()).length;
     const first = captureIo();
     const second = captureIo();
 
     expect(await runCli(["migrate", "--schema", schema], env, first.io)).toBe(0);
     expect(await runCli(["migrate", "--schema", schema], env, second.io)).toBe(0);
 
-    expect(first.output.out).toMatch(/^Applied 3 migration\(s\), 0 already applied\./);
+    expect(first.output.out).toMatch(
+      new RegExp(`^Applied ${count} migration\\(s\\), 0 already applied\\.`),
+    );
     expect(first.output.out).toContain("+ 20261023000100_content_tables");
-    expect(second.output.out).toBe("Applied 0 migration(s), 3 already applied.\n");
+    expect(second.output.out).toBe(`Applied 0 migration(s), ${count} already applied.\n`);
   });
 
   it("uses the elearning schema by default", async () => {

@@ -18,6 +18,9 @@ const tables = [
   "lesson_progress",
   "event_outbox",
   "schema_migrations",
+  "video_assets",
+  "video_progress",
+  "video_sessions",
 ];
 
 beforeAll(async () => {

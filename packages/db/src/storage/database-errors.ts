@@ -10,6 +10,10 @@ const CONFLICTS: Record<string, { code: string; message: string }> = {
     code: "slug_taken",
     message: "Another course already uses this slug.",
   },
+  video_assets_provider_asset_key: {
+    code: "video_asset_in_use",
+    message: "This video is already attached to another lesson.",
+  },
 };
 
 /** Runs a write and turns a known unique violation into a typed conflict; other errors propagate. */

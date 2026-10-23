@@ -55,3 +55,14 @@ Last updated: 2026-10-23
 - RLS: enabled, no permissive policy
 - Types regenerated: yes
 - PR: phase 1, `@bebranded/elearning-db`
+
+## 20261023000400_video_tables
+- Date: 2026-10-23
+- Type: schema
+- Tables: video_assets, video_progress, video_sessions
+- Summary: video lessons (spec 06): one provider asset per lesson, learners' merged watched ranges and coverage, and one row per player session whose `last_seq` makes heartbeats idempotent. Progress and sessions cascade with `lesson_progress`.
+- Breaking: no
+- Rollback: documented in header
+- RLS: enabled, no permissive policy
+- Types regenerated: yes
+- PR: phase 2, `@bebranded/elearning-db`
