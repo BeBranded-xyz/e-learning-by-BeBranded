@@ -9,6 +9,13 @@ import type {
 
 import { toApiError } from "./api-error.js";
 
+/** Linear on any input (a `/\/+$/` regex is polynomial on long runs of slashes). */
+function trimTrailingSlashes(value: string): string {
+  let end = value.length;
+  while (end > 0 && value[end - 1] === "/") end -= 1;
+  return value.slice(0, end);
+}
+
 export type Fetcher = (input: string, init: RequestInit) => Promise<Response>;
 
 /**
@@ -20,7 +27,7 @@ export function createApiClient(
   apiBase: string,
   fetcher: Fetcher = (input, init) => fetch(input, init),
 ) {
-  const base = apiBase.replace(/\/+$/, "");
+  const base = trimTrailingSlashes(apiBase);
 
   async function request<T>(
     method: "GET" | "POST",

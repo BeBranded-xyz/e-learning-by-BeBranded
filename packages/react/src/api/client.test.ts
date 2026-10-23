@@ -31,6 +31,15 @@ describe("createApiClient", () => {
     expect(requests[0]?.init.body).toBeUndefined();
   });
 
+  it("trims any number of trailing slashes from the base path, in linear time", async () => {
+    const { fetcher, requests } = recordingFetcher(ok({ data: [], next_cursor: null }));
+
+    await createApiClient(`/api${"/".repeat(100_000)}`, fetcher).listCourses();
+    await createApiClient("/", fetcher).listCourses();
+
+    expect(requests.map((request) => request.url)).toEqual(["/api/v1/courses", "/v1/courses"]);
+  });
+
   it("sends JSON on POST (the server's CSRF check requires it)", async () => {
     const { fetcher, requests } = recordingFetcher(ok({ status: "completed" }));
 
