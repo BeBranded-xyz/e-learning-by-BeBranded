@@ -119,3 +119,17 @@ export type {
   StorageWrites,
   TenantScope,
 } from "./ports/storage.types.js";
+
+export type {
+  ApiChapter,
+  ApiCollection,
+  ApiCourse,
+  ApiCourseLesson,
+  ApiCourseSummary,
+  ApiEnrollment,
+  ApiErrorBody,
+  ApiLesson,
+  ApiLessonProgress,
+  ApiLessonType,
+  ApiProgress,
+} from "./api/api.types.js";

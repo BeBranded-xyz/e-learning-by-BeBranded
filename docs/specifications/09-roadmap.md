@@ -15,9 +15,9 @@
 - [x] Monorepo (pnpm, Turborepo, Changesets, CI, license check, CodeQL)
 - [x] `core`: types, Zod schemas, `canAccess`, progress computation
 - [x] `db`: initial migrations, `postgresStorage`, `migrate` CLI
-- [ ] `server` + `next`: identity, catalog, courses, text lessons, completion
+- [x] `server` + `next`: identity, catalog, courses, text lessons, completion
 - [x] `editor`: block schema, content validation, server-side rendering
-- [ ] `react`: provider, theming, catalog, course page, text lesson player
+- [x] `react`: provider, theming, catalog, course page, text lesson player
 - [ ] `apps/demo` with fake multi-role auth
 
 **Deliverable**: a course made of text lessons, with access rules and progress, running in the demo app.

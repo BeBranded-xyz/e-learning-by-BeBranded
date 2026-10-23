@@ -21,7 +21,7 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 
 | ID | Task | Type | Priority | Owner | Link | Added | Notes |
 |---|---|---|---|---|---|---|---|
-| B-012 | Phase 1 remaining packages: react, apps/demo with e2e | feature | P1 | maintainers | `docs/specifications/09-roadmap.md` | 2026-10-22 | One pull request per package |
+| B-012 | Phase 1 remaining package: apps/demo with e2e | feature | P1 | maintainers | `docs/specifications/09-roadmap.md` | 2026-10-22 | One pull request per package |
 | B-013 | Before the first publish: API Extractor report, publint, @arethetypeswrong/cli, pack listing test, consumer fixture apps from the tarball | test | P1 | maintainers | `modules/library-publishing` | 2026-10-22 | Blocks B-003 |
 | B-014 | Mutation testing with Stryker on changed files (floors in `TEST_PLAN.md`) | test | P2 | maintainers | `TEST_PLAN.md` #4 | 2026-10-22 | |
 | B-015 | CI matrix: Node 22.12 and 24, Linux and macOS | ops | P2 | maintainers | `TEST_PLAN.md` #46 | 2026-10-22 | |
@@ -32,12 +32,15 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | B-020 | Audit suppression GHSA-vfj7-8cjw-p6xm (braces, dev-only via kysely-codegen) expires 2026-11-22: upgrade when a patched version exists, or re-justify | debt | P2 | maintainers | `pnpm-workspace.yaml` | 2026-10-23 | No patched version published |
 | B-021 | Re-enable `exactOptionalPropertyTypes` in `packages/editor` when BlockNote's types support it | debt | P3 | maintainers | `PROJECT.md` exceptions | 2026-10-23 | Check on every BlockNote upgrade |
 | B-022 | Authoring menu (phase 4): hide heading levels 4 to 6 and media blocks until uploads exist, so authors cannot insert what the validator rejects | feature | P2 | maintainers | spec 08 | 2026-10-23 | |
-| B-023 | Content stylesheet for rendered lessons (`el-*` classes, data-attribute colors and alignment, `--el-*` tokens), shipped with `@bebranded/elearning-react` | feature | P1 | maintainers | spec 04, section 6 | 2026-10-23 | With the react package |
 | B-025 | Cursor pagination for collection routes (`limit`, `next_cursor`); today collections return everything with `next_cursor: null` | feature | P2 | maintainers | `modules/api-design` | 2026-10-23 | Catalogs are small in phase 1 |
 | B-026 | `Idempotency-Key` on admin creates; `ETag` / `If-Match` on admin edits of shared content | feature | P2 | maintainers | `modules/api-design` | 2026-10-23 | Learner actions are idempotent by state already |
 | B-027 | OpenAPI document generated from the Zod schemas, committed and diffed in CI, Spectral lint | feature | P2 | maintainers | `modules/api-design` | 2026-10-23 | |
 | B-028 | `rateLimit` hook and recommended limits (spec 08) | feature | P2 | maintainers | spec 08 | 2026-10-23 | |
 | B-029 | Admin reorder endpoint (`POST /v1/admin/reorder`) to move lessons between chapters and renumber positions in one transaction | feature | P2 | maintainers | spec 04, section 8 | 2026-10-23 | Positions are set one by one today |
+| B-030 | Size budget in CI for `@bebranded/elearning-react` (size-limit, < 30 kB gzip with TanStack Query) | test | P2 | maintainers | `PROJECT.md` section 12 | 2026-10-23 | Measured by hand in the PR |
+| B-031 | Server Component variants of the catalog, course page and lesson (data fetched on the server, no client JS for text lessons), per spec 08 | feature | P2 | maintainers | spec 08, "Performance" | 2026-10-23 | Phase 1 ships Client Components |
+| B-032 | Storybook (or Ladle) stories for every exported component, with visual regression | test | P2 | maintainers | `modules/frontend`, `TEST_PLAN.md` #11 | 2026-10-23 | |
+| B-033 | Dark mode options (`darkMode: "media" \| "class" \| "off"`) and theme contrast warnings (spec 04, spec 08) | feature | P3 | maintainers | spec 04, section 6 | 2026-10-23 | Styles follow prefers-color-scheme today |
 | B-003 | Write the delivery plan (packages as units, trusted publishing, one publisher) before adding a release workflow | docs | P2 | maintainers | `modules/library-publishing` | 2026-10-22 | `release.yml` template is manual-only until then |
 | B-004 | Design-system decisions: component catalogue, themes, icon set, enforcement | docs | P2 | maintainers | `PROJECT.md` section 4 | 2026-10-22 | |
 | B-005 | Evaluate the `audit-trail` module for admin actions (content publishing, access rules, assignments) | question | P2 | maintainers | | 2026-10-22 | |
@@ -70,7 +73,9 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 |---|---|---|---|
 | | Technical specifications 01–10, repository security baseline | 2026-10-22 | direct commits before branch protection |
 | | AI-Dev-Rules adoption (Claude Code and Codex) | 2026-10-22 | #1 |
-| B-024 | Admin API: courses, chapters, lessons (validated content), access rules, publishing | 2026-10-23 | this PR |
+| B-023 | Content stylesheet for rendered lessons, shipped with `@bebranded/elearning-react` | 2026-10-23 | this PR |
+| | `@bebranded/elearning-react`: provider, theme, i18n (en, fr), catalog, course page, lesson player, My training | 2026-10-23 | this PR |
+| B-024 | Admin API: courses, chapters, lessons (validated content), access rules, publishing | 2026-10-23 | #7 |
 | | `@bebranded/elearning-server` learner API, event delivery, and `@bebranded/elearning-next` | 2026-10-23 | #6 |
 | | `@bebranded/elearning-editor`: block schema, lesson document validation (core), HTML renderer | 2026-10-23 | #5 |
 | | `@bebranded/elearning-db`: migrations, `elearning migrate`, `postgresStorage` | 2026-10-23 | #4 |

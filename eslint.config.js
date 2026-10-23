@@ -1,4 +1,6 @@
 import js from "@eslint/js";
+import jsxA11y from "eslint-plugin-jsx-a11y-x";
+import reactHooks from "eslint-plugin-react-hooks";
 import tseslint from "typescript-eslint";
 
 // Size and complexity limits come from core/code-standards.mdc.
@@ -36,6 +38,15 @@ export default tseslint.config(
       "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true }],
       "no-console": "error",
     },
+  },
+  {
+    // React packages: hooks rules and accessibility lint at error level (modules/frontend).
+    files: ["**/*.tsx"],
+    ...reactHooks.configs.flat.recommended,
+  },
+  {
+    files: ["**/*.tsx"],
+    ...jsxA11y.configs.strict,
   },
   {
     // Test suites group many cases in one describe callback; each test stays small.

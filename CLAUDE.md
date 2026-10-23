@@ -49,7 +49,7 @@ This project uses the shared AI development ruleset. Read in this order:
 |---|---|
 | Full check (secrets, doc links, format, lint, types, tests, dead code, licenses) | `make check` |
 | Install | `corepack pnpm install` |
-| Unit tests | `corepack pnpm test:unit` |
+| Unit, component, integration tests | `corepack pnpm test:unit`, `test:component`, `test:integration` |
 | Build | `corepack pnpm build` |
 | Add a changeset (any change to a published package) | `corepack pnpm changeset` |
 

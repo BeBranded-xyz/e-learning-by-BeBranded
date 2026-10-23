@@ -1,4 +1,10 @@
 import type {
+  ApiChapter,
+  ApiCourse,
+  ApiCourseSummary,
+  ApiEnrollment,
+  ApiLesson,
+  ApiProgress,
   Course,
   CourseProgress,
   Enrollment,
@@ -12,7 +18,7 @@ import type { ChapterView, CourseView } from "../services/course-view.js";
 
 const iso = (date: Date | null) => (date === null ? null : date.toISOString());
 
-export function presentEnrollment(enrollment: Enrollment | null) {
+export function presentEnrollment(enrollment: Enrollment | null): ApiEnrollment | null {
   if (enrollment === null) return null;
   return {
     id: enrollment.id,
@@ -25,7 +31,10 @@ export function presentEnrollment(enrollment: Enrollment | null) {
   };
 }
 
-export function presentCourseSummary(course: Course, enrollment: Enrollment | null) {
+export function presentCourseSummary(
+  course: Course,
+  enrollment: Enrollment | null,
+): ApiCourseSummary {
   return {
     id: course.id,
     slug: course.slug,
@@ -38,7 +47,7 @@ export function presentCourseSummary(course: Course, enrollment: Enrollment | nu
   };
 }
 
-function presentProgress(progress: CourseProgress) {
+function presentProgress(progress: CourseProgress): ApiProgress {
   return {
     completed_required: progress.completedRequired,
     total_required: progress.totalRequired,
@@ -47,7 +56,7 @@ function presentProgress(progress: CourseProgress) {
   };
 }
 
-function presentChapter({ chapter, lessons }: ChapterView) {
+function presentChapter({ chapter, lessons }: ChapterView): ApiChapter {
   return {
     id: chapter.id,
     title: chapter.title,
@@ -64,7 +73,7 @@ function presentChapter({ chapter, lessons }: ChapterView) {
   };
 }
 
-export function presentCourseView(view: CourseView) {
+export function presentCourseView(view: CourseView): ApiCourse {
   return {
     ...presentCourseSummary(view.course, view.enrollment),
     chapters: view.chapters.map(presentChapter),
@@ -72,7 +81,11 @@ export function presentCourseView(view: CourseView) {
   };
 }
 
-export function presentLesson(lesson: LessonDetail, html: string, status: LessonProgressStatus) {
+export function presentLesson(
+  lesson: LessonDetail,
+  html: string,
+  status: LessonProgressStatus,
+): ApiLesson {
   return {
     id: lesson.id,
     course_id: lesson.courseId,
