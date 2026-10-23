@@ -146,7 +146,7 @@ describe("video progress", () => {
       watchedSeconds: 57.75,
       coverage: 0.48125,
       lastPosition: 75.25,
-      lastHeartbeatAt: new Date("2026-03-01T10:02:00Z"),
+      budgetBaselineAt: new Date("2026-03-01T10:02:00Z"),
       suspiciousEvents: 2,
     };
 
@@ -163,7 +163,7 @@ describe("video progress", () => {
       watchedSeconds: 0,
       coverage: 0,
       lastPosition: 0,
-      lastHeartbeatAt: null,
+      budgetBaselineAt: null,
       suspiciousEvents: 0,
     });
     expect(await database.storage.findVideoProgress(tenantA, learner, lesson.id)).toEqual(saved);

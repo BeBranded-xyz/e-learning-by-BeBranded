@@ -208,7 +208,7 @@ export interface VideoProgress {
   coverage: Generated<Numeric>;
   created_at: Generated<Timestamp>;
   /**
-   * Last accepted heartbeat across all sessions; null before the first one.
+   * Baseline of the time budget: the last accepted heartbeat, moved back by the time it did not use; null before the first one.
    */
   last_heartbeat_at: Timestamp | null;
   last_position: Generated<Numeric>;

@@ -46,7 +46,7 @@ export function toVideoProgress(
     watchedSeconds: numberSchema.parse(row.watched_seconds),
     coverage: numberSchema.parse(row.coverage),
     lastPosition: numberSchema.parse(row.last_position),
-    lastHeartbeatAt: row.last_heartbeat_at,
+    budgetBaselineAt: row.last_heartbeat_at,
     suspiciousEvents: row.suspicious_events,
   };
 }

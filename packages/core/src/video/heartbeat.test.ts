@@ -11,7 +11,7 @@ const at = (seconds: number) => new Date(START.getTime() + seconds * 1000);
 const fresh: VideoProgressState = {
   watchedRanges: [],
   lastPosition: 0,
-  lastHeartbeatAt: null,
+  budgetBaselineAt: null,
   suspiciousEvents: 0,
 };
 
@@ -31,10 +31,11 @@ describe("applyHeartbeat, honest playback", () => {
   it("records the first 15 s of playback, measured from the lesson start", () => {
     const outcome = applyHeartbeat(fresh, beat([[0, 15]], 15), aVideo());
 
+    // 15 s at up to 2.2x allow 33 s; 15 s were used, so 18 s of playback (8.18 s) carry over.
     expect(outcome.state).toEqual({
       watchedRanges: [[0, 15]],
       lastPosition: 15,
-      lastHeartbeatAt: at(15),
+      budgetBaselineAt: new Date(Math.ceil(at(15).getTime() - (15 - 15 / 2.2) * 1000)),
       suspiciousEvents: 0,
     });
     expect(outcome.watchedSeconds).toBe(15);
@@ -47,7 +48,7 @@ describe("applyHeartbeat, honest playback", () => {
     const previous = {
       ...fresh,
       watchedRanges: [[0, 15]] as WatchedRange[],
-      lastHeartbeatAt: at(15),
+      budgetBaselineAt: at(15),
     };
 
     const outcome = applyHeartbeat(previous, beat([[15, 30]], 30), aVideo());
@@ -60,7 +61,7 @@ describe("applyHeartbeat, honest playback", () => {
     const previous = {
       ...fresh,
       watchedRanges: [[0, 80]] as WatchedRange[],
-      lastHeartbeatAt: at(80),
+      budgetBaselineAt: at(80),
     };
 
     const outcome = applyHeartbeat(previous, beat([[80, 95]], 95), aVideo());
@@ -73,7 +74,7 @@ describe("applyHeartbeat, honest playback", () => {
     const previous = {
       ...fresh,
       watchedRanges: [[0, 60]] as WatchedRange[],
-      lastHeartbeatAt: at(60),
+      budgetBaselineAt: at(60),
     };
 
     const outcome = applyHeartbeat(
@@ -92,11 +93,22 @@ describe("applyHeartbeat, honest playback", () => {
     expect(outcome.suspicious).toBe(false);
   });
 
+  it("carries unused time to the next heartbeat, so close heartbeats at top speed all count", () => {
+    const video = aVideo({ maxPlaybackRate: 2 });
+    // Seen in the demo: the 15 s tick, then "pause" and "ended" a few milliseconds later.
+    const first = applyHeartbeat(fresh, beat([[0, 29.75]], 15), video);
+
+    const second = applyHeartbeat(first.state, beat([[29.75, 30]], 15.05), video);
+
+    expect(second.state.watchedRanges).toEqual([[0, 30]]);
+    expect(second.suspicious).toBe(false);
+  });
+
   it("does not count rewatched parts twice", () => {
     const previous = {
       ...fresh,
       watchedRanges: [[0, 30]] as WatchedRange[],
-      lastHeartbeatAt: at(30),
+      budgetBaselineAt: at(30),
     };
 
     const outcome = applyHeartbeat(previous, beat([[10, 25]], 45), aVideo());
@@ -115,7 +127,7 @@ describe("applyHeartbeat, honest playback", () => {
     const previous = {
       ...fresh,
       watchedRanges: [[0, 90]] as WatchedRange[],
-      lastHeartbeatAt: at(90),
+      budgetBaselineAt: at(90),
     };
 
     const outcome = applyHeartbeat(previous, beat([[90, 100.4]], 100), aVideo());
@@ -142,7 +154,7 @@ describe("applyHeartbeat, forged or skipped playback", () => {
   });
 
   it("credits at most 60 s of wall-clock time to a single heartbeat", () => {
-    const previous = { ...fresh, lastHeartbeatAt: at(0) };
+    const previous = { ...fresh, budgetBaselineAt: at(0) };
 
     const outcome = applyHeartbeat(
       previous,
@@ -155,7 +167,7 @@ describe("applyHeartbeat, forged or skipped playback", () => {
   });
 
   it("credits nothing when the heartbeat arrives before its baseline", () => {
-    const previous = { ...fresh, lastHeartbeatAt: at(30) };
+    const previous = { ...fresh, budgetBaselineAt: at(30) };
 
     const outcome = applyHeartbeat(previous, beat([[0, 10]], 20), aVideo());
 
@@ -206,7 +218,7 @@ describe("applyHeartbeat, forged or skipped playback", () => {
     const previous = {
       ...fresh,
       watchedRanges: [[0, 20]] as WatchedRange[],
-      lastHeartbeatAt: at(20),
+      budgetBaselineAt: at(20),
     };
 
     const outcome = applyHeartbeat(
@@ -229,7 +241,7 @@ describe("applyHeartbeat, forged or skipped playback", () => {
     const previous = {
       ...fresh,
       watchedRanges: [[0, 20]] as WatchedRange[],
-      lastHeartbeatAt: at(20),
+      budgetBaselineAt: at(20),
     };
 
     const outcome = applyHeartbeat(

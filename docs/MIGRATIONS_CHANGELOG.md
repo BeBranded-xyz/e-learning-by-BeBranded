@@ -66,3 +66,14 @@ Last updated: 2026-10-23
 - RLS: enabled, no permissive policy
 - Types regenerated: yes
 - PR: phase 2, `@bebranded/elearning-db`
+
+## 20261023000500_video_budget_baseline
+- Date: 2026-10-23
+- Type: comment
+- Tables: video_progress
+- Summary: `last_heartbeat_at` now stores the baseline of the plausibility budget, which keeps the time a heartbeat did not use. Existing values stay valid baselines.
+- Breaking: no
+- Rollback: documented in header
+- RLS: unchanged
+- Types regenerated: yes
+- PR: phase 2, budget carry-over fix
