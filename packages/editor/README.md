@@ -19,7 +19,10 @@ if (result.ok) {
 ```
 
 - `@bebranded/elearning-editor` exports `lessonEditorSchema` (BlockNote
-  default blocks plus a callout block).
+  default blocks plus a callout block) and `quizEditorSchema` (the lesson
+  blocks plus six question blocks and their option blocks: `quizChoice`,
+  `quizAnswer`, `quizItem`, `quizPair`). Validate and convert a saved quiz
+  with `editorDocumentToQuiz` from `@bebranded/elearning-core`.
 - `@bebranded/elearning-editor/server` exports `renderLessonHtml`. It needs no
   DOM and runs on Node and edge runtimes. Importing it in a browser bundle
   throws.
