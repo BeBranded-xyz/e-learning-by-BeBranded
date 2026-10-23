@@ -12,3 +12,7 @@ scripts/check-licenses.mjs
 .github/workflows/pre-production.yml
 .github/workflows/release.yml
 **/*.gen.ts
+apps/demo/.next
+apps/demo/next-env.d.ts
+apps/demo/test-results
+apps/demo/playwright-report

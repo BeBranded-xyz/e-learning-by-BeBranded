@@ -85,6 +85,41 @@ describe("assertAllowedOrigin", () => {
     expect(check("POST", "https://h.example.com", allowed)).toThrow();
   });
 
+  it("accepts the origin the browser used even when the framework rewrites request.url (regression)", () => {
+    // next start passes http://localhost:3101/… while the browser talks to 127.0.0.1:3101.
+    const rewritten = new Request("http://localhost:3101/api/elearning/v1/x", {
+      method: "POST",
+      headers: { host: "127.0.0.1:3101", origin: "http://127.0.0.1:3101" },
+    });
+
+    expect(() => {
+      assertAllowedOrigin(rewritten, undefined);
+    }).not.toThrow();
+  });
+
+  it("uses the first X-Forwarded-Host behind a proxy, and still refuses foreign origins", () => {
+    const proxied = (origin: string) =>
+      new Request("http://internal:8080/api/elearning/v1/x", {
+        method: "POST",
+        headers: {
+          host: "internal:8080",
+          "x-forwarded-host": "app.example.com, proxy.local",
+          origin,
+        },
+      });
+
+    expect(() => {
+      assertAllowedOrigin(proxied("https://app.example.com"), undefined);
+    }).not.toThrow();
+    expect(() => {
+      assertAllowedOrigin(proxied("https://evil.example.net"), undefined);
+    }).toThrow();
+  });
+
+  it("refuses a malformed origin", () => {
+    expect(check("POST", "not a url")).toThrow();
+  });
+
   it("does not trust the null origin of sandboxed frames", () => {
     expect(check("POST", "null")).toThrow();
   });

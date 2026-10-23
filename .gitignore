@@ -46,3 +46,6 @@ Thumbs.db
 *.log
 test-results/
 playwright-report/
+
+# Next.js
+next-env.d.ts

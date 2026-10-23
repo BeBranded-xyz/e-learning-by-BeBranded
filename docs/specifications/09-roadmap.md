@@ -10,7 +10,7 @@
 - [ ] Remaining open questions below
 - [ ] Pilot host product
 
-### Phase 1: foundations *(in progress)*
+### Phase 1: foundations *(done)*
 
 - [x] Monorepo (pnpm, Turborepo, Changesets, CI, license check, CodeQL)
 - [x] `core`: types, Zod schemas, `canAccess`, progress computation
@@ -18,7 +18,7 @@
 - [x] `server` + `next`: identity, catalog, courses, text lessons, completion
 - [x] `editor`: block schema, content validation, server-side rendering
 - [x] `react`: provider, theming, catalog, course page, text lesson player
-- [ ] `apps/demo` with fake multi-role auth
+- [x] `apps/demo` with fake multi-role auth
 
 **Deliverable**: a course made of text lessons, with access rules and progress, running in the demo app.
 

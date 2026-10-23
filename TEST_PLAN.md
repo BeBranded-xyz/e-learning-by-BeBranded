@@ -46,10 +46,10 @@ config in the same PR. Tests that cannot be written yet are listed in
 | 6 | Integration Tests | active | Vitest + Testcontainers (PostgreSQL 14) or `ELEARNING_TEST_DATABASE_URL` | `pnpm test:integration` | commit | Real Postgres, one schema per test file, never mocked |
 | 7 | API Tests | active | Vitest with real Request/Response and PostgreSQL | `pnpm test:integration` | commit | Every learner and admin route, error envelope, status codes (400, 401, 403, 404, 405, 409, 413, 415, 500), headers, request id |
 | 8 | Contract Tests | planned phase 1 | Zod schemas + API report (API Extractor) | `pnpm test:contract` | pr | Public API and HTTP contract |
-| 9 | End-to-End (E2E) Tests | planned phase 1 | Playwright on apps/demo | `pnpm test:e2e` | pr | Desktop and mobile viewports |
+| 9 | End-to-End (E2E) Tests | active | Playwright on apps/demo (Chromium, desktop and Pixel 7 viewports), PostgreSQL through Testcontainers | `pnpm test:e2e` | pr | Course completion lesson by lesson, self-enrollment, access per role, drafts hidden, signed-out state, API boundary |
 | 10 | UI / Frontend Tests | active | Testing Library, user-event | `pnpm test:component` | commit | Behavior by role and label, never implementation |
 | 11 | Visual Regression Testing | planned phase 1 | Playwright screenshots | `pnpm test:visual` | pr | Includes host themes and exports (spec 10) |
-| 12 | Accessibility Testing | active (components) / planned phase 1 (E2E) | axe-core (WCAG 2.0 to 2.2 A and AA rules), eslint-plugin-jsx-a11y-x (strict) | `pnpm test:component` | commit | Every container audited after load; status announced with role=status, errors with role=alert |
+| 12 | Accessibility Testing | active | axe-core in component tests and @axe-core/playwright in E2E (WCAG 2.0 to 2.2 A and AA), eslint-plugin-jsx-a11y-x | `pnpm test:component`, `pnpm test:e2e` | commit, pr | Every screen of the journeys audited in the real browser |
 | 13 | Regression Testing | active | Vitest | `pnpm test:unit` | commit | Every bug fix starts with a failing test |
 | 14 | Smoke Tests | planned phase 1 | Playwright | `pnpm test:smoke` | pr | Consumer fixture apps from the packed tarball |
 | 15 | Sanity Tests | active | Vitest | `pnpm test:unit` | commit | |
@@ -86,7 +86,7 @@ config in the same PR. Tests that cannot be written yet are listed in
 | 31 | Authentication Testing | active | Vitest | `pnpm test:integration` | commit | No identity gives 401; invalid identity gives a generic 500; the resolver runs on every request |
 | 32 | Authorization Testing | active | Vitest + Testcontainers | `pnpm test:integration` | commit | Every audience type, deny wins, drafts and archived hidden, child never wider than parent, tenant crossing on reads and admin writes, shared catalog read-only, admin routes refused to non-admins, 404 instead of 403 for hidden content |
 | 33 | Injection Testing | active (content, SQL) / planned phase 1 (handlers) | Vitest, fast-check | `pnpm test:unit` | commit | XSS payloads and fuzzed text through the renderer, hostile links and schemes, CSS values in props, SQL injection through tenant filters. SSRF in exports: phase 4b |
-| 34 | Web Security Testing | planned phase 1 | Playwright | `pnpm test:security` | pr | Recommended CSP and headers in apps/demo |
+| 34 | Web Security Testing | active (headers, CSRF) / planned (CSP) | Playwright | `pnpm test:e2e` | pr | Cross-origin writes refused, admin routes refused to learners, X-Frame-Options, nosniff, no X-Powered-By. Nonce-based CSP: B-035 |
 | 35 | Secret Scanning | active | gitleaks (CI full history + pre-commit hook), GitHub push protection | `make check` | commit | Workflow `Secret scan`, required check |
 | 36 | Penetration Testing | planned before 1.0.0 | external tester |  | pre-prod |  |
 
@@ -116,10 +116,10 @@ config in the same PR. Tests that cannot be written yet are listed in
 
 | # | Category | Status | Tool | Command | Gate | Notes |
 |---|---|---|---|---|---|---|
-| 44 | Browser Testing | planned phase 1 | Playwright (chromium, firefox, webkit) |  | pre-prod |  |
+| 44 | Browser Testing | active (Chromium) / planned (Firefox, WebKit) | Playwright | `pnpm test:e2e` | pr | B-036 |
 | 45 | Device Testing | planned phase 4 | Playwright device emulation |  | pre-prod | iOS Safari ≥ 16 |
 | 46 | Operating System Testing | planned phase 1 | CI matrix Linux + macOS |  | pr | Node ≥ 22.12 |
-| 47 | Responsive Testing | planned phase 1 | Playwright viewports | `pnpm test:e2e` | pr | Columns stack below 640 px |
+| 47 | Responsive Testing | active | Playwright viewports | `pnpm test:e2e` | pr | Every journey on desktop and mobile; columns (phase 4b) to add |
 
 ## Internationalization
 

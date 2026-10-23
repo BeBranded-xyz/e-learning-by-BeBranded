@@ -20,8 +20,9 @@
     "knip": "knip",
     "changeset": "changeset",
     "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test:coverage && pnpm knip && pnpm check:licenses",
-    "check:licenses": "pnpm -r licenses list --prod --json | node scripts/check-licenses.mjs",
-    "test:component": "vitest run --project component"
+    "check:licenses": "pnpm -r --filter './packages/**' licenses list --prod --json | node scripts/check-licenses.mjs",
+    "test:component": "vitest run --project component",
+    "test:e2e": "pnpm --filter @bebranded/elearning-demo test:e2e"
   },
   "devDependencies": {
     "@changesets/cli": "3.0.3",

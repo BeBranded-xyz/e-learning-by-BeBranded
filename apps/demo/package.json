@@ -1,0 +1,38 @@
+{
+  "name": "@bebranded/elearning-demo",
+  "private": true,
+  "version": "0.0.0",
+  "description": "A fictional host product: the e-learning module's demo and end-to-end test bed.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc -p tsconfig.json",
+    "seed": "tsx --conditions=@bebranded/source scripts/seed.ts",
+    "test:e2e": "tsx --conditions=@bebranded/source scripts/e2e.ts"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.64.1",
+    "@testcontainers/postgresql": "12.2.1",
+    "@types/pg": "8.23.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "kysely": "^0.29.7",
+    "tsx": "4.23.15"
+  },
+  "dependencies": {
+    "@bebranded/elearning-core": "workspace:*",
+    "@bebranded/elearning-db": "workspace:*",
+    "@bebranded/elearning-next": "workspace:*",
+    "@bebranded/elearning-react": "workspace:*",
+    "@bebranded/elearning-server": "workspace:*",
+    "next": "16.4.2",
+    "pg": "8.23.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "zod": "^4.6.7"
+  }
+}

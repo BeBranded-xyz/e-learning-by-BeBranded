@@ -36,4 +36,7 @@ Every table has row level security enabled with no permissive policy: only the
 role that owns the tables can access them. Use the same role for migrations
 and for the module.
 
+Migrations are embedded in the package code (no file access at runtime), so
+it bundles with Next.js, Turbopack, webpack or esbuild like any module.
+
 Requires Node.js 22.12 or later and PostgreSQL 14 or later. MIT licensed.
