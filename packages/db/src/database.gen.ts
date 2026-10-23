@@ -59,6 +59,30 @@ export interface Chapters {
   updated_at: Generated<Timestamp>;
 }
 
+export interface CourseAssignments {
+  /**
+   * learner_id of the admin who assigned the course last.
+   */
+  assigned_by: string;
+  audience_type: string;
+  /**
+   * Role name, minimum grade or learner_id.
+   */
+  audience_value: string;
+  course_id: string;
+  created_at: Generated<Timestamp>;
+  /**
+   * Copied to the enrollments it creates; null without a due date.
+   */
+  due_at: Timestamp | null;
+  id: Generated<string>;
+  /**
+   * Tenant of the admin and the assigned learners (the course may be shared).
+   */
+  tenant_id: string | null;
+  updated_at: Generated<Timestamp>;
+}
+
 export interface Courses {
   /**
    * When the course counts as completed, e.g. {"type": "all_required_lessons"}.
@@ -316,6 +340,7 @@ export interface VideoSessions {
 export interface DB {
   access_rules: AccessRules;
   chapters: Chapters;
+  course_assignments: CourseAssignments;
   courses: Courses;
   enrollments: Enrollments;
   event_outbox: EventOutbox;

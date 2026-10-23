@@ -23,6 +23,7 @@ const tables = [
   "video_sessions",
   "quizzes",
   "quiz_attempts",
+  "course_assignments",
 ];
 
 beforeAll(async () => {

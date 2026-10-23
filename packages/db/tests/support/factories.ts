@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 
 import {
   accessRuleIdSchema,
+  assignmentIdSchema,
   chapterIdSchema,
   courseIdSchema,
   learnerIdSchema,
@@ -13,7 +14,9 @@ import {
 } from "@bebranded/elearning-core";
 import type {
   AccessRule,
+  AssignmentAudience,
   Chapter,
+  CourseAssignment,
   Course,
   LearnerId,
   LessonDetail,
@@ -163,6 +166,22 @@ export function anAttempt(
     questionResults: null,
     score: null,
     passed: null,
+    ...overrides,
+  };
+}
+
+export function anAssignment(
+  course: Course,
+  audience: AssignmentAudience,
+  overrides: Partial<CourseAssignment> = {},
+): CourseAssignment {
+  return {
+    id: assignmentIdSchema.parse(randomUUID()),
+    courseId: course.id,
+    audience,
+    dueAt: null,
+    assignedBy: learnerIdSchema.parse("admin-1"),
+    createdAt: new Date("2026-04-01T09:00:00Z"),
     ...overrides,
   };
 }
