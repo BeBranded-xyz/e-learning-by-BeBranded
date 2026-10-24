@@ -48,7 +48,7 @@ const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
   allowedAttributes: {
     "*": DATA_ATTRIBUTES,
     a: ["href", "target", "rel"],
-    div: ["class", "role", "data-variant", ...DATA_ATTRIBUTES],
+    div: ["class", "role", "data-variant", "data-width", ...DATA_ATTRIBUTES],
     figure: ["class"],
     figcaption: ["class"],
     p: ["class"],
@@ -63,7 +63,15 @@ const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
     td: ["colspan", "rowspan"],
   },
   allowedClasses: {
-    div: ["el-callout", "el-callout-content", "el-block-children", "el-table-wrapper", "el-file"],
+    div: [
+      "el-callout",
+      "el-callout-content",
+      "el-block-children",
+      "el-table-wrapper",
+      "el-file",
+      "el-columns",
+      "el-column",
+    ],
     figure: ["el-figure"],
     figcaption: ["el-media-caption"],
     p: ["el-media-caption"],

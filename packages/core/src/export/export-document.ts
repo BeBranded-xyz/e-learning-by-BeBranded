@@ -73,6 +73,7 @@ export function buildCourseExport(
 function children(block: ExportBlock): readonly ExportBlock[] {
   if (block.type === "list") return block.items.flatMap((item) => item.children);
   if (block.type === "callout") return block.children;
+  if (block.type === "columns") return block.columns.flatMap((column) => column.blocks);
   return block.type === "group" ? block.blocks : [];
 }
 

@@ -51,10 +51,13 @@
 
 ### Phase 4b: editor extensions
 
-- Multi-column spike (time-boxed to 3 days): nested columns, drag & drop, cursor movement. Go / no-go on the full implementation, or the simpler fallback.
-- `ExportDocument` and HTML renderer, then PDF (Chromium adapters) and DOCX (`docx`)
-- Export security tests (no network from the renderer, SSRF, limits)
-- Clean-room checkbox in the pull request template
+- [x] Multi-column spike (time-boxed to 3 days): nested columns, drag & drop, cursor movement. Go / no-go on the full implementation, or the simpler fallback. **Go** ([ADR-0001](../adr/0001-multi-column-layout-blocks.md)).
+- [x] Multi-column layout: validation, editor blocks and resizing, learner, PDF and Word rendering
+- [x] `ExportDocument` and HTML renderer, then PDF (Chromium adapters) and DOCX (`docx`)
+- [x] Export routes on the server, with the per-course learner setting
+- [x] Export security tests (no network from the renderer, SSRF, limits)
+- [x] Clean-room checkbox in the pull request template
+- [ ] Export buttons on the learner pages and in the back-office, the learner-export setting in course settings, demo and end-to-end journeys (columns and exports)
 
 **Deliverable**: multi-column lessons, and lessons and courses exportable to PDF and Word. See [10 — Editor extensions](10-editor-extensions.md).
 

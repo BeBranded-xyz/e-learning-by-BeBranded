@@ -34,6 +34,39 @@ export function wordTable(block: TableBlock): Table {
   return new Table({ rows, width: { size: 100, type: WidthType.PERCENTAGE } });
 }
 
+const none = { style: BorderStyle.NONE, size: 0, color: "FFFFFF" };
+const NO_BORDERS = { top: none, bottom: none, left: none, right: none };
+
+/** What a Word cell may hold; it must end with a paragraph, so one is added after a table. */
+function cellContent(children: readonly FileChild[]): (Paragraph | Table)[] {
+  const content = children.filter(
+    (child): child is Paragraph | Table => child instanceof Paragraph || child instanceof Table,
+  );
+  return content.at(-1) instanceof Paragraph
+    ? content
+    : [...content, new Paragraph({ children: [] })];
+}
+
+/** Columns: a borderless one-row table whose cells take each column's share of the width. */
+export function columnsTable(
+  columns: readonly { readonly width: number; readonly children: readonly FileChild[] }[],
+): Table {
+  const cells = columns.map(
+    (column) =>
+      new TableCell({
+        width: { size: Math.round(column.width * 100), type: WidthType.PERCENTAGE },
+        borders: NO_BORDERS,
+        margins: { left: 80, right: 80 },
+        children: cellContent(column.children),
+      }),
+  );
+  return new Table({
+    rows: [new TableRow({ children: cells })],
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    borders: { ...NO_BORDERS, insideHorizontal: none, insideVertical: none },
+  });
+}
+
 const VARIANT_COLORS = {
   info: "4338CA",
   success: "15803D",
@@ -46,7 +79,6 @@ export function calloutTable(
   variant: keyof typeof VARIANT_COLORS,
   children: readonly FileChild[],
 ): Table {
-  const none = { style: BorderStyle.NONE, size: 0, color: "FFFFFF" };
   const cell = new TableCell({
     shading: { type: ShadingType.CLEAR, fill: "F7F7F9", color: "auto" },
     borders: {
@@ -55,9 +87,7 @@ export function calloutTable(
       right: none,
       left: { style: BorderStyle.SINGLE, size: 24, color: VARIANT_COLORS[variant] },
     },
-    children: children.filter(
-      (child): child is Paragraph | Table => child instanceof Paragraph || child instanceof Table,
-    ),
+    children: cellContent(children),
   });
   return new Table({
     rows: [new TableRow({ children: [cell] })],

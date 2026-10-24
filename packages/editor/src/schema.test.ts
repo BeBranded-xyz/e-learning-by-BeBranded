@@ -23,6 +23,14 @@ describe("lessonEditorSchema", () => {
     expect(types).toEqual(expect.arrayContaining(VALIDATED_TYPES));
   });
 
+  it("holds the column blocks but no quiz block", () => {
+    const types = Object.keys(lessonEditorSchema.blockSchema);
+
+    expect(types).toEqual(expect.arrayContaining(["columnList", "column"]));
+    expect(types).not.toContain("singleChoiceQuestion");
+    expect(types).not.toContain("quizChoice");
+  });
+
   it("declares the callout block with its variants", () => {
     const callout = lessonEditorSchema.blockSchema.callout;
 

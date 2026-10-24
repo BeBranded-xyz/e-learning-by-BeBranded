@@ -24,6 +24,11 @@ function safeTheme(theme: ExportTheme = {}) {
   };
 }
 
+// One rule per 5% step: column widths are data attributes, never inline styles.
+const COLUMN_RULES = Array.from({ length: 18 }, (_, index) => 15 + index * 5)
+  .map((width) => `.el-column[data-width="${width}"] { flex-grow: ${width}; }`)
+  .join("\n");
+
 export function exportCss(theme: ExportTheme, pageSize: PageSize): string {
   const { primary, font } = safeTheme(theme);
   return `
@@ -47,6 +52,9 @@ blockquote { margin: 1em 0; padding-left: 12px; border-left: 4px solid #d1d5db; 
 .el-callout[data-variant="warning"] { border-color: #b45309; }
 .el-callout[data-variant="danger"] { border-color: #b91c1c; }
 .el-group { margin-left: 1.5em; }
+.el-columns { display: flex; gap: 12px; margin: 1em 0; break-inside: avoid; }
+.el-column { flex: 1 1 0; min-width: 0; }
+${COLUMN_RULES}
 .el-list-check { list-style: none; padding-left: 0.5em; }
 .el-cover { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; break-after: page; }
 .el-cover img { max-height: 48px; width: auto; align-self: flex-start; }

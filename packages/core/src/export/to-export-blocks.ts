@@ -76,6 +76,18 @@ function toTable(block: TableBlock): ExportBlock {
   return { type: "table", headerRows, rows };
 }
 
+/** Column widths as shares of the row, rounded to whole percents, summing to 1. */
+function toColumns(block: Extract<LessonBlock, { type: "columnList" }>): ExportBlock {
+  const total = block.children.reduce((sum, column) => sum + column.props.width, 0);
+  return {
+    type: "columns",
+    columns: block.children.map((column) => ({
+      width: Math.round((column.props.width / total) * 100) / 100,
+      blocks: toExportBlocks(column.children),
+    })),
+  };
+}
+
 /** Media whose upload never finished export nothing, as they render nothing. */
 function toMedia(block: Extract<LessonBlock, { type: "image" | "file" }>): ExportBlock[] {
   const fileId = fileIdFromUrl(block.props.url);
@@ -162,6 +174,8 @@ function toOtherBlock(block: OtherBlock): ExportBlock[] {
     case "image":
     case "file":
       return toMedia(block);
+    case "columnList":
+      return [toColumns(block)];
   }
 }
 

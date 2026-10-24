@@ -6,7 +6,7 @@ import { lessonEditorSchema, quizEditorSchema } from "@bebranded/elearning-edito
 
 import { createAdminI18n } from "../i18n/admin-translator.js";
 import { useAdmin } from "../provider/admin-context.js";
-import { insertQuestion, lessonSlashItems, quizSlashItems } from "./slash-menu.js";
+import { insertColumns, insertQuestion, lessonSlashItems, quizSlashItems } from "./slash-menu.js";
 
 const t = createAdminI18n("en");
 
@@ -20,7 +20,7 @@ function mounted<S extends typeof lessonEditorSchema | typeof quizEditorSchema>(
 
 describe("lessonSlashItems", () => {
   it("offers images and files but no heading 4 to 6, audio or video", async () => {
-    const titles = (await lessonSlashItems(mounted(lessonEditorSchema), "")).map(
+    const titles = (await lessonSlashItems(mounted(lessonEditorSchema), "", t)).map(
       (item) => item.title,
     );
 
@@ -31,11 +31,58 @@ describe("lessonSlashItems", () => {
   });
 
   it("filters by the typed query", async () => {
-    const titles = (await lessonSlashItems(mounted(lessonEditorSchema), "imag")).map(
+    const titles = (await lessonSlashItems(mounted(lessonEditorSchema), "imag", t)).map(
       (item) => item.title,
     );
 
     expect(titles).toEqual(["Image"]);
+  });
+
+  it("offers two, three and four columns, found by name", async () => {
+    const titles = (await lessonSlashItems(mounted(lessonEditorSchema), "colu", t)).map(
+      (item) => item.title,
+    );
+
+    expect(titles).toEqual(["2 columns", "3 columns", "4 columns"]);
+  });
+
+  it("names the column items in the editor's language", async () => {
+    const fr = createAdminI18n("fr");
+    const titles = (await lessonSlashItems(mounted(lessonEditorSchema), "colonnes", fr)).map(
+      (item) => item.title,
+    );
+
+    expect(titles).toEqual(["2 colonnes", "3 colonnes", "4 colonnes"]);
+  });
+});
+
+describe("insertColumns", () => {
+  it("turns an empty paragraph into equal columns and moves the cursor into the first one", () => {
+    const editor = mounted(lessonEditorSchema);
+
+    insertColumns(editor, 3);
+
+    const [list] = editor.document;
+    expect(list?.type).toBe("columnList");
+    expect(list?.children.map((column) => [column.type, column.props])).toEqual([
+      ["column", { width: 1 }],
+      ["column", { width: 1 }],
+      ["column", { width: 1 }],
+    ]);
+    expect(editor.getTextCursorPosition().block.id).toBe(list?.children[0]?.children[0]?.id);
+  });
+
+  it("goes after a block that has text", () => {
+    const editor = mounted(lessonEditorSchema);
+    const [first] = editor.document;
+    if (first !== undefined) editor.updateBlock(first, { content: "Intro" });
+
+    insertColumns(editor, 2);
+
+    expect(editor.document.map((block) => block.type).slice(0, 2)).toEqual([
+      "paragraph",
+      "columnList",
+    ]);
   });
 });
 

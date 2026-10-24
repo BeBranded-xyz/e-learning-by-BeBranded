@@ -4,6 +4,8 @@
  * from --el-* custom properties (spec 04, section 6).
  */
 
+@import "./columns.css";
+
 :where(.el-root) {
   --el-color-primary: #4338ca;
   --el-color-primary-foreground: #ffffff;
@@ -152,6 +154,7 @@
 :where(.el-block-children) {
   padding-inline-start: 1.5rem;
 }
+
 :where(.el-checklist) {
   padding-inline-start: 0;
   list-style: none;

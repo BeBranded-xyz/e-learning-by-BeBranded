@@ -71,6 +71,14 @@ export type ExportBlock =
     }
   /** A video lesson: its title and a link back to the lesson (spec 10, "Block mapping"). */
   | { readonly type: "video"; readonly title: string; readonly url: string }
+  /** Columns side by side; `width` shares sum to 1 (spec 10, "Multi-column layout"). */
+  | {
+      readonly type: "columns";
+      readonly columns: readonly {
+        readonly width: number;
+        readonly blocks: readonly ExportBlock[];
+      }[];
+    }
   /** Nested blocks under a paragraph or an expanded toggle, indented one level. */
   | { readonly type: "group"; readonly blocks: readonly ExportBlock[] };
 

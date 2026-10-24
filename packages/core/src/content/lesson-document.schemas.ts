@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { fileIdSchema } from "./ids.js";
-import type { LessonBlock } from "./lesson-document.types.js";
+import type { ColumnBlock, LessonBlock } from "./lesson-document.types.js";
 
 /**
  * The subset of BlockNote JSON that lesson content may contain (spec 08,
@@ -142,6 +142,35 @@ function block<T extends string, P extends z.ZodRawShape, C extends z.ZodType>(
 export const calloutVariantSchema = z.enum(["info", "success", "warning", "danger"]);
 const headingLevelSchema = z.union([z.literal(1), z.literal(2), z.literal(3)]);
 
+/** 2 to 4 columns per list, each at least 15% of the row once normalized (spec 10). */
+export const COLUMN_RULES = { min: 2, max: 4, minShare: 0.15 } as const;
+
+const columnSchema: z.ZodType<ColumnBlock> = z.strictObject({
+  id: blockId,
+  type: z.literal("column"),
+  props: z.strictObject({ width: z.number().positive().max(1_000) }),
+  content: z.undefined().optional(),
+  children: childrenSchema,
+});
+
+const columnListSchema = z
+  .strictObject({
+    id: blockId,
+    type: z.literal("columnList"),
+    props: z.strictObject({}),
+    content: z.undefined().optional(),
+    children: z.array(columnSchema).min(COLUMN_RULES.min).max(COLUMN_RULES.max),
+  })
+  .refine(
+    (list) => {
+      const total = list.children.reduce((sum, column) => sum + column.props.width, 0);
+      return list.children.every(
+        (column) => column.props.width / total >= COLUMN_RULES.minShare - 1e-9,
+      );
+    },
+    { message: "Each column takes at least 15% of the row", path: ["children"] },
+  );
+
 export const lessonBlockSchema: z.ZodType<LessonBlock> = z.discriminatedUnion("type", [
   block("paragraph", textProps, inlineContentSchema),
   block(
@@ -185,6 +214,7 @@ export const lessonBlockSchema: z.ZodType<LessonBlock> = z.discriminatedUnion("t
     },
     z.undefined().optional(),
   ),
+  columnListSchema,
 ]);
 
 export const lessonDocumentSchema = z

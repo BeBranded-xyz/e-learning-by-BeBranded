@@ -1,5 +1,6 @@
 import type { LessonBlock } from "@bebranded/elearning-core";
 
+import { widthStep } from "../blocks/column-widths.js";
 import { element, escapeHtml } from "./html.js";
 import { renderInline } from "./render-inline.js";
 import { renderFile, renderImage } from "./render-media.js";
@@ -151,7 +152,25 @@ function renderBlock(
         element("div", { class: "el-callout-content" }, renderInline(block.content)) +
           childrenHtml(block.children, options),
       );
+    case "columnList":
+      return renderColumns(block, options);
   }
+}
+
+/** Columns side by side; widths are 5% steps in `data-width`, so no inline style (CSP). */
+function renderColumns(
+  block: Extract<LessonBlock, { type: "columnList" }>,
+  options: RenderOptions,
+) {
+  const total = block.children.reduce((sum, column) => sum + column.props.width, 0);
+  const columns = block.children.map((column) =>
+    element(
+      "div",
+      { class: "el-column", "data-width": widthStep(column.props.width / total) },
+      renderBlocks(column.children, options),
+    ),
+  );
+  return element("div", { class: "el-columns" }, columns.join(""));
 }
 
 /** Consecutive list items of the same type form one list, as in BlockNote. */

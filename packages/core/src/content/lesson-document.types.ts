@@ -55,6 +55,16 @@ type ContentlessBlock<T extends string, P> = Omit<Block<T, P, undefined>, "conte
   content?: undefined;
 };
 
+/** One column of a column list: any blocks except another column list (spec 10). */
+export type ColumnBlock = {
+  id: string;
+  type: "column";
+  /** A share of the row; the shares of a list are normalized to sum to 1. */
+  props: { width: number };
+  content?: undefined;
+  children: LessonBlock[];
+};
+
 export type LessonBlock =
   | Block<"paragraph", TextProps, InlineContent>
   | Block<
@@ -83,9 +93,13 @@ export type LessonBlock =
         previewWidth?: number | undefined;
       }
     >
-  | ContentlessBlock<
-      "file",
-      { backgroundColor: Color; name: string; url: string; caption: string }
-    >;
+  | ContentlessBlock<"file", { backgroundColor: Color; name: string; url: string; caption: string }>
+  | {
+      id: string;
+      type: "columnList";
+      props: Record<string, never>;
+      content?: undefined;
+      children: ColumnBlock[];
+    };
 
 export type LessonDocument = LessonBlock[];

@@ -12,6 +12,7 @@ export type ContentIssueCode =
   | "too_many_blocks"
   | "too_many_table_cells"
   | "duplicate_block_id"
+  | "nested_columns"
   | "invalid_content"
   | "invalid_question"
   | "no_questions"
@@ -29,7 +30,12 @@ type Shape = {
   readonly depth: number;
   readonly cells: number;
   readonly ids: string[];
+  /** A column list somewhere inside another one (spec 10: never nested). */
+  readonly nestedColumns: boolean;
 };
+
+const isColumnList = (value: unknown) =>
+  typeof value === "object" && value !== null && "type" in value && value.type === "columnList";
 
 function childrenOf(value: unknown): unknown[] {
   if (typeof value !== "object" || value === null || !("children" in value)) return [];
@@ -66,11 +72,12 @@ function idOf(value: unknown): string | undefined {
  * document cannot exhaust the stack or the CPU of the recursive parser.
  */
 function measure(input: unknown[]): Shape {
-  const stack = input.map((node) => ({ node, depth: 1 }));
+  const stack = input.map((node) => ({ node, depth: 1, inColumns: false }));
   let blocks = 0;
   let depth = 0;
   let cells = 0;
   const ids: string[] = [];
+  let nestedColumns = false;
   const withinLimits = () =>
     blocks <= LESSON_DOCUMENT_LIMITS.maxBlocks && depth <= LESSON_DOCUMENT_LIMITS.maxDepth;
   for (let current = stack.pop(); current !== undefined && withinLimits(); current = stack.pop()) {
@@ -79,10 +86,17 @@ function measure(input: unknown[]): Shape {
     cells += cellCount(current.node);
     const id = idOf(current.node);
     if (id !== undefined) ids.push(id);
-    for (const child of childrenOf(current.node))
-      stack.push({ node: child, depth: current.depth + 1 });
+    const columns = isColumnList(current.node);
+    nestedColumns ||= columns && current.inColumns;
+    for (const child of childrenOf(current.node)) {
+      stack.push({
+        node: child,
+        depth: current.depth + 1,
+        inColumns: current.inColumns || columns,
+      });
+    }
   }
-  return { blocks, depth, cells, ids };
+  return { blocks, depth, cells, ids, nestedColumns };
 }
 
 function limitIssue(shape: Shape): ContentIssue | null {
@@ -95,6 +109,13 @@ function limitIssue(shape: Shape): ContentIssue | null {
     return {
       code: "too_many_table_cells",
       message: `At most ${maxTableCells} table cells`,
+      path: [],
+    };
+  }
+  if (shape.nestedColumns) {
+    return {
+      code: "nested_columns",
+      message: "A column list cannot hold another column list",
       path: [],
     };
   }

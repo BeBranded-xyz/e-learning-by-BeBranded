@@ -110,6 +110,8 @@ export const en = {
   "quiz.type.orderingQuestion": "Ordering question",
   "quiz.type.matchingQuestion": "Matching question",
   "quiz.group": "Questions",
+  "columns.group": "Layout",
+  "columns.insert": "{count} columns",
   "report.title": "Tracking",
   "report.empty": "Nobody is enrolled yet.",
   "report.enrolled": "Enrolled",

@@ -1,7 +1,7 @@
 import { fileIdSchema } from "./ids.js";
 import type { FileId } from "./ids.js";
 import { FILE_URL_PREFIX } from "./lesson-document.schemas.js";
-import type { LessonBlock } from "./lesson-document.types.js";
+import type { ColumnBlock, LessonBlock } from "./lesson-document.types.js";
 
 /** The file a media block points to; null for an empty or foreign url. */
 export function fileIdFromUrl(url: string): FileId | null {
@@ -20,7 +20,7 @@ export function fileUrl(id: FileId): string {
  */
 export function collectFileIds(blocks: readonly LessonBlock[]): FileId[] {
   const ids = new Set<FileId>();
-  const stack = [...blocks].reverse();
+  const stack: (LessonBlock | ColumnBlock)[] = [...blocks].reverse();
   for (let block = stack.pop(); block !== undefined; block = stack.pop()) {
     if (block.type === "image" || block.type === "file") {
       const id = fileIdFromUrl(block.props.url);
