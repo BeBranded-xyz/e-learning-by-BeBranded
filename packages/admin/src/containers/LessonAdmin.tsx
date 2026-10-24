@@ -1,7 +1,7 @@
 "use client";
 
 import type { ApiAdminLesson } from "@bebranded/elearning-core";
-import { QueryState } from "@bebranded/elearning-react";
+import { ExportActions, QueryState } from "@bebranded/elearning-react";
 
 import { AccessRulesEditor } from "../components/AccessRulesEditor.js";
 import { useAdminCourse, useAdminLesson } from "../hooks/admin-queries.js";
@@ -36,7 +36,10 @@ function LessonEditorByType({ lesson }: { readonly lesson: ApiAdminLesson }) {
   }
 }
 
-/** One lesson in the back-office: settings, its editor by type, and its access rules. */
+/**
+ * One lesson in the back-office: settings, its editor by type, its access
+ * rules, and its download (drafts included) when the server can export.
+ */
 export function LessonAdmin({ lessonId, courseHref, roles, onDeleted }: LessonAdminProps) {
   const { t } = useAdmin();
   const lesson = useAdminLesson(lessonId);
@@ -51,6 +54,7 @@ export function LessonAdmin({ lessonId, courseHref, roles, onDeleted }: LessonAd
         <a href={courseHref(data.course_id)}>{t.t("lesson.back")}</a>
       )}
       <h2 id="el-admin-lesson-title">{data.title}</h2>
+      <ExportActions kind="lesson" id={data.id} formats={course.data?.export_formats ?? []} />
       <LessonSettings key={`${data.id}-${data.title}`} lesson={data} onDeleted={onDeleted} />
       <LessonEditorByType lesson={data} />
       {course.data === undefined ? null : (
