@@ -87,8 +87,9 @@ Stored in the lesson's `settings` (spec 03), validated by `quizLessonSettingsSch
 
 ## Reporting
 
-> [PLANNED] Phase 4, with the back-office.
+`GET /v1/admin/reports/quizzes/:lessonId` covers the tenant's learners. Only submitted and expired attempts count; voided ones never do.
 
-- Pass rate per quiz, average score, average number of attempts.
-- **Per-question analysis**: percentage of correct answers, to spot ambiguous questions or weak course content (from the stored per-question results).
-- CSV export.
+- **Pass rate** (learners who passed at least once, over learners with an attempt), **average score** of every attempt, **average number of attempts** per learner.
+- **Per-question analysis**: the share of attempts that earned every point of the question, to spot ambiguous questions or weak course content (from the stored per-question results). It follows the current questions; results of removed questions are left out, and stored scores are never recomputed.
+- Each learner's attempts, best score, `passed` and last attempt date, sorted by learner id.
+- **CSV export** of the per-learner rows with `?format=csv`.

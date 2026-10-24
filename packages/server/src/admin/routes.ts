@@ -14,7 +14,9 @@ import { createFileUpload, getAdminFile } from "./files.js";
 import { createLesson, deleteLesson, getAdminLesson, updateLesson } from "./lessons.js";
 import { createAttemptGrant, listAttemptGrants } from "./quiz-grants.js";
 import { getAdminQuiz, saveAdminQuiz } from "./quizzes.js";
+import { getQuizReport } from "./quiz-report.js";
 import { reorderCourse } from "./reorder.js";
+import { getCourseReport, getLearnerReport } from "./reports.js";
 import { createVideoUpload } from "./videos.js";
 
 /** Admin API (spec 04, section 8). `handleRequest` refuses these routes to non-admins. */
@@ -123,5 +125,20 @@ export const adminRoutes: readonly Route<RequestContext>[] = [
     method: "DELETE",
     pattern: "/v1/admin/assignments/:id",
     handle: (context, { id }) => deleteAssignment(context, id),
+  },
+  {
+    method: "GET",
+    pattern: "/v1/admin/reports/courses/:id",
+    handle: (context, { id }) => getCourseReport(context, id),
+  },
+  {
+    method: "GET",
+    pattern: "/v1/admin/reports/learners/:id",
+    handle: (context, { id }) => getLearnerReport(context, id),
+  },
+  {
+    method: "GET",
+    pattern: "/v1/admin/reports/quizzes/:id",
+    handle: (context, { id }) => getQuizReport(context, id),
   },
 ];

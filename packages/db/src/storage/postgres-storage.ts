@@ -23,6 +23,7 @@ import * as outbox from "./outbox.queries.js";
 import * as progress from "./progress.queries.js";
 import * as grants from "./quiz-grants.queries.js";
 import * as quiz from "./quiz.queries.js";
+import * as reports from "./reports.queries.js";
 import * as video from "./video.queries.js";
 
 const optionsSchema = z.union([
@@ -75,6 +76,9 @@ function reads(db: Kysely<DB>): StorageReads {
     listPendingAssignments: (scope, learner) =>
       assignments.listPendingAssignments(db, scope, learner),
     findFiles: (scope, ids) => files.findFiles(db, scope, ids),
+    listCourseEnrollments: (scope, courseId) => reports.listCourseEnrollments(db, scope, courseId),
+    listClosedQuizAttempts: (scope, lessonId) =>
+      reports.listClosedQuizAttempts(db, scope, lessonId),
   };
 }
 

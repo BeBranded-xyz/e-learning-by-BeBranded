@@ -176,6 +176,11 @@ export {
 } from "./quiz/attempts.js";
 export type { AttemptHistory, Eligibility } from "./quiz/attempts.js";
 
+export { isOverdue, summarizeEnrollments } from "./reports/course-report.js";
+export type { CourseReportSummary } from "./reports/course-report.js";
+export { summarizeQuizAttempts } from "./reports/quiz-report.js";
+export type { QuizLearnerResult, QuizQuestionStats, QuizReport } from "./reports/quiz-report.js";
+
 export { eventTypes, parseEventPayload } from "./events/events.js";
 export type { DomainEvent, EventHandlers, EventPayload, EventType } from "./events/events.js";
 
@@ -218,6 +223,8 @@ export type {
   AssignmentStorageWrites,
   CourseAssignment,
 } from "./ports/assignment-storage.types.js";
+
+export type { ReportStorageReads } from "./ports/report-storage.types.js";
 
 export type {
   FileStorage,

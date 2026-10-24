@@ -234,12 +234,17 @@ Content the learner cannot see answers **404, exactly like content that does not
 | POST | `/v1/admin/assignments` | `{ course_id, audience, due_at? }`: assign a course of the tenant or of the shared catalog to a `role`, a `grade_min` or a `learner` (`{ type: "learner", learner_id }`). 409 `audience_without_access` when the course rules do not let that audience in (spec 05). A learner is enrolled at once (`source: assigned`, taking over an existing enrollment and keeping its progress); a role or grade enrolls matching learners on their next visit (`source: auto`, never changing an existing enrollment). Emits `enrollment.assigned` per enrolled learner. 201, or 200 when the same audience was already assigned (the due date is updated) |
 | GET | `/v1/admin/courses/:id/assignments` | The tenant's assignments of a readable course |
 | DELETE | `/v1/admin/assignments/:id` | Remove an assignment; the enrollments it created are kept |
+| GET | `/v1/admin/reports/courses/:id` | Tracking of a readable course for the tenant's learners: `{ course, summary: { enrolled, started, completed, overdue, average_progress }, data: [enrollment rows] }`. A row is overdue past its due date while not completed |
+| GET | `/v1/admin/reports/learners/:learnerId` | One learner's enrollments in the tenant, with course titles, and the same summary |
+| GET | `/v1/admin/reports/quizzes/:lessonId` | Quiz reporting ([07](07-quizzes.md#reporting)) |
 
-Publishing a course, chapter or lesson emits `content.published` once. Admins only write their own tenant's content: shared-catalog and other tenants' content answers 404. Then `GET /v1/admin/reports/*` (tracking per course or per learner, CSV export).
+Publishing a course, chapter or lesson emits `content.published` once. Admins only write their own tenant's content: shared-catalog and other tenants' content answers 404.
 
 **System**
 
 `POST /v1/webhooks/video` receives the video provider's webhooks. It needs no learner session and no `Origin`: the provider's signature authenticates it (401 `invalid_signature` otherwise, logged as an error). Verified events are answered 200, even for unknown assets, so the provider stops retrying. A late `processing` event never moves a ready video back.
+
+Every report also downloads as CSV with `?format=csv` (`text/csv`, RFC 4180, an attachment, never cached). Text cells that a spreadsheet would run as a formula (starting with `=`, `+`, `-`, `@`, tab or carriage return) are prefixed with `'`. Reports only list the module's opaque `learner_id`; names come from the host.
 
 **Errors**
 
