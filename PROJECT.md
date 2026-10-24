@@ -45,8 +45,9 @@ Last updated: 2026-10-24
   condition pointing to `src/index.ts`. TypeScript (`customConditions`),
   ESLint, Vitest and `tsx` use it, so checks never depend on a previous build.
   Published consumers do not set it and resolve `dist`.
-- **Deployment target**: the npm registry (packages). Hosting for `apps/docs`
-  and `apps/demo` is undecided.
+- **Deployment target**: the npm registry (packages). `apps/demo` runs as one
+  container (`apps/demo/Dockerfile`) behind a reverse proxy with automatic TLS,
+  at https://e-learning.bebranded.xyz. Hosting for `apps/docs` is undecided.
 - **What triggers a deploy**: a reviewed PR merged into protected `main`; the
   Changesets release PR, once merged, publishes the affected packages from CI.
 
@@ -101,7 +102,12 @@ Last updated: 2026-10-24
 
 ## 5. Environments & domains
 
-No deployed environment yet.
+| Environment | URL | What runs | Data |
+|---|---|---|---|
+| Public demo | https://e-learning.bebranded.xyz | `apps/demo` from `main`, its own PostgreSQL | Synthetic seed only. Anyone can sign in as the demo admin, so visitors can change it (Q-002) |
+
+The demo is redeployed by hand from `main` with a deploy script kept on the
+server, outside this public repository (B-067 automates it).
 
 ### CI/CD and deployment plan
 
