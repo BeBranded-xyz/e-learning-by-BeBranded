@@ -128,6 +128,17 @@ flowchart LR
   D --> DOCX[".docx"]
 ```
 
+### The `ExportDocument` tree
+
+`toExportBlocks` (elearning-core, pure) converts a validated lesson document. `buildLessonExport` and `buildCourseExport` wrap the blocks in sections: a lesson export has one section (depth 1); a course export has each chapter (depth 1, no blocks) followed by its lessons (depth 2), with the course summary as subtitle and a cover page and table of contents. Rules of the conversion:
+
+- consecutive list items of one type form one list (numbered lists keep their start, check items their state);
+- toggles are expanded: the heading or line, then its children as an indented group; children of a paragraph or quote are an indented group too;
+- table cells in the header rows or header columns are header cells; spans are kept;
+- images and files point to their uploaded file id; a media block whose upload never finished is left out; an image without preview is exported as an attachment;
+- a video lesson's section starts with the video's title and a link to the lesson; quiz questions are never in the tree, only the lesson's notes;
+- `walkExport` visits every block iteratively, `exportImageIds` lists the images to inline once each, and `countExportBlocks` measures the document against `EXPORT_LIMITS` (20,000 blocks, 200 images, 25 MB of images) before any rendering.
+
 ### Block mapping
 
 | Block | PDF (HTML + print CSS) | Word |

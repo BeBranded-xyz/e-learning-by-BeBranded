@@ -181,6 +181,27 @@ export type { CourseReportSummary } from "./reports/course-report.js";
 export { summarizeQuizAttempts } from "./reports/quiz-report.js";
 export type { QuizLearnerResult, QuizQuestionStats, QuizReport } from "./reports/quiz-report.js";
 
+export { toExportBlocks } from "./export/to-export-blocks.js";
+export {
+  EXPORT_LIMITS,
+  buildCourseExport,
+  buildLessonExport,
+  countExportBlocks,
+  exportImageIds,
+  lessonSection,
+  walkExport,
+} from "./export/export-document.js";
+export type { ExportChapter, ExportLesson } from "./export/export-document.js";
+export type {
+  ExportAlignment,
+  ExportBlock,
+  ExportDocument,
+  ExportListItem,
+  ExportSection,
+  ExportTableCell,
+  ExportText,
+} from "./export/export-document.types.js";
+
 export { eventTypes, parseEventPayload } from "./events/events.js";
 export type { DomainEvent, EventHandlers, EventPayload, EventType } from "./events/events.js";
 
