@@ -14,6 +14,7 @@ import type { ImageLoader } from "./assets/inline-images.js";
 import { renderDocx } from "./docx/render-docx.js";
 import { formatExportDate, labelsFor } from "./labels.js";
 import { Limiter } from "./limiter.js";
+import { runExport } from "./cancellation.js";
 import type { PdfRenderer } from "./pdf/pdf-renderer.js";
 
 export type ElearningExportOptions = {
@@ -37,35 +38,27 @@ function pageSizeFor(locale: string, choice: ElearningExportOptions["pageSize"])
   return locale === "en-US" || locale === "en-CA" ? "Letter" : "A4";
 }
 
-function withTimeout<T>(work: Promise<T>, timeoutMs: number): Promise<T> {
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  const timeout = new Promise<never>((_, reject) => {
-    timer = setTimeout(() => {
-      reject(new AppError("upstream", "export_timeout", "The export took too long to render."));
-    }, timeoutMs);
-  });
-  return Promise.race([work, timeout]).finally(() => {
-    clearTimeout(timer);
-  });
-}
-
 type Settings = ElearningExportOptions & {
   readonly timeoutMs: number;
   readonly theme: DesignExportTheme | undefined;
 };
-type Request = { readonly format: ExportFormat; readonly loadImage: ImageLoader };
+type Request = {
+  readonly format: ExportFormat;
+  readonly loadImage: ImageLoader;
+  readonly signal: AbortSignal;
+};
 
 async function renderPdf(
   settings: Settings,
   pdf: PdfRenderer,
   document: ExportDocument,
-  images: Awaited<ReturnType<typeof inlineImages>>,
+  input: { images: Awaited<ReturnType<typeof inlineImages>>; signal: AbortSignal },
 ) {
   const labels = labelsFor(document.locale);
   const exportedOn = labels.exportedOn(formatExportDate(document.exportedAt, document.locale));
   const pageSize = pageSizeFor(document.locale, settings.pageSize);
   const html = renderExportHtml(document, {
-    imageSrc: (id) => images.get(id)?.dataUri,
+    imageSrc: (id) => input.images.get(id)?.dataUri,
     pageSize,
     theme: settings.theme,
     logo: settings.theme?.logo ?? undefined,
@@ -82,6 +75,7 @@ async function renderPdf(
     title: document.title,
     footer: exportedOn,
     timeoutMs: settings.timeoutMs,
+    signal: input.signal,
   });
 }
 
@@ -90,7 +84,8 @@ async function render(
   document: ExportDocument,
   request: Request,
 ): Promise<ExportedFile> {
-  const images = await inlineImages(document, request.loadImage);
+  const images = await inlineImages(document, request.loadImage, request.signal);
+  request.signal.throwIfAborted();
   if (request.format === "docx") {
     const bytes = await renderDocx(document, {
       images,
@@ -103,7 +98,7 @@ async function render(
     throw new AppError("validation", "export_format_unavailable", "PDF export is not configured.");
   }
   return {
-    bytes: await renderPdf(settings, settings.pdf, document, images),
+    bytes: await renderPdf(settings, settings.pdf, document, { images, signal: request.signal }),
     extension: "pdf",
     contentType: "application/pdf",
   };
@@ -139,8 +134,10 @@ export function elearningExport(options: ElearningExportOptions = {}): DocumentE
           new AppError("validation", "export_too_large", "This content is too large to export."),
         );
       }
-      return limiter.run(() =>
-        withTimeout(render(settings, document, request), settings.timeoutMs),
+      return runExport(
+        limiter,
+        { timeoutMs: settings.timeoutMs, signal: request.signal },
+        (signal) => render(settings, document, { ...request, signal }),
       );
     },
   };

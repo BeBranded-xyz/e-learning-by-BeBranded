@@ -15,7 +15,7 @@ export type FileStorage = {
   getReadUrl(key: string, options: { readonly ttlSeconds: number }): Promise<string>;
   delete(key: string): Promise<void>;
   /** The file's bytes, read server-side; needed to inline images in exports (spec 10). */
-  read?(key: string): Promise<Uint8Array>;
+  read?(key: string, options?: { readonly signal?: AbortSignal | undefined }): Promise<Uint8Array>;
 };
 
 /** A file uploaded from the editor (spec 03, `files`). */

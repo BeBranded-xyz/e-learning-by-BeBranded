@@ -1,6 +1,7 @@
 "use client";
 
 import type { PartialBlock } from "@blocknote/core";
+import { en, fr } from "@blocknote/core/locales";
 import { BlockNoteView } from "@blocknote/mantine";
 import { SuggestionMenuController, useCreateBlockNote } from "@blocknote/react";
 import type { ApiAdminLesson } from "@bebranded/elearning-core";
@@ -40,6 +41,7 @@ export function TextLessonEditor({ lesson }: { readonly lesson: ApiAdminLesson }
     [t],
   );
   const editor = useCreateBlockNote({
+    dictionary: t.locale.split("-")[0] === "fr" ? fr : en,
     schema,
     initialContent: initialContent(lesson.content),
     uploadFile: (file: File) => uploadEditorFile(admin, upload, file),

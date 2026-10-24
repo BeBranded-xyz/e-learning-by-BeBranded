@@ -25,7 +25,8 @@ import type {
 import { DEMO_VIDEO_SECONDS } from "../lib/demo-video.js";
 import { demoQuiz } from "./demo-quiz.js";
 import {
-  extinguisherNotes,
+  animationNotes,
+  frenchWelcome,
   fireLesson,
   leadershipLesson,
   readingLesson,
@@ -102,13 +103,13 @@ function allow(target: Course, audience: Audience): AccessRule {
   };
 }
 
-/** Every demo video plays the local test pattern (lib/demo-video.ts), already "processed". */
+/** Pre-encoded demo excerpts are ready immediately. */
 function readyVideo(owner: LessonDetail): VideoAsset {
   return {
     id: videoAssetIdSchema.parse(randomUUID()),
     lessonId: owner.id,
     provider: "fake",
-    providerAssetId: `demo-${owner.id}`,
+    providerAssetId: owner.position === 1 ? "demo-forest" : "demo-opening",
     status: "ready",
     durationSeconds: DEMO_VIDEO_SECONDS,
     thumbnailUrl: null,
@@ -139,10 +140,10 @@ function videoCourse(): CatalogEntry {
   const videos = course("video-basics", "Video basics", {
     summary: "Watch the whole video to complete the lesson.",
   });
-  const equipment = chapter(videos, "Equipment", 0);
+  const equipment = chapter(videos, "Animation", 0);
   const extinguisher = lesson(
     equipment,
-    { title: "Using a fire extinguisher", position: 0, content: extinguisherNotes },
+    { title: "Introducing a character", position: 0, content: animationNotes },
     {
       type: "video",
       estimatedMinutes: 1,
@@ -152,7 +153,16 @@ function videoCourse(): CatalogEntry {
   return {
     course: videos,
     chapters: [equipment],
-    lessons: [extinguisher],
+    lessons: [
+      extinguisher,
+      {
+        ...extinguisher,
+        id: lessonIdSchema.parse(randomUUID()),
+        title: "Building a scene",
+        position: 1,
+        isRequired: false,
+      },
+    ],
     rules: [allow(videos, { type: "everyone" })],
   };
 }
@@ -185,7 +195,23 @@ function quizCourse(): CatalogEntry {
   };
 }
 
-/** Five courses: for everyone, for managers only, a draft nobody sees, a video and a quiz course. */
+function frenchCourse(): CatalogEntry {
+  const welcome = course("bienvenue", "Bienvenue dans votre espace de formation", {
+    locale: "fr",
+    summary: "Un exemple de contenu rédigé en français.",
+  });
+  const basics = chapter(welcome, "Premiers pas", 0);
+  return {
+    course: welcome,
+    chapters: [basics],
+    lessons: [
+      lesson(basics, { title: "Découvrir la plateforme", position: 0, content: frenchWelcome }),
+    ],
+    rules: [allow(welcome, { type: "everyone" })],
+  };
+}
+
+/** Demo courses: for everyone, for managers only, a draft nobody sees, a video and a quiz course. */
 function demoCatalog(): CatalogEntry[] {
   const safety = course("workplace-safety", "Workplace safety", {
     summary: "The basics everyone at Acme Corp needs.",
@@ -228,6 +254,7 @@ function demoCatalog(): CatalogEntry[] {
       rules: [allow(leading, { type: "role", role: "manager" })],
     },
     { course: draft, chapters: [], lessons: [], rules: [allow(draft, { type: "everyone" })] },
+    frenchCourse(),
     videoCourse(),
     quizCourse(),
   ];

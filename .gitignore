@@ -51,3 +51,6 @@ playwright-report/
 # Next.js
 next-env.d.ts
 apps/demo/public/r/
+
+# Isolated synthetic video fixtures for browser tests
+.demo-video-test/

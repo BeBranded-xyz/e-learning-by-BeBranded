@@ -81,13 +81,15 @@ export function toExportLesson(
 /** Images come only through the host's FileStorage (spec 10); without `read`, exports have no pictures. */
 function imageLoader(context: RequestContext) {
   const read = context.options.files?.read?.bind(context.options.files);
-  return async (fileId: FileId): Promise<Uint8Array | null> => {
+  return async (fileId: FileId, signal?: AbortSignal): Promise<Uint8Array | null> => {
+    signal?.throwIfAborted();
     if (read === undefined) return null;
     const [file] = await context.storage.findFiles(context.scope, [fileId]);
     if (file === undefined) return null;
     try {
-      return await read(file.storageKey);
+      return await read(file.storageKey, { signal });
     } catch (error) {
+      signal?.throwIfAborted();
       context.logger.warn("export image could not be read", {
         requestId: context.requestId,
         fileId,

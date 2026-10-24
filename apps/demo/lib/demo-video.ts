@@ -1,26 +1,30 @@
 import path from "node:path";
 
-/**
- * The demo's synthetic video: a 30 s ffmpeg test pattern, generated locally
- * into a gitignored folder (no media file is committed) and served by
- * app/demo-video. VP9 in fragmented MP4 plays in every evergreen browser,
- * including Playwright's Chromium, which has no H.264 decoder.
- */
+/** Two attributed excerpts; the test runner uses isolated synthetic fixtures. */
 export const DEMO_VIDEO_SECONDS = 30;
-export const DEMO_VIDEO_PLAYLIST = "/demo-video/video.m3u8";
+export const DEMO_VIDEO_SCENES = ["opening", "forest"] as const;
+export type DemoScene = (typeof DEMO_VIDEO_SCENES)[number];
 
-export function demoVideoDir(): string {
-  return path.join(process.cwd(), ".demo-video");
+export function demoVideoPlaylist(assetId: string): string {
+  const scene = assetId === "demo-forest" ? "forest" : "opening";
+  return `/demo-video/${scene}.m3u8`;
 }
 
-/** The only files the route serves; anything else is a 404 (no path from the request reaches the disk). */
-export const DEMO_VIDEO_FILES: Readonly<Record<string, string>> = {
-  "video.m3u8": "application/vnd.apple.mpegurl",
-  "init.mp4": "video/mp4",
-  ...Object.fromEntries(
-    Array.from({ length: 8 }, (_, index) => [
-      `seg${String(index).padStart(2, "0")}.m4s`,
+export function demoVideoDir(): string {
+  return path.join(
+    process.cwd(),
+    process.env.DEMO_VIDEO_FIXTURE === "1" ? ".demo-video-test" : ".demo-video",
+  );
+}
+
+/** A fixed allowlist: request paths never reach disk unchecked. */
+export const DEMO_VIDEO_FILES: Readonly<Record<string, string>> = Object.fromEntries(
+  DEMO_VIDEO_SCENES.flatMap((scene): [string, string][] => [
+    [`${scene}.m3u8`, "application/vnd.apple.mpegurl"],
+    [`${scene}-init.mp4`, "video/mp4"],
+    ...Array.from({ length: 8 }, (_, index): [string, string] => [
+      `${scene}-seg${String(index).padStart(2, "0")}.m4s`,
       "video/iso.segment",
     ]),
-  ),
-};
+  ]),
+);

@@ -10,6 +10,8 @@ import {
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { useDemo } from "@/components/demo-context";
+
 import { elearningKit } from "@/registry/elearning/elearning-kit";
 
 import { design } from "../../../elearning.design";
@@ -22,8 +24,15 @@ import { design } from "../../../elearning.design";
 const ROLES = ["staff", "manager", "training_admin"];
 
 function Provider({ children }: { readonly children: ReactNode }) {
+  const { locale, sessionKey } = useDemo();
   return (
-    <ElearningAdminProvider apiBase="/api/elearning" locale="en" design={design} ui={elearningKit}>
+    <ElearningAdminProvider
+      apiBase="/api/elearning"
+      locale={locale}
+      sessionKey={sessionKey}
+      design={design}
+      ui={elearningKit}
+    >
       {children}
     </ElearningAdminProvider>
   );
@@ -47,10 +56,11 @@ export function CoursesScreen() {
 }
 
 export function CourseAdminScreen({ courseId }: { readonly courseId: string }) {
+  const { messages } = useDemo();
   const router = useRouter();
   return (
     <Provider>
-      <a href="/admin">← All courses</a>
+      <a href="/admin">← {messages.allCourses}</a>
       <CourseAdmin
         courseId={courseId}
         roles={ROLES}
@@ -81,9 +91,10 @@ export function LessonAdminScreen({ lessonId }: { readonly lessonId: string }) {
 }
 
 export function LearnerScreen({ learnerId }: { readonly learnerId: string }) {
+  const { messages } = useDemo();
   return (
     <Provider>
-      <a href="/admin">← All courses</a>
+      <a href="/admin">← {messages.allCourses}</a>
       <LearnerReport learnerId={learnerId} courseHref={courseHref} />
     </Provider>
   );

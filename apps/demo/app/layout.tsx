@@ -9,27 +9,37 @@ import "./globals.css";
 
 import { designToShadcnCss } from "@bebranded/elearning-core/design";
 
+import { DemoProvider } from "@/components/demo-context";
+import { demoSession } from "@/lib/demo-session";
+import { demoMessages } from "@/lib/demo-messages";
+
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
 import { design } from "../elearning.design";
 
-export const metadata: Metadata = {
-  title: "Acme Corp training (demo)",
-  description: "A fictional host product for the BeBranded e-learning module.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const messages = demoMessages((await demoSession()).locale);
+  return { title: messages.title, description: messages.description };
+}
 
-export default function RootLayout({ children }: { readonly children: ReactNode }) {
+export default async function RootLayout({ children }: { readonly children: ReactNode }) {
+  const session = await demoSession();
+  const messages = demoMessages(session.locale);
   return (
-    <html lang="en">
+    <html lang={session.locale}>
       <head>
         {/* The design file's shadcn variables (spec 11); Tailwind and the shadcn kit read them. */}
         <style>{designToShadcnCss(design)}</style>
       </head>
       <body className="flex min-h-dvh flex-col">
-        <SiteHeader brand={design.brand.name} />
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">{children}</main>
-        <SiteFooter />
+        <SiteHeader {...session} messages={messages} />
+        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
+          <DemoProvider locale={session.locale} sessionKey={session.sessionKey}>
+            {children}
+          </DemoProvider>
+        </main>
+        <SiteFooter messages={messages} />
       </body>
     </html>
   );

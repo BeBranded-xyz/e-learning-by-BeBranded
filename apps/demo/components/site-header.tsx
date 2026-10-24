@@ -1,41 +1,51 @@
-import { GraduationCap } from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import type { DemoLocale, DemoMessages } from "@/lib/demo-messages";
+import type { DemoPersona } from "@/lib/demo-users";
 
+import { DemoSwitchers } from "./demo-switchers";
 import { SourceLink } from "./source-link";
 
-const NAVIGATION = [
-  { href: "/", label: "Training" },
-  { href: "/admin", label: "Back-office" },
-  { href: "/sign-in", label: "Switch user" },
-] as const;
-
-/**
- * The fictional host's header: brand, navigation, and the module's source code.
- * Not sticky: a header over the page would cover the targets under it (WCAG 2.5.8).
- */
-export function SiteHeader({ brand }: { readonly brand: string }) {
+/** A compact demo toolbar; controls wrap below the brand on narrow screens. */
+export function SiteHeader({
+  persona,
+  locale,
+  messages,
+}: {
+  readonly persona: DemoPersona | null;
+  readonly locale: DemoLocale;
+  readonly messages: DemoMessages;
+}) {
   return (
-    <header className="border-b bg-background">
-      <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
-        <a href="/" className="flex min-h-11 items-center gap-2 font-semibold tracking-tight">
-          <span className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <GraduationCap className="size-5" aria-hidden="true" />
-          </span>
-          {brand}
+    <header className="border-b bg-background text-sm">
+      <div className="flex w-full flex-wrap items-center gap-x-4 gap-y-2 px-4 py-2">
+        <a href="/" className="inline-flex min-h-8 items-center font-semibold tracking-tight">
+          {messages.title}
         </a>
-        <Badge variant="secondary">Demo: fake sign-in, synthetic content</Badge>
-        {/* On a narrow screen the ghost buttons' padding would indent the links: pull them back in line. */}
-        <nav aria-label="Main" className="-ms-3 flex flex-wrap items-center gap-1 sm:ms-0">
-          {NAVIGATION.map((item) => (
-            <Button key={item.href} asChild variant="ghost" size="sm">
-              <a href={item.href}>{item.label}</a>
+        <div className="order-last flex w-full flex-wrap items-center gap-2 md:order-none md:w-auto">
+          <nav aria-label={messages.navigation} className="flex items-center gap-1">
+            <Button asChild variant="ghost" size="sm">
+              <a href="/">{messages.training}</a>
             </Button>
-          ))}
-        </nav>
-        <div className="sm:ms-auto">
-          <SourceLink />
+            {persona === "admin" ? (
+              <Button asChild variant="ghost" size="sm">
+                <a href="/admin">{messages.admin}</a>
+              </Button>
+            ) : null}
+          </nav>
+          <DemoSwitchers persona={persona} locale={locale} messages={messages} />
+        </div>
+        <div className="ms-auto flex items-center gap-2">
+          <Button asChild variant="ghost" size="sm">
+            <a
+              href="https://www.bebranded.xyz/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={messages.brand}
+            >
+              BeBranded
+            </a>
+          </Button>
+          <SourceLink label={messages.github} />
         </div>
       </div>
     </header>

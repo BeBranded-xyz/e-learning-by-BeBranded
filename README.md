@@ -5,7 +5,7 @@ Instead of rebuilding training features in every product, we maintain **one vers
 
 > **Status: phases 1 (foundations), 2 (video), 3 (quizzes), 4 (back-office) and 4b (editor extensions) done, not published yet.** Text, video and quiz lessons, verified video completion, server-graded quizzes, access rules, assignments, progress, reports, multi-column lessons, PDF and Word export, the learner UI and the back-office work end to end in the demo app. The pilot comes next (see the [roadmap](docs/specifications/09-roadmap.md)).
 
-**Live demo**: https://e-learning.bebranded.xyz (fake sign-in, synthetic content).
+**Live demo**: https://e-learning.bebranded.xyz (fictional profiles and sample content).
 
 ## Restyle it: one design file
 
@@ -13,7 +13,7 @@ Every color (light and dark), font, radius and spacing comes from one file, [`ap
 
 ## Try it locally
 
-Requires Node.js 24 (see `.node-version`), Corepack, Docker (for PostgreSQL) and ffmpeg (the seed generates the demo's synthetic video).
+Requires Node.js 24 (see `.node-version`), Corepack, Docker (for PostgreSQL) and ffmpeg (the seed downloads and encodes two short video excerpts).
 
 ```sh
 corepack pnpm install
@@ -25,7 +25,7 @@ corepack pnpm --filter @bebranded/elearning-demo exec playwright install chromiu
 corepack pnpm --filter @bebranded/elearning-demo dev
 ```
 
-Open http://localhost:3000/sign-in and pick a demo user. Sign-in is fake and the content is synthetic. The training admin persona opens the back-office at http://localhost:3000/admin; uploaded images are kept in the system's temporary directory. "Workplace safety" can be downloaded as PDF or Word by learners; set `DEMO_PUBLIC_URL` when the demo is not served on http://localhost:3000, so links in exported files open its lesson pages.
+Open http://localhost:3000/ to start as a learner. The compact toolbar switches between learner, manager, administrator and signed-out profiles, and between English and French. These profiles are fictional, not authentication. The chosen interface language follows the browser initially and then persists in a cookie; authored course content retains its own language. The seed includes an example course in French. The training admin persona opens the back-office at http://localhost:3000/admin; uploaded images are kept in the system's temporary directory. "Workplace safety" can be downloaded as PDF or Word by learners; set `DEMO_PUBLIC_URL` when the demo is not served on http://localhost:3000, so links in exported files open its lesson pages.
 
 | Command | What it runs |
 |---|---|
@@ -94,3 +94,20 @@ Contributions are welcome: read [CONTRIBUTING.md](CONTRIBUTING.md) and the [code
 ## License
 
 [MIT](LICENSE) © BeBranded. You can use, modify and embed it in commercial products.
+
+### Demo video attribution
+
+The demo serves two 30-second excerpts (00:30–01:00 and 02:00–02:30) from
+**Big Buck Bunny**, © 2008 Blender Foundation / [www.bigbuckbunny.org](https://www.bigbuckbunny.org/),
+under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
+The [film's reuse terms](https://peach.blender.org/about/) permit excerpts with attribution.
+The source is the [Mux public test stream](https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8).
+The seed trims and re-encodes these excerpts as VP9/AAC HLS in the ignored
+`apps/demo/.demo-video/` folder; media files are not part of the MIT source distribution.
+It needs network access only when generating missing excerpts. There is no remote
+iframe, advertising or third-party playback request when learners watch them.
+Browser tests set `DEMO_VIDEO_FIXTURE=1` and generate isolated synthetic streams
+in `.demo-video-test/`, so CI does not download external media.
+
+The seed creates missing courses and does not replace existing authored content.
+Existing demo installations should review their earlier sample courses when updating.

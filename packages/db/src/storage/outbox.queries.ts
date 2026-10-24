@@ -72,24 +72,31 @@ export async function claimPendingEvents(
     });
 }
 
-export async function markEventDelivered(db: Kysely<DB>, id: string, at: Date): Promise<void> {
+export async function markEventDelivered(
+  db: Kysely<DB>,
+  claim: Pick<PendingEvent, "id" | "attempts">,
+  at: Date,
+): Promise<void> {
   await db
     .updateTable("event_outbox")
     .set({ delivered_at: at, last_error: null })
-    .where("id", "=", id)
+    .where("id", "=", claim.id)
+    .where("attempts", "=", claim.attempts)
+    .where("delivered_at", "is", null)
     .execute();
 }
 
 export async function markEventFailed(
   db: Kysely<DB>,
-  id: string,
+  claim: Pick<PendingEvent, "id" | "attempts">,
   error: string,
   nextAttemptAt: Date,
 ): Promise<void> {
   await db
     .updateTable("event_outbox")
     .set({ last_error: error.slice(0, MAX_ERROR_LENGTH), next_attempt_at: nextAttemptAt })
-    .where("id", "=", id)
+    .where("id", "=", claim.id)
+    .where("attempts", "=", claim.attempts)
     .where("delivered_at", "is", null)
     .execute();
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import type { PartialBlock } from "@blocknote/core";
+import { en, fr } from "@blocknote/core/locales";
 import { BlockNoteView } from "@blocknote/mantine";
 import { SuggestionMenuController, useCreateBlockNote } from "@blocknote/react";
 import type { ApiAdminLesson, ApiAdminQuiz } from "@bebranded/elearning-core";
@@ -23,15 +24,18 @@ type QuizBlock = PartialBlock<
   QuizEditorSchema["styleSchema"]
 >;
 
+/** Server-validated quiz content; an empty document lets BlockNote create its first block. */
+function initialQuizContent(document: unknown): QuizBlock[] | undefined {
+  return Array.isArray(document) && document.length > 0 ? (document as QuizBlock[]) : undefined;
+}
+
 function QuizDocumentEditor({ lesson, quiz }: { lesson: ApiAdminLesson; quiz: ApiAdminQuiz }) {
   const { Button } = useUi();
   const { admin, upload, t } = useAdmin();
-  const document = quiz.document;
   const editor = useCreateBlockNote({
+    dictionary: t.locale.split("-")[0] === "fr" ? fr : en,
     schema: quizEditorSchema,
-    // The stored value is a quiz editor document the server validated.
-    initialContent:
-      Array.isArray(document) && document.length > 0 ? (document as QuizBlock[]) : undefined,
+    initialContent: initialQuizContent(quiz.document),
     uploadFile: (file: File) => uploadEditorFile(admin, upload, file),
     resolveFileUrl: (url: string) => resolveEditorFileUrl(admin, url),
   });

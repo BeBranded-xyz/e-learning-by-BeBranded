@@ -1,7 +1,7 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 
 import { designToModuleCss } from "@bebranded/elearning-core/design";
@@ -19,6 +19,8 @@ import { ElearningContext } from "./context.js";
 export type ElearningProviderProps = {
   /** Mount point of the module's route handler, e.g. "/api/elearning". */
   readonly apiBase: string;
+  /** Change this opaque key whenever the host's learner, tenant or session changes. */
+  readonly sessionKey?: string;
   readonly locale?: string;
   readonly messages?: Partial<Messages>;
   /** The host's design file (spec 11), from `defineDesign`; the module's own look otherwise. */
@@ -45,7 +47,7 @@ function createQueryClient(): QueryClient {
 }
 
 /** Provides the API client, translations, design and UI kit to every e-learning component. */
-export function ElearningProvider({
+function ProviderSession({
   apiBase,
   locale = "en",
   messages,
@@ -56,6 +58,12 @@ export function ElearningProvider({
   children,
 }: ElearningProviderProps) {
   const [queryClient] = useState(createQueryClient);
+  useEffect(
+    () => () => {
+      queryClient.clear();
+    },
+    [queryClient],
+  );
   const value = useMemo(
     () => ({ api: createApiClient(apiBase, fetcher), i18n: createI18n(locale, messages) }),
     [apiBase, fetcher, locale, messages],
@@ -75,4 +83,9 @@ export function ElearningProvider({
       </ElearningContext.Provider>
     </QueryClientProvider>
   );
+}
+
+/** A session change remounts the cache and child state before any old data can render. */
+export function ElearningProvider(props: ElearningProviderProps) {
+  return <ProviderSession key={JSON.stringify([props.apiBase, props.sessionKey])} {...props} />;
 }
