@@ -39,11 +39,13 @@
 
 **Deliverable**: graded quizzes with a passing score.
 
-### Phase 4: back-office
+### Phase 4: back-office *(done)*
 
-- Content tree (drag & drop), BlockNote lesson editor with file uploads
-- Access-rule and assignment management
-- Learner tracking, reports, CSV export
+- [x] Content tree (drag & drop, and move buttons), BlockNote lesson editor with file uploads
+- [x] Video uploads (resumable tus above 200 MB) and the quiz editor
+- [x] Access-rule and assignment management, extra quiz attempts
+- [x] Learner tracking, reports, CSV export
+- [x] `@bebranded/elearning-admin`, and the demo's back-office with end-to-end journeys
 
 **Deliverable**: all content managed without touching code.
 

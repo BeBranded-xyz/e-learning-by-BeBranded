@@ -6,6 +6,7 @@ export type ElearningRouteHandlers = {
   readonly GET: Handler;
   readonly POST: Handler;
   readonly PATCH: Handler;
+  readonly PUT: Handler;
   readonly DELETE: Handler;
 };
 
@@ -13,7 +14,7 @@ export type ElearningRouteHandlers = {
  * Route handlers for `app/api/elearning/[...path]/route.ts` (spec 04):
  *
  * ```ts
- * export const { GET, POST, PATCH, DELETE } = createElearningRouteHandler(elearning);
+ * export const { GET, POST, PATCH, PUT, DELETE } = createElearningRouteHandler(elearning);
  * ```
  *
  * Next.js passes a second `context` argument; the module routes on the URL
@@ -21,5 +22,5 @@ export type ElearningRouteHandlers = {
  */
 export function createElearningRouteHandler(elearning: Elearning): ElearningRouteHandlers {
   const handle: Handler = (request) => elearning.handle(request);
-  return { GET: handle, POST: handle, PATCH: handle, DELETE: handle };
+  return { GET: handle, POST: handle, PATCH: handle, PUT: handle, DELETE: handle };
 }

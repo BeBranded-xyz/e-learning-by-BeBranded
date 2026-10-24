@@ -6,7 +6,7 @@
 > that date), or `N/A: <reason>` (must be accepted by a reviewer).
 > Gates: `commit` | `pr` | `pre-prod` | `deploy` | `prod`.
 
-Last updated: 2026-10-22
+Last updated: 2026-10-24
 Owner: BeBranded maintainers
 
 > Specification stage: there is no code yet, so most categories are `planned`
@@ -46,7 +46,7 @@ config in the same PR. Tests that cannot be written yet are listed in
 | 6 | Integration Tests | active | Vitest + Testcontainers (PostgreSQL 14) or `ELEARNING_TEST_DATABASE_URL` | `pnpm test:integration` | commit | Real Postgres, one schema per test file, never mocked |
 | 7 | API Tests | active | Vitest with real Request/Response and PostgreSQL | `pnpm test:integration` | commit | Every learner and admin route, error envelope, status codes (400, 401, 403, 404, 405, 409, 413, 415, 500), headers, request id |
 | 8 | Contract Tests | planned phase 1 | Zod schemas + API report (API Extractor) | `pnpm test:contract` | pr | Public API and HTTP contract |
-| 9 | End-to-End (E2E) Tests | active | Playwright on apps/demo (Chromium, desktop and Pixel 7 viewports), PostgreSQL through Testcontainers | `pnpm test:e2e` | pr | Course completion lesson by lesson, self-enrollment, access per role, drafts hidden, signed-out state, API boundary; video lesson played for real (synthetic ffmpeg stream): completion by watching, skip refused, forged heartbeat truncated, speed capped; quiz passed (lesson and course completed, corrections), failed until the attempts run out (corrections hidden), no answer in any response and forged answers scoring 0, SurveyJS form audited by axe |
+| 9 | End-to-End (E2E) Tests | active | Playwright on apps/demo (Chromium, desktop and Pixel 7 viewports), PostgreSQL through Testcontainers | `pnpm test:e2e` | pr | Course completion lesson by lesson, self-enrollment, access per role, drafts hidden, signed-out state, API boundary; video lesson played for real (synthetic ffmpeg stream): completion by watching, skip refused, forged heartbeat truncated, speed capped; quiz passed (lesson and course completed, corrections), failed until the attempts run out (corrections hidden), no answer in any response and forged answers scoring 0, SurveyJS form audited by axe; back-office: only the admin persona opens it, an admin builds a course without code (rule, chapter, text lesson with an uploaded image, true or false quiz, reorder, publish), a learner reads it with the image served by the file storage, and the tracking table and its CSV show the learner. Video upload through the back-office is not driven (B-058) |
 | 10 | UI / Frontend Tests | active | Testing Library, user-event | `pnpm test:component` | commit | Behavior by role and label, never implementation |
 | 11 | Visual Regression Testing | planned phase 1 | Playwright screenshots | `pnpm test:visual` | pr | Includes host themes and exports (spec 10) |
 | 12 | Accessibility Testing | active | axe-core in component tests and @axe-core/playwright in E2E (WCAG 2.0 to 2.2 A and AA), eslint-plugin-jsx-a11y-x | `pnpm test:component`, `pnpm test:e2e` | commit, pr | Every screen of the journeys audited in the real browser |
@@ -117,7 +117,7 @@ config in the same PR. Tests that cannot be written yet are listed in
 | # | Category | Status | Tool | Command | Gate | Notes |
 |---|---|---|---|---|---|---|
 | 44 | Browser Testing | active (Chromium) / planned (Firefox, WebKit) | Playwright | `pnpm test:e2e` | pr | B-036 |
-| 45 | Device Testing | planned phase 4 | Playwright device emulation |  | pre-prod | iOS Safari ≥ 16 |
+| 45 | Device Testing | active (Pixel 7 emulation on Chromium) / planned (iOS Safari ≥ 16 on WebKit, B-036) | Playwright device emulation | `pnpm test:e2e` | pr | Every journey, the back-office included, on the Pixel 7 profile |
 | 46 | Operating System Testing | planned phase 1 | CI matrix Linux + macOS |  | pr | Node ≥ 22.12 |
 | 47 | Responsive Testing | active | Playwright viewports | `pnpm test:e2e` | pr | Every journey on desktop and mobile; columns (phase 4b) to add |
 
@@ -151,7 +151,7 @@ config in the same PR. Tests that cannot be written yet are listed in
 | # | Category | Status | Tool | Command | Gate | Notes |
 |---|---|---|---|---|---|---|
 | 58 | Exploratory Testing | planned phase 2 | session notes |  | pre-prod | Every release |
-| 59 | Usability Testing | planned phase 4 | sessions with content authors |  | pre-prod | Editor and back-office |
+| 59 | Usability Testing | planned before the phase 5 pilot (B-059) | sessions with content authors, run by the maintainers |  | pre-prod | Editor and back-office are built; sessions need people and cannot be automated. Every finding becomes a regression test |
 
 ## Production Testing & Monitoring
 

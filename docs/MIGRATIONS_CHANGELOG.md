@@ -120,4 +120,4 @@ Last updated: 2026-10-24
 - Rollback: documented in header
 - RLS: enabled, no policy (default deny, as every table)
 - Types regenerated: yes
-- PR: this PR
+- PR: #31

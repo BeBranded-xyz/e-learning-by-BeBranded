@@ -51,7 +51,7 @@ export const elearning = createElearning({
 import { createElearningRouteHandler } from "@bebranded/elearning-next";
 import { elearning } from "@/lib/elearning";
 
-export const { GET, POST, PATCH, DELETE } = createElearningRouteHandler(elearning);
+export const { GET, POST, PATCH, PUT, DELETE } = createElearningRouteHandler(elearning);
 ```
 
 Components are Client Components: the page that renders them can stay a Server Component. Links point to the host's own routes through `courseHref` and `lessonHref`.

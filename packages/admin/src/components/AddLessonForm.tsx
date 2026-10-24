@@ -30,7 +30,7 @@ export function AddLessonForm({ courseId, chapterId, position }: AddLessonFormPr
       { chapter_id: chapterId, title: title.trim(), type, position },
       {
         onSuccess: () => {
-          setTitle("");
+          setTitle((current) => (current === title ? "" : current));
         },
       },
     );

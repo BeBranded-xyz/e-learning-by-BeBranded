@@ -32,8 +32,8 @@ export function CourseCreateForm({ onCreated }: CourseCreateFormProps) {
     const body = { title: title.trim(), slug: effectiveSlug, locale: t.locale.slice(0, 2) };
     create.mutate(body, {
       onSuccess: (course) => {
-        setTitle("");
-        setSlug(null);
+        setTitle((current) => (current === title ? "" : current));
+        setSlug((current) => (current === slug ? null : current));
         onCreated?.(course);
       },
     });

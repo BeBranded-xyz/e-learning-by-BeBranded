@@ -33,7 +33,7 @@ export function AssignmentForm({ roles, pending, onSubmit }: AssignmentFormProps
     event.preventDefault();
     if (audience !== null)
       onSubmit({ audience, due_at: dueAtOf(due) }, () => {
-        setDraft({ type: draft.type, value: "" });
+        setDraft((current) => (current === draft ? { type: draft.type, value: "" } : current));
       });
   };
   return (

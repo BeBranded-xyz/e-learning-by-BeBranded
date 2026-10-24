@@ -3,6 +3,7 @@ import { createElearning } from "@bebranded/elearning-server";
 import type { Elearning } from "@bebranded/elearning-server";
 import { fakeVideoProvider } from "@bebranded/elearning-video/testing";
 
+import { demoFileStorage } from "./demo-files";
 import { DEMO_VIDEO_PLAYLIST } from "./demo-video";
 import { LEARNER_SUFFIX_COOKIE, PERSONA_COOKIE, isPersona, learnerFor } from "./demo-users";
 import { readEnv } from "./env";
@@ -28,6 +29,8 @@ function create(): Elearning {
     },
     // The demo has no video account: every video lesson plays the local test pattern.
     // The demo never receives webhooks, so the secret is random per process.
+    // Editor images and attachments go to the local disk behind signed URLs.
+    files: demoFileStorage,
     video: fakeVideoProvider({
       playbackUrl: () => DEMO_VIDEO_PLAYLIST,
       webhookSecret: crypto.randomUUID(),

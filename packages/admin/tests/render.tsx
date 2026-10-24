@@ -7,28 +7,28 @@ import { ElearningAdminProvider } from "../src/index.js";
 
 type Reply = { status?: number; body?: unknown };
 /** Replies by "METHOD /path" below /v1/admin (or /v1 for learner routes); functions see the body. */
-export type FakeAdminApi = Record<string, Reply | ((body: unknown) => Reply)>;
+export type FakeAdminApi = Record<string, Reply | ((body: unknown) => Reply | Promise<Reply>)>;
 export type RecordedRequest = { key: string; body: unknown };
 
 function fakeAdminFetcher(api: FakeAdminApi) {
   const requests: RecordedRequest[] = [];
-  const fetcher = (input: string, init: RequestInit): Promise<Response> => {
+  const fetcher = async (input: string, init: RequestInit): Promise<Response> => {
     const url = new URL(input, "https://host.example.com");
     const path = url.pathname.replace(/^\/api\/elearning\/v1(\/admin)?/, "");
     const key = `${init.method ?? "GET"} ${path}`;
     const body = typeof init.body === "string" ? (JSON.parse(init.body) as unknown) : null;
     requests.push({ key, body });
     const entry = api[key];
-    const reply = typeof entry === "function" ? entry(body) : entry;
+    const reply = typeof entry === "function" ? await entry(body) : entry;
     if (reply === undefined) {
       const notFound = {
         error: { code: "not_found", message: "Not found", request_id: "req_test" },
       };
-      return Promise.resolve(Response.json(notFound, { status: 404 }));
+      return Response.json(notFound, { status: 404 });
     }
     const status = reply.status ?? 200;
-    if (status === 204) return Promise.resolve(new Response(null, { status }));
-    return Promise.resolve(Response.json(reply.body ?? {}, { status }));
+    if (status === 204) return new Response(null, { status });
+    return Response.json(reply.body ?? {}, { status });
   };
   return { fetcher, requests };
 }

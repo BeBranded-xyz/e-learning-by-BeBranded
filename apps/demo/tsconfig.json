@@ -12,7 +12,8 @@
         "name": "next"
       }
     ],
-    "customConditions": ["@bebranded/source"]
+    "customConditions": ["@bebranded/source"],
+    "exactOptionalPropertyTypes": false
   },
   "include": [
     "next-env.d.ts",

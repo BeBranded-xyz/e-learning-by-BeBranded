@@ -27,6 +27,8 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | B-055 | Optional `resolveLearners(ids)` host hook so reports and the back-office show names next to `learner_id` (spec 04, section 1) | feature | P2 | maintainers | spec 04 | 2026-10-24 | Reports list ids only |
 | B-056 | Paginate and aggregate reports in SQL for large tenants (reports load every enrollment or attempt of one course or quiz) | feature | P3 | maintainers | `modules/performance`, B-025 | 2026-10-24 | Fine for pilot sizes |
 | B-057 | Content tree drag and drop is pointer-only (the move buttons are the accessible path, WCAG 2.5.7); revisit with an accessible sortable pattern if authors ask, and remove the `no-static-element-interactions` suppression in `DropZone.tsx` | debt | P3 | maintainers | `modules/frontend` | 2026-10-24 | |
+| B-058 | E2E of the back-office video upload: the demo's fake video provider answers an external upload URL; add a local upload endpoint to the fake provider (form and tus) and drive the uploader in Playwright | test | P2 | maintainers | `TEST_PLAN.md` #9 | 2026-10-24 | Component tests cover both protocols |
+| B-059 | Usability sessions with content authors on the editor and back-office before the phase 5 pilot; findings become regression tests | test | P1 | maintainers | `TEST_PLAN.md` #59 | 2026-10-24 | Needs people; cannot be automated |
 | B-001 | Re-run `init.sh --target claude,codex --update` from AI-Dev-Rules `main` once its PRs #1, #2, #3 are merged; commit the new `.ruleset-version` | ops | P1 | maintainers | AI-Dev-Rules #1–#3 | 2026-10-22 | Current install comes from a local integration of those PRs |
 
 ## Next
@@ -85,17 +87,18 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 |---|---|---|---|
 | | Technical specifications 01–10, repository security baseline | 2026-10-22 | direct commits before branch protection |
 | | AI-Dev-Rules adoption (Claude Code and Codex) | 2026-10-22 | #1 |
-| B-022 | Authoring menu hides headings 4 to 6, audio and video | 2026-10-24 | this PR |
-| B-041 | Back-office warning for a ready video without captions | 2026-10-24 | this PR |
-| B-046 | Quiz authoring UI: question types in the slash menu, question panel, already-taken warning | 2026-10-24 | this PR |
-| B-040 | Resumable tus uploads for videos over 200 MB (server and Cloudflare adapter #33, browser uploader this PR) | 2026-10-24 | #33, this PR |
+| B-022 | Authoring menu hides headings 4 to 6, audio and video | 2026-10-24 | #35 |
+| B-041 | Back-office warning for a ready video without captions | 2026-10-24 | #35 |
+| B-046 | Quiz authoring UI: question types in the slash menu, question panel, already-taken warning | 2026-10-24 | #35 |
+| B-040 | Resumable tus uploads for videos over 200 MB (server and Cloudflare adapter #33, browser uploader #35) | 2026-10-24 | #33, #35 |
+| B-060 | Phase 4, back-office: file uploads, extra attempts, reports, tus, `@bebranded/elearning-admin` (courses, tree, rules, assignments, lesson, video and quiz editors, reports), demo back-office and e2e; phase 4 complete | 2026-10-24 | #29–#36, this PR |
 | B-045 | Reports: course and learner tracking, quiz reporting with per-question correct rate, CSV export | 2026-10-24 | #32 |
 | B-044 | Admin grant of extra quiz attempts per learner, append-only grants | 2026-10-24 | #31 |
-| B-051 | Course assignments: storage and `canAssign`, then the admin API with enrollment on the next visit | 2026-10-24 | #26, this PR |
+| B-051 | Course assignments: storage and `canAssign`, then the admin API with enrollment on the next visit | 2026-10-24 | #26, #28 |
 | B-029 | Admin reorder endpoint `POST /v1/admin/reorder` (phase 4 starts) | 2026-10-23 | #25 |
 | B-050 | Phase 3, quizzes: core conversion, presentation and grading, editor question blocks, db tables, server attempts and admin save, `<Quiz>` on SurveyJS, demo quiz and anti-cheat e2e; phase 3 complete | 2026-10-23 | #19–#24 |
 | B-037 | Phase 2, video: core rules, db tables, `@bebranded/elearning-video` (Cloudflare Stream), server endpoints and webhook, `<VideoPlayer>`, demo video and anti-cheat e2e; phase 2 complete | 2026-10-23 | #11–#16, #18 |
-| B-012 | Phase 1: apps/demo with fake multi-role auth and Playwright journeys; phase 1 complete | 2026-10-23 | this PR |
+| B-012 | Phase 1: apps/demo with fake multi-role auth and Playwright journeys; phase 1 complete | 2026-10-23 | #9 |
 | B-023 | Content stylesheet for rendered lessons, shipped with `@bebranded/elearning-react` | 2026-10-23 | #8 |
 | | `@bebranded/elearning-react`: provider, theme, i18n (en, fr), catalog, course page, lesson player, My training | 2026-10-23 | #8 |
 | B-024 | Admin API: courses, chapters, lessons (validated content), access rules, publishing | 2026-10-23 | #7 |

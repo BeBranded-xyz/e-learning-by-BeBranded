@@ -29,7 +29,7 @@ export function RuleForm({ roles, pending, onSubmit }: RuleFormProps) {
     event.preventDefault();
     if (audience !== null)
       onSubmit({ effect, audience }, () => {
-        setDraft({ type: "everyone", value: "" });
+        setDraft((current) => (current === draft ? { type: "everyone", value: "" } : current));
       });
   };
   return (

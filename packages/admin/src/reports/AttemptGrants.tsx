@@ -50,7 +50,7 @@ function GrantForm({ lessonId }: { readonly lessonId: string }) {
     const body = { learnerId: learnerId.trim(), extra: Number(extra) };
     grant.mutate(body, {
       onSuccess: () => {
-        setLearnerId("");
+        setLearnerId((current) => (current === learnerId ? "" : current));
       },
     });
   };

@@ -30,4 +30,21 @@ describe("createElearningRouteHandler", () => {
       "DELETE /api/elearning/v1/courses",
     ]);
   });
+
+  it("forwards PUT, which saves a quiz document (regression: it answered 405 in Next.js hosts)", async () => {
+    const methods: string[] = [];
+    const elearning: Elearning = {
+      handle: (request) => {
+        methods.push(request.method);
+        return Promise.resolve(new Response(null, { status: 200 }));
+      },
+      deliverEvents: () => Promise.resolve({ delivered: 0, failed: 0 }),
+    };
+    const handlers = createElearningRouteHandler(elearning);
+
+    await handlers.PUT(
+      new Request("https://h.example.com/api/elearning/v1/admin/lessons/x/quiz", { method: "PUT" }),
+    );
+    expect(methods).toEqual(["PUT"]);
+  });
 });
