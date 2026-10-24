@@ -32,7 +32,6 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | B-061 | Create columns by dragging a block onto another block's left or right edge (spec 10, "Editing behavior"); the slash menu is the only way today | feature | P3 | maintainers | spec 10, ADR-0001 | 2026-10-24 | Needs a drop target on block edges |
 | B-062 | Playwright journeys for the remaining column behaviors: drag a block between columns and out of the list, resize with the pointer, remove a column until the list dissolves | test | P2 | maintainers | spec 10 "Testing", `TEST_PLAN.md` #9, #47 | 2026-10-24 | Creating, typing, keyboard resize and the learner layout are covered (`columns.spec.ts`); the rest by editor tests on a mounted editor |
 | B-066 | Back-office download of a single lesson (drafts included) from the lesson editor page; admins download the whole course today | feature | P3 | maintainers | spec 10 | 2026-10-24 | Lesson detail payload has no `export_formats` |
-| B-064 | Split `packages/react/src/styles.css` (304 lines, over the 300-line limit since phase 3) by area (layout, content, player, course), each imported by `styles.css` as `columns.css` is | debt | P3 | maintainers | `core/code-standards` | 2026-10-24 | Grew by its `@import` only |
 | B-067 | Deploy the public demo automatically after each merge into `main` (CI job, only when `apps/demo` or a package it uses changed), with a smoke test and the previous image kept for rollback | ops | P2 | maintainers | `modules/deployments`, `modules/infra` | 2026-10-24 | Redeployed by hand with a script on the server today |
 | B-001 | Re-run `init.sh --target claude,codex --update` from AI-Dev-Rules `main` once its PRs #1, #2, #3 are merged; commit the new `.ruleset-version` | ops | P1 | maintainers | AI-Dev-Rules #1–#3 | 2026-10-22 | Current install comes from a local integration of those PRs |
 
@@ -93,6 +92,7 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 |---|---|---|---|
 | | Technical specifications 01–10, repository security baseline | 2026-10-22 | direct commits before branch protection |
 | | AI-Dev-Rules adoption (Claude Code and Codex) | 2026-10-22 | #1 |
+| B-064 | `styles.css` of the React package split by area (`base`, `content`, `video`, `columns`, `export`), imported in the original order; the flattened CSS is identical | 2026-10-24 | this PR |
 | B-063 | Column resize handle named in the editor's language (`createLessonEditorSchema`, en and fr in the back-office) | 2026-10-24 | this PR |
 | B-065 | Export checks: PDF layout read back with pdfjs (found and fixed lesson headings printing smaller than body text), every exported .docx opened by LibreOffice in CI | 2026-10-24 | this PR |
 | | Export UI: download buttons on course and lesson pages and in the back-office, learner-export setting in course settings, demo exporter (Playwright) and journeys for exports and columns; phase 4b complete | 2026-10-24 | this PR |

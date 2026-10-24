@@ -31,7 +31,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && node -e \"for (const f of ['styles.css','quiz.css','columns.css','export.css']) require('node:fs').copyFileSync('src/'+f,'dist/'+f)\"",
+    "build": "tsc -p tsconfig.build.json && node -e \"for (const f of ['styles.css','quiz.css','base.css','content.css','columns.css','video.css','export.css']) require('node:fs').copyFileSync('src/'+f,'dist/'+f)\"",
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
