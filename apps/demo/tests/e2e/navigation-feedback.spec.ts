@@ -156,7 +156,7 @@ test("dismisses chapter actions after publishing, outside clicks and Escape", as
   page,
   signInAs,
 }, info) => {
-  const title = `Action dismissal ${info.project.name}`;
+  const title = `Action dismissal ${info.project.name} ${info.repeatEachIndex}`;
   await signInAs("admin");
   await createCourseSettings(page, title);
   await page.getByLabel("New chapter title").fill("Actions");

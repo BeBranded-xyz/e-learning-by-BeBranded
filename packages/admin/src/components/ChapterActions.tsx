@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useDisclosureDismiss } from "../hooks/use-disclosure-dismiss.js";
 import { useUi } from "@bebranded/elearning-react";
 import type { ChapterItemProps } from "./ChapterItem.js";
@@ -66,21 +66,14 @@ export function ChapterActions(props: Props) {
   const { t } = useAdmin();
   const label = t.t("chapter.actions", { title: props.chapter.title });
   const ref = useRef<HTMLDetailsElement>(null);
-  const [open, setOpen] = useState(false);
-  useDisclosureDismiss(ref, open);
+  useDisclosureDismiss(ref);
   const close = () => {
     if (ref.current === null) return;
     ref.current.open = false;
     ref.current.querySelector("summary")?.focus();
   };
   return (
-    <details
-      className="el-chapter-actions"
-      ref={ref}
-      onToggle={(event) => {
-        setOpen(event.currentTarget.open);
-      }}
-    >
+    <details className="el-chapter-actions" ref={ref}>
       <summary aria-label={label} title={label}>
         <span aria-hidden="true">•••</span>
       </summary>

@@ -171,5 +171,6 @@ Verified refinement layouts: [desktop](../screenshots/navigation-desktop.png),
 [mobile](../screenshots/navigation-mobile.png) and
 [course settings](../screenshots/navigation-settings.png). Chapter action panels
 close after publication/reordering, outside clicks or Escape; Escape returns
-focus to their trigger. Creation fields wait for client hydration before
+focus to their trigger. Dismissal handles input immediately after native opening,
+without waiting for the queued toggle event or a React render. Creation fields wait for client hydration before
 accepting input so an early title edit cannot lose its generated slug.
