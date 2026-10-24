@@ -274,6 +274,7 @@ export type {
   ApiAdminVideo,
   ApiAssignment,
   ApiAttemptGrant,
+  ApiAttemptGrantResult,
   ApiAudience,
   ApiCourseReport,
   ApiCourseTree,

@@ -1,6 +1,7 @@
 import { ElearningApiError } from "@bebranded/elearning-react";
 
-import { adminMessages, en } from "./admin-messages.js";
+import { en } from "./admin-messages.js";
+import { fr } from "./admin-messages-fr.js";
 import type { AdminMessageKey, AdminMessages } from "./admin-messages.js";
 
 export type AdminI18n = {
@@ -25,7 +26,7 @@ export function createAdminI18n(locale: string, overrides: Partial<AdminMessages
   const language = locale.split("-")[0];
   const messages: AdminMessages = {
     ...en,
-    ...(language === "fr" ? adminMessages.fr : {}),
+    ...(language === "fr" ? fr : {}),
     ...overrides,
   };
   const t: AdminI18n["t"] = (key, values) => interpolate(messages[key], values);

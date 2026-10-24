@@ -4,7 +4,7 @@ Back-office React components of the BeBranded e-learning module: courses,
 the chapters and lessons tree (drag and drop, or move buttons), access rules,
 assignments, and the lesson editors: a BlockNote editor for text lessons
 with image and file uploads, the video uploader (resumable above 200 MB),
-and the quiz editor. Themed with the same `--el-*` CSS variables as
+the quiz editor, and the reports. Themed with the same `--el-*` CSS variables as
 `@bebranded/elearning-react`, in English and French.
 
 ```sh
@@ -58,6 +58,13 @@ import "@bebranded/elearning-admin/styles.css";
 - Reordering is saved as one `POST /v1/admin/reorder`. Drag and drop works
   with a pointer; the move buttons do the same with a keyboard or a screen
   reader.
+- Reports: `CourseAdmin` ends with the course tracking (`CourseReport`: who
+  is enrolled, how far, who is late), a quiz lesson's page shows
+  `QuizReport` (pass rate, per-question correct rate, results) and
+  `AttemptGrants` (extra attempts for one learner), and `LearnerReport`
+  shows one learner's courses. Each has a CSV download link. Reports show
+  the module's opaque learner ids; pass `learnerHref` to link them to your
+  own pages.
 - Supported: React 18.2 and 19, Node 22.12 or later.
 
 See [the integration specification](../../docs/specifications/04-integration.md).

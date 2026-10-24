@@ -7,6 +7,7 @@ import type {
   ApiAdminQuiz,
   ApiAssignment,
   ApiAttemptGrant,
+  ApiAttemptGrantResult,
   ApiCollection,
   ApiCourseReport,
   ApiCourseTree,
@@ -96,7 +97,7 @@ function audienceEndpoints({ request, remove }: Transport) {
         `/lessons/${id(lessonId)}/quiz/attempt-grants`,
       ),
     grantAttempts: (lessonId: string, body: Body) =>
-      request<ApiAttemptGrant>("POST", `/lessons/${id(lessonId)}/quiz/attempt-grants`, body),
+      request<ApiAttemptGrantResult>("POST", `/lessons/${id(lessonId)}/quiz/attempt-grants`, body),
   };
 }
 

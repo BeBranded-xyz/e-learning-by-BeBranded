@@ -139,3 +139,40 @@
 :where(.el-quiz-choice[data-correct="true"]) {
   font-weight: 600;
 }
+:where(.el-admin-stats) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr));
+  gap: calc(var(--el-space) / 2);
+  margin: 0;
+}
+:where(.el-admin-stats > div) {
+  padding: calc(var(--el-space) / 2);
+  border: 1px solid var(--el-color-border);
+  border-radius: var(--el-radius);
+  background: var(--el-color-surface);
+}
+:where(.el-admin-stats dt) {
+  color: var(--el-color-muted);
+  font-size: 0.875rem;
+}
+:where(.el-admin-stats dd) {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+:where(.el-admin-table) {
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+:where(.el-admin-table caption) {
+  text-align: start;
+  font-weight: 600;
+}
+:where(.el-admin-table th, .el-admin-table td) {
+  padding: 0.25rem 0.5rem;
+  border-block-end: 1px solid var(--el-color-border);
+  text-align: start;
+}
+:where(.el-admin-late) {
+  color: var(--el-color-danger);
+}

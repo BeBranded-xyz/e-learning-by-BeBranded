@@ -1,5 +1,6 @@
 "use client";
 
+import type { ApiAdminLesson } from "@bebranded/elearning-core";
 import { QueryState } from "@bebranded/elearning-react";
 
 import { AccessRulesEditor } from "../components/AccessRulesEditor.js";
@@ -9,6 +10,7 @@ import { QuizLessonEditor } from "../lesson/QuizLessonEditor.js";
 import { TextLessonEditor } from "../lesson/TextLessonEditor.js";
 import { VideoLessonEditor } from "../lesson/VideoLessonEditor.js";
 import { useAdmin } from "../provider/admin-context.js";
+import { QuizReport } from "../reports/QuizReport.js";
 
 export type LessonAdminProps = {
   readonly lessonId: string;
@@ -17,6 +19,22 @@ export type LessonAdminProps = {
   readonly roles?: readonly string[] | undefined;
   readonly onDeleted?: (() => void) | undefined;
 };
+
+function LessonEditorByType({ lesson }: { readonly lesson: ApiAdminLesson }) {
+  switch (lesson.type) {
+    case "text":
+      return <TextLessonEditor lesson={lesson} />;
+    case "video":
+      return <VideoLessonEditor lesson={lesson} />;
+    case "quiz":
+      return (
+        <>
+          <QuizLessonEditor lesson={lesson} />
+          <QuizReport lessonId={lesson.id} />
+        </>
+      );
+  }
+}
 
 /** One lesson in the back-office: settings, its editor by type, and its access rules. */
 export function LessonAdmin({ lessonId, courseHref, roles, onDeleted }: LessonAdminProps) {
@@ -34,9 +52,7 @@ export function LessonAdmin({ lessonId, courseHref, roles, onDeleted }: LessonAd
       )}
       <h2 id="el-admin-lesson-title">{data.title}</h2>
       <LessonSettings key={`${data.id}-${data.title}`} lesson={data} onDeleted={onDeleted} />
-      {data.type === "text" ? <TextLessonEditor lesson={data} /> : null}
-      {data.type === "video" ? <VideoLessonEditor lesson={data} /> : null}
-      {data.type === "quiz" ? <QuizLessonEditor lesson={data} /> : null}
+      <LessonEditorByType lesson={data} />
       {course.data === undefined ? null : (
         <section aria-labelledby="el-admin-lesson-rules">
           <h3 id="el-admin-lesson-rules">{t.t("rules.title")}</h3>

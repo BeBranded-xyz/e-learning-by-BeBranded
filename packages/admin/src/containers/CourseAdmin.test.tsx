@@ -7,6 +7,12 @@ import { a11yViolations, apiError, renderAdmin } from "../../tests/render.js";
 import { CourseAdmin } from "./CourseAdmin.js";
 
 const lessonHref = (lesson: { id: string }) => `/admin/lessons/${lesson.id}`;
+const courseReport = {
+  course: { id: COURSE_ID, slug: "safety-basics", title: "Safety basics", status: "draft" },
+  summary: { enrolled: 0, started: 0, completed: 0, overdue: 0, average_progress: null },
+  data: [],
+  next_cursor: null,
+};
 const assignment = {
   id: "as-1",
   course_id: COURSE_ID,
@@ -29,6 +35,7 @@ function renderCourse(api = {}, onDeleted = vi.fn()) {
       [`GET /courses/${COURSE_ID}/assignments`]: {
         body: { data: [assignment], next_cursor: null },
       },
+      [`GET /reports/courses/${COURSE_ID}`]: { body: courseReport },
       ...api,
     },
   );
@@ -39,8 +46,10 @@ const bodyOf = (requests: { key: string; body: unknown }[], key: string) =>
   requests.find((request) => request.key === key)?.body;
 
 describe("CourseAdmin", () => {
-  it("shows the course, its content, rules and assignments without a11y violation", async () => {
+  it("shows the course, its content, rules, assignments and tracking without a11y violation", async () => {
     const { container } = renderCourse();
+
+    expect(await screen.findByText("Nobody is enrolled yet.")).toBeDefined();
 
     expect(await screen.findByRole("heading", { level: 2, name: "Safety basics" })).toBeDefined();
     expect(screen.getByText("Allow: Everyone")).toBeDefined();
@@ -81,7 +90,7 @@ describe("CourseAdmin", () => {
     const settings = within(await screen.findByRole("form", { name: "Safety basics" }));
     await userEvent.click(settings.getByRole("button", { name: "Publish" }));
 
-    expect((await screen.findByRole("alert")).textContent).toBe("Some fields are invalid.");
+    expect((await settings.findByRole("alert")).textContent).toBe("Some fields are invalid.");
     expect(bodyOf(requests, `PATCH /courses/${COURSE_ID}`)).toEqual({ status: "published" });
   });
 

@@ -5,7 +5,11 @@ import {
   attemptsRemaining,
   learnerIdSchema,
 } from "@bebranded/elearning-core";
-import type { ApiAttemptGrant, QuizAttemptGrant } from "@bebranded/elearning-core";
+import type {
+  ApiAttemptGrant,
+  ApiAttemptGrantResult,
+  QuizAttemptGrant,
+} from "@bebranded/elearning-core";
 
 import type { RequestContext } from "../context.js";
 import { json } from "../http/responses.js";
@@ -53,15 +57,12 @@ export async function createAttemptGrant(
     await tx.insertQuizAttemptGrant(context.scope, grant);
     return tx.findQuizStanding(context.scope, grant.learnerId, lesson.id);
   });
-  return json(
-    {
-      ...presentGrant(grant),
-      attempts_used: standing.closedAttempts,
-      attempts_remaining: attemptsRemaining(standing, quizSettings(lesson)),
-    },
-    context.requestId,
-    201,
-  );
+  const result: ApiAttemptGrantResult = {
+    ...presentGrant(grant),
+    attempts_used: standing.closedAttempts,
+    attempts_remaining: attemptsRemaining(standing, quizSettings(lesson)),
+  };
+  return json(result, context.requestId, 201);
 }
 
 /** GET /v1/admin/lessons/:id/quiz/attempt-grants[?learner_id=]: the tenant's grants, oldest first. */
