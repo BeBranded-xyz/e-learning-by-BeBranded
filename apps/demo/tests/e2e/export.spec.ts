@@ -3,13 +3,24 @@ import { randomUUID } from "node:crypto";
 
 import type { Download, Page } from "@playwright/test";
 
-import { createVisibleCourse } from "./admin-steps";
+import { addLesson, createVisibleCourse } from "./admin-steps";
 import { expect, expectAccessible, test } from "./fixtures";
 
+/**
+ * Clicks a download button until the file arrives. The server prepares at most
+ * 2 exports at once per tenant and answers export_busy beyond; desktop and
+ * mobile journeys run at the same time, so a click may need a second try,
+ * as a learner would do.
+ */
 async function downloaded(page: Page, click: () => Promise<void>): Promise<Download> {
-  const download = page.waitForEvent("download");
-  await click();
-  return download;
+  let file: Download | undefined;
+  await expect(async () => {
+    const download = page.waitForEvent("download", { timeout: 10_000 });
+    await click();
+    file = await download;
+  }).toPass({ timeout: 75_000 });
+  if (file === undefined) throw new Error("no download");
+  return file;
 }
 
 const head = async (download: Download, length: number) =>
@@ -62,14 +73,14 @@ test.describe("exports", () => {
     );
   });
 
-  test("an admin downloads a draft course and lets learners download it", async ({
+  test("an admin downloads a draft course and lesson, and lets learners download it", async ({
     page,
     signInAs,
   }) => {
     test.setTimeout(90_000);
     const title = `Export ${randomUUID().slice(0, 8)}`;
     await signInAs("admin");
-    await createVisibleCourse(page, title);
+    const courseUrl = await createVisibleCourse(page, title);
 
     const word = await downloaded(page, () =>
       page
@@ -78,6 +89,17 @@ test.describe("exports", () => {
         .click(),
     );
     expect(await head(word, 2)).toBe("PK");
+
+    await addLesson(page, "Basics", "Draft notes", "Text");
+    await page.getByRole("link", { name: "Draft notes" }).click();
+    const lessonPdf = await downloaded(page, () =>
+      page
+        .getByRole("group", { name: "Download the lesson" })
+        .getByRole("button", { name: "Download PDF" })
+        .click(),
+    );
+    expect(await head(lessonPdf, 5)).toBe("%PDF-");
+    await page.goto(courseUrl);
 
     const settings = page.getByRole("form", { name: title });
     await settings.getByRole("checkbox", { name: /Learners can download/ }).check();
