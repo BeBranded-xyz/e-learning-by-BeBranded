@@ -32,7 +32,7 @@ Reading GPL code and rewriting it produces a derivative work, which would still 
 
 | Need | Choice | License | Why | Rejected alternatives |
 |------|--------|---------|-----|-----------------------|
-| Editing model for columns | **ProseMirror** node specs (`prosemirror-model`, `prosemirror-state`, `prosemirror-view`) registered in BlockNote through its extension points, with Tiptap extensions where convenient | MIT | BlockNote runs on ProseMirror and Tiptap, so columns must live at that level to support nested blocks, drag & drop and cursor movement | Simple custom block with a fixed layout (no nested blocks, poor UX) |
+| Editing model for columns | **BlockNote's layout block API** (`layoutOnly`, `children`, `placeable`, `renderFrame`) in its MPL-2.0 core, with our own block specs ([ADR-0001](../adr/0001-multi-column-layout-blocks.md)) | MPL-2.0 (BlockNote core, unmodified) | Nested blocks, drag & drop, cursor movement, undo and schema enforcement come from the editor; no GPL code involved | Our own ProseMirror node specs (rebuilds what the core ships, high risk); simple custom block with a fixed layout (no nested blocks, poor UX) |
 | Shared export format | **Our own intermediate document tree** (`ExportDocument`) in `elearning-core` | MIT (ours) | One conversion from BlockNote JSON, then one renderer per format. Each renderer is tested on the same fixtures. | Converting BlockNote JSON separately for each format |
 | HTML (learner view and PDF source) | Our own renderer (`renderLessonHtml`), then `sanitize-html` | MIT | Reuses the server-side rendering already used for lessons (see [02 — Architecture](02-architecture.md#reading-a-text-lesson), D11) | `@blocknote/server-util`: needs jsdom and React, fails on toggle blocks under Node, no edge support |
 | PDF | **HTML + print CSS rendered by headless Chromium**, behind a `PdfRenderer` port | — | Highest fidelity (tables, columns, fonts, images), reuses the HTML renderer and the theme, and gives a PDF with real selectable text | `@react-pdf/renderer` (MIT): every block would need a second layout implementation with a limited CSS subset. `pdf-lib`: too low-level. |
@@ -49,7 +49,7 @@ packages/
 ├── core/
 │   └── src/export/          ExportDocument types, BlockNote JSON → ExportDocument (pure)
 ├── editor/
-│   ├── src/blocks/columns/  columnList + column: node specs, commands, drag & drop, resize
+│   ├── src/blocks/          columns.ts (columnList + column specs, resize handle), column-widths.ts
 │   └── src/render/html/     ExportDocument → HTML (learner view, PDF source)
 └── export/                  @bebranded/elearning-export (new, server-only)
     ├── src/pdf/             PdfRenderer port + adapters (playwright, serverless, cloudflare, gotenberg)
@@ -63,11 +63,13 @@ packages/
 
 ### Data model
 
-Two new block types in the module's BlockNote schema:
+Two block types in the lesson editor's schema (quiz lessons have no columns):
 
 ```json
 {
+  "id": "…",
   "type": "columnList",
+  "props": {},
   "children": [
     { "type": "column", "props": { "width": 0.6 }, "children": [ /* any blocks except columnList */ ] },
     { "type": "column", "props": { "width": 0.4 }, "children": [ /* … */ ] }
@@ -76,30 +78,30 @@ Two new block types in the module's BlockNote schema:
 ```
 
 - A `columnList` holds **2 to 4** `column` blocks.
-- `width` values are ratios, normalized to sum to 1. The minimum ratio is 0.15.
-- A `column` contains any regular block, but **no nested `columnList`**, to keep layouts readable and exports predictable.
-- Server-side content validation enforces these constraints.
+- `width` values are positive ratios, normalized to sum to 1 when rendered. Each column takes at least **0.15** of the row once normalized. New columns start at `1`; resizing stores normalized shares.
+- A `column` contains any regular block, but **no nested `columnList`** at any depth, to keep layouts readable and exports predictable. A `column` outside a `columnList` is invalid.
+- Server-side content validation enforces these constraints (`invalid_content`, and `nested_columns` for a list inside a list). The editor's schema enforces the same rules while editing.
 
 ### Editing behavior
 
 | Action | Behavior |
 |--------|----------|
-| Create columns | Slash menu entries "2 columns", "3 columns", "4 columns". Or drag a block onto the left or right edge of another block. |
-| Drag between columns | The drag handle moves blocks within a column, between columns, and out of the column list. |
-| Resize | A handle between two columns adjusts their ratios, with keyboard support (focus the handle, then arrow keys). |
-| Remove a column | When a column becomes empty and loses focus, it is removed. When only one column remains, the column list is unwrapped and its blocks go back to the main flow. |
-| Keyboard | Arrow keys move the cursor across column boundaries in reading order (left column top to bottom, then the next column). |
-| Undo / redo | Every operation above is a single history step. |
+| Create columns | Slash menu entries "2 columns", "3 columns", "4 columns" (group "Layout"): equal columns, each starting with an empty paragraph that takes the cursor. An empty paragraph is replaced; otherwise the columns go after the current block. Creating columns by dragging a block onto another block's edge is planned (BACKLOG). |
+| Drag between columns | BlockNote's drag handle moves blocks within a column, between columns, and out of the column list. |
+| Resize | A handle (`role="separator"`) on the right edge of every column but the last moves width between that column and the next one, in steps of 5% of the row, never below 15%. Drag it, or focus it and use the left and right arrow keys. |
+| Remove a column | A column whose last block is removed is removed. When only one column remains, the column list dissolves and its blocks go back to the main flow. |
+| Keyboard | BlockNote's cursor movement crosses column boundaries in document order (left column top to bottom, then the next column). |
+| Undo / redo | Every operation above is a single history step; a resize is one step. |
 
 ### Rendering
 
-- CSS grid with `grid-template-columns` built from the ratios.
-- Below a configurable breakpoint (default 640 px), columns **stack vertically** in order.
+- Each column's share is rounded to a **5% step** (15 to 100) and written as `data-width`. Stylesheets map the steps to flex ratios, so lesson pages and exports need no inline style (strict CSP).
+- On the learner page (`columns.css`, imported by `styles.css`), a column never gets narrower than 14rem: on narrow screens the columns **wrap and stack** in order, with no breakpoint to configure.
 - Screen readers read columns in document order. The layout carries no semantics.
 
 ### Risk
 
-Multi-column editing is the hardest piece of this document: nested containers in ProseMirror, drop zones, cursor behavior. It starts with a **time-boxed spike** (see [09 — Roadmap](09-roadmap.md)). If the spike shows that a robust implementation is too costly, the fallback is a simpler layout block: columns editable one at a time, with no drag & drop between them.
+Multi-column editing was the hardest piece of this document: nested containers in ProseMirror, drop zones, cursor behavior. It started with a **time-boxed spike** (see [09 — Roadmap](09-roadmap.md)). The spike found BlockNote's layout block API and answered **go**: the full behavior, not the fallback (a simpler layout block, columns editable one at a time). See [ADR-0001](../adr/0001-multi-column-layout-blocks.md). Every BlockNote upgrade reruns the column tests, since the API is recent.
 
 ## Export
 
@@ -203,7 +205,7 @@ The PDF renderer runs a browser on the server. It must never become a way to rea
 - **Golden fixtures**: a set of BlockNote documents covering every block type, rendered to `ExportDocument`, HTML, PDF and DOCX.
 - PDF: text extracted from the output is compared with the expected text, plus visual regression on rendered pages (Playwright screenshots).
 - DOCX: the generated XML is checked for expected styles and structure, and opened in LibreOffice headless in CI to make sure the file is valid.
-- Columns: Playwright scenarios for every behavior in the editing table, on desktop and mobile widths.
+- Columns: editor tests on a mounted editor (structure, resize by keys and by dragging, undo, dissolving, nesting refused) and Playwright scenarios for every behavior in the editing table, on desktop and mobile widths (planned with the demo journeys, BACKLOG).
 - Security tests: a document with an external image URL, `javascript:` links, oversized content and hostile text must be rejected or neutralized, and the renderer must not make any network request (verified by request interception).
 
 ## Out of scope

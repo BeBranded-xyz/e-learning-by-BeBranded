@@ -46,7 +46,7 @@ export function TextLessonEditor({ lesson }: { readonly lesson: ApiAdminLesson }
       <BlockNoteView editor={editor} slashMenu={false}>
         <SuggestionMenuController
           triggerCharacter="/"
-          getItems={(query) => lessonSlashItems(editor, query)}
+          getItems={(query) => lessonSlashItems(editor, query, t)}
         />
       </BlockNoteView>
       <div className="el-admin-actions">

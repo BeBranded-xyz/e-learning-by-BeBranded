@@ -112,6 +112,8 @@ export const fr: AdminMessages = {
   "quiz.type.orderingQuestion": "Question à remettre dans l'ordre",
   "quiz.type.matchingQuestion": "Question d'association",
   "quiz.group": "Questions",
+  "columns.group": "Mise en page",
+  "columns.insert": "{count} colonnes",
   "report.title": "Suivi",
   "report.empty": "Personne n'est encore inscrit.",
   "report.enrolled": "Inscrits",

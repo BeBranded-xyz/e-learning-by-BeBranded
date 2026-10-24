@@ -1,0 +1,69 @@
+/*
+ * Column layout of lesson content (spec 10, "Multi-column layout"), imported
+ * by styles.css. Zero specificity like styles.css. Widths are 5% steps in
+ * data-width, so lesson pages need no inline style (strict CSP).
+ */
+
+:where(.el-columns) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--el-space);
+}
+:where(.el-column) {
+  flex: 1 1 0;
+  min-width: min(100%, 14rem);
+}
+:where(.el-column[data-width="15"]) {
+  flex-grow: 15;
+}
+:where(.el-column[data-width="20"]) {
+  flex-grow: 20;
+}
+:where(.el-column[data-width="25"]) {
+  flex-grow: 25;
+}
+:where(.el-column[data-width="30"]) {
+  flex-grow: 30;
+}
+:where(.el-column[data-width="35"]) {
+  flex-grow: 35;
+}
+:where(.el-column[data-width="40"]) {
+  flex-grow: 40;
+}
+:where(.el-column[data-width="45"]) {
+  flex-grow: 45;
+}
+:where(.el-column[data-width="50"]) {
+  flex-grow: 50;
+}
+:where(.el-column[data-width="55"]) {
+  flex-grow: 55;
+}
+:where(.el-column[data-width="60"]) {
+  flex-grow: 60;
+}
+:where(.el-column[data-width="65"]) {
+  flex-grow: 65;
+}
+:where(.el-column[data-width="70"]) {
+  flex-grow: 70;
+}
+:where(.el-column[data-width="75"]) {
+  flex-grow: 75;
+}
+:where(.el-column[data-width="80"]) {
+  flex-grow: 80;
+}
+:where(.el-column[data-width="85"]) {
+  flex-grow: 85;
+}
+:where(.el-column[data-width="90"]) {
+  flex-grow: 90;
+}
+:where(.el-column[data-width="95"]) {
+  flex-grow: 95;
+}
+:where(.el-column[data-width="100"]) {
+  flex-grow: 100;
+}

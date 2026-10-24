@@ -119,7 +119,7 @@ config in the same PR. Tests that cannot be written yet are listed in
 | 44 | Browser Testing | active (Chromium) / planned (Firefox, WebKit) | Playwright | `pnpm test:e2e` | pr | B-036 |
 | 45 | Device Testing | active (Pixel 7 emulation on Chromium) / planned (iOS Safari ≥ 16 on WebKit, B-036) | Playwright device emulation | `pnpm test:e2e` | pr | Every journey, the back-office included, on the Pixel 7 profile |
 | 46 | Operating System Testing | planned phase 1 | CI matrix Linux + macOS |  | pr | Node ≥ 22.12 |
-| 47 | Responsive Testing | active | Playwright viewports | `pnpm test:e2e` | pr | Every journey on desktop and mobile; columns (phase 4b) to add |
+| 47 | Responsive Testing | active | Playwright viewports | `pnpm test:e2e` | pr | Every journey on desktop and mobile; columns: component tests on a mounted editor today, journeys planned (B-062) |
 
 ## Internationalization
 

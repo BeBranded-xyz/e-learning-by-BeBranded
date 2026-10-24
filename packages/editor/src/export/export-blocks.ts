@@ -6,6 +6,7 @@ import type {
   FileId,
 } from "@bebranded/elearning-core";
 
+import { widthStep } from "../blocks/column-widths.js";
 import { element, escapeHtml } from "../render/html.js";
 import { renderInline } from "../render/render-inline.js";
 
@@ -135,6 +136,20 @@ function renderStructure(block: StructureBlock, context: ExportRenderContext): s
         { class: "el-video" },
         `${escapeHtml(context.labels.video)}: ` +
           element("a", { href: block.url }, escapeHtml(block.title)),
+      );
+    case "columns":
+      return element(
+        "div",
+        { class: "el-columns" },
+        block.columns
+          .map((column) =>
+            element(
+              "div",
+              { class: "el-column", "data-width": widthStep(column.width) },
+              renderExportBlocks(column.blocks, context),
+            ),
+          )
+          .join(""),
       );
     case "group":
       return element("div", { class: "el-group" }, renderExportBlocks(block.blocks, context));

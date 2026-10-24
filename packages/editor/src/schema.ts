@@ -1,6 +1,7 @@
 import { BlockNoteSchema } from "@blocknote/core";
 
 import { createCalloutBlock } from "./blocks/callout.js";
+import { createColumn, createColumnList } from "./blocks/columns.js";
 import {
   createMatchingQuestion,
   createMultipleChoiceQuestion,
@@ -24,18 +25,26 @@ import {
  * `BlockNoteSchema.create({ blockSpecs })` with a subset of the default specs
  * does not type-check under `exactOptionalPropertyTypes`; `extend` does.
  */
-export const lessonEditorSchema = BlockNoteSchema.create().extend({
-  blockSpecs: { callout: createCalloutBlock() },
+/**
+ * A fresh base per schema: BlockNote's `extend` adds to the schema it is
+ * called on, so two schemas extending one base would share every block.
+ */
+const contentSchema = () =>
+  BlockNoteSchema.create().extend({ blockSpecs: { callout: createCalloutBlock() } });
+
+/** Lessons also lay blocks out in 2 to 4 columns (spec 10, ADR-0001). */
+export const lessonEditorSchema = contentSchema().extend({
+  blockSpecs: { columnList: createColumnList(), column: createColumn() },
 });
 
 export type LessonEditorSchema = typeof lessonEditorSchema;
 
 /**
- * The quiz editor's schema: the lesson blocks, which give context between
- * questions, plus the question blocks and their option blocks (spec 07).
+ * The quiz editor's schema: the lesson blocks except columns, which give
+ * context between questions, plus the question blocks and their option blocks (spec 07).
  * `editorDocumentToQuiz` in elearning-core validates what it produces.
  */
-export const quizEditorSchema = lessonEditorSchema.extend({
+export const quizEditorSchema = contentSchema().extend({
   blockSpecs: {
     singleChoiceQuestion: createSingleChoiceQuestion(),
     multipleChoiceQuestion: createMultipleChoiceQuestion(),

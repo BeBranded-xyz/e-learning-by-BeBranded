@@ -70,7 +70,7 @@ const SANITIZE: sanitizeHtml.IOptions = {
     th: ["colspan", "rowspan"],
     td: ["colspan", "rowspan"],
     img: ["src", "alt", "width"],
-    div: ["data-variant"],
+    div: ["data-variant", "data-width"],
     section: ["data-depth"],
   },
   allowedSchemes: ["https", "http", "mailto"],

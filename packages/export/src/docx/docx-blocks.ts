@@ -8,7 +8,7 @@ import { alignmentOf, indentOf, nestedIn } from "./docx-context.js";
 import type { DocxContext } from "./docx-context.js";
 import { inlineRuns } from "./docx-inline.js";
 import { mediaChildren } from "./docx-media.js";
-import { calloutTable, wordTable } from "./docx-tables.js";
+import { calloutTable, columnsTable, wordTable } from "./docx-tables.js";
 
 const HEADINGS = [
   HeadingLevel.HEADING_1,
@@ -100,6 +100,19 @@ function structureChildren(block: StructureBlock, context: DocxContext): FileChi
       return [wordTable(block)];
     case "divider":
       return [new Paragraph({ thematicBreak: true, children: [] })];
+    case "columns":
+      return [
+        columnsTable(
+          block.columns.map((column) => ({
+            width: column.width,
+            children: docxBlocks(column.blocks, {
+              ...context,
+              depth: 0,
+              contentWidth: context.contentWidth * column.width,
+            }),
+          })),
+        ),
+      ];
     case "group":
       return docxBlocks(block.blocks, nestedIn(context));
   }

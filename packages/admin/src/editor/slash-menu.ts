@@ -25,10 +25,44 @@ export function authoringItems(
   return items.filter((item) => !REJECTED.has(keyOf(item) ?? ""));
 }
 
-export function lessonSlashItems(editor: LessonEditor, query: string) {
-  return Promise.resolve(
-    filterSuggestionItems(authoringItems(getDefaultReactSlashMenuItems(editor)), query),
-  );
+/**
+ * Puts equal columns where the cursor is (spec 10, "Multi-column layout"):
+ * an empty paragraph becomes the column list, otherwise it goes after the
+ * current block. Each column starts with an empty paragraph, which takes
+ * the cursor.
+ */
+export function insertColumns(editor: LessonEditor, count: number): void {
+  const cursor = editor.getTextCursorPosition().block;
+  const list = {
+    type: "columnList" as const,
+    children: Array.from({ length: count }, () => ({
+      type: "column" as const,
+      props: { width: 1 },
+      children: [{ type: "paragraph" as const }],
+    })),
+  };
+  const empty =
+    cursor.type === "paragraph" && Array.isArray(cursor.content) && cursor.content.length === 0;
+  const [inserted] = empty
+    ? editor.replaceBlocks([cursor], [list]).insertedBlocks
+    : editor.insertBlocks([list], cursor, "after");
+  const first = inserted?.children[0]?.children[0];
+  if (first !== undefined) editor.setTextCursorPosition(first, "start");
+}
+
+const COLUMN_COUNTS = [2, 3, 4] as const;
+
+export function lessonSlashItems(editor: LessonEditor, query: string, t: AdminI18n) {
+  const columns: DefaultReactSuggestionItem[] = COLUMN_COUNTS.map((count) => ({
+    title: t.t("columns.insert", { count }),
+    group: t.t("columns.group"),
+    aliases: ["columns", "colonnes", "layout"],
+    onItemClick: () => {
+      insertColumns(editor, count);
+    },
+  }));
+  const items = [...authoringItems(getDefaultReactSlashMenuItems(editor)), ...columns];
+  return Promise.resolve(filterSuggestionItems(items, query));
 }
 
 /**

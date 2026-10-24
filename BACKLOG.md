@@ -29,6 +29,10 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | B-057 | Content tree drag and drop is pointer-only (the move buttons are the accessible path, WCAG 2.5.7); revisit with an accessible sortable pattern if authors ask, and remove the `no-static-element-interactions` suppression in `DropZone.tsx` | debt | P3 | maintainers | `modules/frontend` | 2026-10-24 | |
 | B-058 | E2E of the back-office video upload: the demo's fake video provider answers an external upload URL; add a local upload endpoint to the fake provider (form and tus) and drive the uploader in Playwright | test | P2 | maintainers | `TEST_PLAN.md` #9 | 2026-10-24 | Component tests cover both protocols |
 | B-059 | Usability sessions with content authors on the editor and back-office before the phase 5 pilot; findings become regression tests | test | P1 | maintainers | `TEST_PLAN.md` #59 | 2026-10-24 | Needs people; cannot be automated |
+| B-061 | Create columns by dragging a block onto another block's left or right edge (spec 10, "Editing behavior"); the slash menu is the only way today | feature | P3 | maintainers | spec 10, ADR-0001 | 2026-10-24 | Needs a drop target on block edges |
+| B-062 | Playwright journeys for columns on desktop and mobile widths: create from the slash menu, type in each column, drag a block between columns, resize by pointer and keys, remove a column, learner page wraps the columns | test | P1 | maintainers | spec 10 "Testing", `TEST_PLAN.md` #9, #47 | 2026-10-24 | With the demo export journeys; editor tests on a mounted editor cover the rules today |
+| B-063 | Localize the column resize handle's accessible name ("Resize columns" is English): pass a label from the admin translator into the column block spec | feature | P2 | maintainers | `modules/i18n`, `modules/frontend` | 2026-10-24 | The editor package has no translator |
+| B-064 | Split `packages/react/src/styles.css` (304 lines, over the 300-line limit since phase 3) by area (layout, content, player, course), each imported by `styles.css` as `columns.css` is | debt | P3 | maintainers | `core/code-standards` | 2026-10-24 | Grew by its `@import` only |
 | B-001 | Re-run `init.sh --target claude,codex --update` from AI-Dev-Rules `main` once its PRs #1, #2, #3 are merged; commit the new `.ruleset-version` | ops | P1 | maintainers | AI-Dev-Rules #1–#3 | 2026-10-22 | Current install comes from a local integration of those PRs |
 
 ## Next
@@ -87,6 +91,7 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 |---|---|---|---|
 | | Technical specifications 01–10, repository security baseline | 2026-10-22 | direct commits before branch protection |
 | | AI-Dev-Rules adoption (Claude Code and Codex) | 2026-10-22 | #1 |
+| | Multi-column layout: spike go (ADR-0001), core validation, editor blocks with resize, slash items, learner, HTML and Word rendering; lesson and quiz editor schemas no longer share blocks | 2026-10-24 | this PR |
 | B-022 | Authoring menu hides headings 4 to 6, audio and video | 2026-10-24 | #35 |
 | B-041 | Back-office warning for a ready video without captions | 2026-10-24 | #35 |
 | B-046 | Quiz authoring UI: question types in the slash menu, question panel, already-taken warning | 2026-10-24 | #35 |

@@ -63,6 +63,7 @@ export type {
 
 export {
   ALLOWED_URL_PROTOCOLS,
+  COLUMN_RULES,
   FILE_URL_PREFIX,
   LESSON_DOCUMENT_LIMITS,
   calloutVariantSchema,

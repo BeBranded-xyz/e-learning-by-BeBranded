@@ -176,3 +176,37 @@
 :where(.el-admin-late) {
   color: var(--el-color-danger);
 }
+
+/* Columns in the lesson editor (spec 10): the frame of BlockNote's layout blocks. */
+:where(.el-admin-editor .el-columns) {
+  display: flex;
+  gap: var(--el-space);
+}
+:where(.el-admin-editor .el-column) {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  padding-inline: calc(var(--el-space) / 4);
+  border: 1px dashed var(--el-color-border);
+  border-radius: var(--el-radius);
+}
+:where(.el-admin-editor .el-column-content) {
+  min-height: 2.5rem;
+}
+:where(.el-admin-editor .el-column-resize) {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: calc(var(--el-space) / -2 - 0.75rem / 2);
+  width: 0.75rem;
+  min-height: 1.5rem;
+  cursor: col-resize;
+  touch-action: none;
+  border-radius: var(--el-radius);
+}
+:where(.el-admin-editor .el-column-resize:hover, .el-admin-editor .el-column-resize:focus-visible) {
+  background: var(--el-color-primary);
+  outline: none;
+}
+:where(.el-admin-editor .el-column:last-child > .el-column-resize) {
+  display: none;
+}

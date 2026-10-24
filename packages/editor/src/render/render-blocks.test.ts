@@ -10,7 +10,11 @@ const text = (value: string, styles: TextStyles = {}): StyledText => ({
   styles,
 });
 const props = { backgroundColor: "default", textColor: "default", textAlignment: "left" } as const;
-const p = (id: string, value: string, children: LessonBlock[] = []): LessonBlock => ({
+const p = (
+  id: string,
+  value: string,
+  children: LessonBlock[] = [],
+): Extract<LessonBlock, { type: "paragraph" }> => ({
   id,
   type: "paragraph",
   props,
@@ -21,7 +25,7 @@ const item = (
   type: "bulletListItem" | "numberedListItem",
   id: string,
   value: string,
-): LessonBlock => ({
+): Extract<LessonBlock, { type: "bulletListItem" | "numberedListItem" }> => ({
   id,
   type,
   props,
