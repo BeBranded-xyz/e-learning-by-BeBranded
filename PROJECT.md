@@ -90,14 +90,26 @@ Last updated: 2026-10-24
 
 ### Design system (projects with a UI)
 
-- **Token source**: CSS custom properties prefixed `--el-*`
-  (`docs/specifications/04-integration.md`, section 6). Package path decided in
-  phase 1.
+- **Token source**: one design file, `elearning.design.ts`, validated by
+  `defineDesign` (`packages/core`); it generates the `--el-*` variables, the
+  shadcn variables of a host shell, and the export theme
+  (`docs/specifications/11-design-system.md`, ADR-0002). The demo's is
+  `apps/demo/elearning.design.ts`.
+- **UI kit**: the module draws its primitives (button, card, badge, alert,
+  progress, fields, table) through `UiKit` (`packages/react`); default kit in
+  plain CSS, theme 1 is the shadcn/ui kit published as a shadcn registry by the
+  demo (`/r/`).
 - **Shared components**: `@bebranded/elearning-react` (learner, phase 1) and `@bebranded/elearning-admin` (back-office, phase 4), which reuses the learner provider, tokens, buttons and loading and error states.
 - **API contract types**: `packages/core/src/api/api.types.ts` (learner) and `admin-api.types.ts` (admin), implemented by the server presenters and consumed by the React and admin clients.
-- **Styling approach**: plain CSS with low specificity (`:where()`), no imposed
-  framework; optional Tailwind preset.
-- **Component catalogue, themes, icons, enforcement**: to be decided in phase 1
+- **Styling approach**: packages ship plain CSS with low specificity
+  (`:where()`), no imposed framework. The demo and the shadcn kit use Tailwind v4
+  and shadcn/ui.
+- **Themes**: light and dark from the design file (`darkMode`: media, class or
+  off).
+- **Icons**: lucide (shadcn's set) in the demo and the shadcn kit; the packages
+  draw no icon font.
+- **Catalogue and enforcement**: the kit contract test suite (every primitive,
+  every kit); the component catalogue with visual regression is B-032.
   (`BACKLOG.md`).
 
 ## 5. Environments & domains
