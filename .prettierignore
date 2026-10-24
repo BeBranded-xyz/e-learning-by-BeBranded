@@ -16,3 +16,4 @@ apps/demo/.next
 apps/demo/next-env.d.ts
 apps/demo/test-results
 apps/demo/playwright-report
+apps/demo/public/r

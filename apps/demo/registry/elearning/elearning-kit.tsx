@@ -207,8 +207,10 @@ function KitCheckbox({ label, checked, onChange, id, disabled }: UiCheckboxProps
   const inputId = useFieldId(id);
   return (
     <div className="flex items-center gap-2">
+      {/* 24px, the WCAG 2.2 minimum target (2.5.8), whatever the spacing around it. */}
       <Checkbox
         id={inputId}
+        className="size-6"
         checked={checked}
         disabled={disabled}
         onCheckedChange={(state) => {
