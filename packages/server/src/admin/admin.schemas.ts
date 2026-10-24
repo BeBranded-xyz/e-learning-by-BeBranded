@@ -117,6 +117,8 @@ export const createVideoUploadBody = z.strictObject({
   lesson_id: lessonIdSchema,
   /** Reserved against storage by the provider; uploads longer than this are refused. */
   max_duration_seconds: z.int().min(1).max(36_000).default(3_600),
+  /** The file's size; large files get a resumable (tus) upload when the provider supports it. */
+  size_bytes: z.int().min(1).max(32_212_254_720).optional(),
 });
 
 export const createAccessRuleBody = z.discriminatedUnion("target_type", [

@@ -7,22 +7,27 @@ const API_BASE = "https://api.cloudflare.com/client/v4/accounts";
 
 export type StreamRequest = {
   readonly method: "GET" | "POST" | "DELETE";
-  /** Path below `/accounts/{account_id}/stream`, starting with `/` or empty. */
+  /** Path below `/accounts/{account_id}/stream`, starting with `/` or `?`, or empty. */
   readonly path: string;
   readonly body?: unknown;
+  readonly headers?: Readonly<Record<string, string>>;
 };
 
-function upstream(code: string, message: string, cause?: unknown): AppError {
+export function upstream(code: string, message: string, cause?: unknown): AppError {
   return new AppError("upstream", code, message, { cause });
 }
 
-async function send(config: CloudflareStreamConfig, request: StreamRequest): Promise<Response> {
+export async function send(
+  config: CloudflareStreamConfig,
+  request: StreamRequest,
+): Promise<Response> {
   const url = `${API_BASE}/${config.accountId}/stream${request.path}`;
   try {
     return await (config.fetch ?? fetch)(url, {
       method: request.method,
       headers: {
         authorization: `Bearer ${config.apiToken}`,
+        ...request.headers,
         ...(request.body === undefined ? {} : { "content-type": "application/json" }),
       },
       ...(request.body === undefined ? {} : { body: JSON.stringify(request.body) }),

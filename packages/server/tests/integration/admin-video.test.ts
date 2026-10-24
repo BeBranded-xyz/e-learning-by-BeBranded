@@ -214,6 +214,24 @@ describe("POST /v1/admin/videos/uploads and the video webhook", () => {
     expect(upload.body).toMatchObject({ error: { code } });
   });
 
+  it("answers a resumable tus upload for a file over 200 MB, a form upload otherwise", async () => {
+    const id = await aVideoLesson();
+
+    const small = await create("videos/uploads", { lesson_id: id, size_bytes: 1_000 });
+    const large = await create("videos/uploads", { lesson_id: id, size_bytes: 209_715_201 });
+    const unknown = await create("videos/uploads", { lesson_id: id });
+
+    expect(small.body.upload_protocol).toBe("form");
+    expect(large.body.upload_protocol).toBe("tus");
+    expect(unknown.body.upload_protocol).toBe("form");
+  });
+
+  it.each([0, 1.5, 32_212_254_721])("refuses a file size of %s", async (size) => {
+    const id = await aVideoLesson();
+
+    expect((await create("videos/uploads", { lesson_id: id, size_bytes: size })).status).toBe(400);
+  });
+
   it("refuses uploads to non-admins and invalid durations", async () => {
     const id = await aVideoLesson();
 

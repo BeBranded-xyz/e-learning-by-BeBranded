@@ -111,7 +111,7 @@ With Supabase in mode A, the `elearning` schema is **not exposed** through Postg
 
 ```ts
 interface VideoProvider {
-  createDirectUpload(input: { maxDurationSeconds: number }): Promise<{ uploadUrl: string; assetId: string }>;
+  createDirectUpload(input: { maxDurationSeconds: number; sizeBytes?: number }): Promise<{ uploadUrl: string; assetId: string; protocol: "form" | "tus" }>;
   getAsset(assetId: string): Promise<{ status: AssetStatus; durationSeconds: number | null; thumbnailUrl: string | null }>;
   createPlaybackToken(assetId: string, opts: { learnerId: string; ttlSeconds: number }): Promise<PlaybackSource>;
   deleteAsset(assetId: string): Promise<void>;
@@ -225,7 +225,7 @@ Content the learner cannot see answers **404, exactly like content that does not
 | GET, PATCH, DELETE | `/v1/admin/lessons/:id` | Stored document and video for the editor; edit or publish (a video lesson only once its video is ready, a quiz lesson once its questions are saved); delete |
 | GET, PUT | `/v1/admin/lessons/:id/quiz` | The quiz editor document, its version and `learners_attempted` (the edit warning); `PUT { document }` validates it and derives the graded definition |
 | GET, POST | `/v1/admin/lessons/:id/quiz/attempt-grants` | List the tenant's grants (`?learner_id=` for one learner); `{ learner_id, extra_attempts }` grants 1 to 100 extra attempts and answers the grant with the learner's `attempts_used` and `attempts_remaining` (spec 07) |
-| POST | `/v1/admin/videos/uploads` | `{ lesson_id, max_duration_seconds }`: a one-time direct upload URL; uploading again replaces the lesson's video |
+| POST | `/v1/admin/videos/uploads` | `{ lesson_id, max_duration_seconds, size_bytes? }`: a one-time direct upload URL and its `upload_protocol` (`form`, or `tus` for files over 200 MB); uploading again replaces the lesson's video |
 | POST | `/v1/admin/reorder` | `{ course_id, chapters: [{ id, lesson_ids }] }`: the full new order of one owned course. Chapters and lessons are renumbered from 0 and lessons may move between chapters of the course, in one transaction. The body must name every chapter and lesson of the course exactly once: an unknown or missing id answers 409 `tree_out_of_date` (reload and retry), a repeated id 400. Answers the course tree. A moved lesson inherits its new chapter's access rules |
 | POST | `/v1/admin/files/uploads` | `{ mime_type, size_bytes }`: `{ file: { id, url, mime_type, size_bytes, created_at }, upload: { url, method: "PUT", headers } }` for an editor image or attachment; 415 `file_type_not_allowed`, 413 `file_too_large` |
 | GET | `/v1/admin/files/:id` | The file with a signed `read_url` and `read_url_expires_at`, for the editor |

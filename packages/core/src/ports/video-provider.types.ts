@@ -21,14 +21,28 @@ export type VideoWebhookEvent = VideoAssetSnapshot & {
 };
 
 /**
+ * How the browser sends the file: one `multipart/form-data` POST (`form`), or
+ * the resumable tus protocol (`tus`, https://tus.io) for large files.
+ */
+export type VideoUploadProtocol = "form" | "tus";
+
+export type DirectUpload = {
+  readonly uploadUrl: string;
+  readonly assetId: string;
+  readonly protocol: VideoUploadProtocol;
+};
+
+/**
  * Video hosting behind one port (spec 04, "3. Video"). `assetId` is always the
  * provider's identifier, never the module's `video_assets.id`.
  */
 export type VideoProvider = {
   readonly name: string;
+  /** With `sizeBytes`, a provider may answer a resumable upload for large files. */
   createDirectUpload(input: {
     readonly maxDurationSeconds: number;
-  }): Promise<{ readonly uploadUrl: string; readonly assetId: string }>;
+    readonly sizeBytes?: number | undefined;
+  }): Promise<DirectUpload>;
   getAsset(assetId: string): Promise<VideoAssetSnapshot>;
   createPlaybackToken(
     assetId: string,
