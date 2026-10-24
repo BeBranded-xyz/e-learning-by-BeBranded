@@ -183,4 +183,17 @@
   :where(.el-admin-editor .el-column:last-child > .el-column-resize) {
     display: none;
   }
+
+  /* The edge where a dragged block would make columns (spec 10); placed by the editor. */
+  :where(.el-column-drop-indicator) {
+    position: fixed;
+    z-index: 10;
+    inline-size: 4px;
+    border-radius: 2px;
+    background: var(--el-color-primary, Highlight);
+    pointer-events: none;
+  }
+  :where(.el-column-drop-indicator[hidden]) {
+    display: none;
+  }
 }
