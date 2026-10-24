@@ -41,6 +41,9 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 
 | ID | Task | Type | Priority | Owner | Link | Added | Notes |
 |---|---|---|---|---|---|---|---|
+| B-078 | Close remaining overdue test gates and schedule pilot-dependent tests | test | P2 | maintainers | `TEST_PLAN.md`, Missing tests below | 2026-10-24 | Explicit inventory replaces obsolete phase-only promises; no absent script is advertised as runnable |
+| B-079 | Skip unknown outbox event types before reserving a claim | bug | P3 | maintainers | `packages/db/src/storage/outbox.queries.ts` | 2026-10-24 | A newer event type can consume a single claim and end this relay pass early; older supported events resume on a subsequent pass. Add a mixed-version regression |
+| B-080 | Refresh native BlockNote dictionaries on an in-place locale switch without losing unsaved editor content | feature | P3 | maintainers | `packages/admin/src/lesson/` | 2026-10-24 | Editor menus use the locale at mount; surrounding product controls switch immediately. Reopening the editor applies the new native dictionary |
 | B-013 | Before the first publish: API Extractor report, publint, @arethetypeswrong/cli, pack listing test, consumer fixture apps from the tarball | test | P1 | maintainers | `modules/library-publishing` | 2026-10-22 | Blocks B-003 |
 | B-014 | Mutation testing with Stryker on changed files (floors in `TEST_PLAN.md`) | test | P2 | maintainers | `TEST_PLAN.md` #4 | 2026-10-22 | |
 | B-015 | CI matrix: Node 22.12 and 24, Linux and macOS | ops | P2 | maintainers | `TEST_PLAN.md` #46 | 2026-10-22 | |
@@ -77,7 +80,14 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 
 | ID | Area | Test to add | Category | Link | Added |
 |---|---|---|---|---|---|
-| | No code yet | Every planned category in `TEST_PLAN.md` starts with its phase | | `TEST_PLAN.md` | 2026-10-22 |
+
+| B-014 | Mutation testing | Stryker against domain/server behavior; enforce mutation floors | Mutation | `TEST_PLAN.md` #4 | 2026-10-24 |
+| B-013 | Package release safety | Public API reports, packed consumer smoke/installation, and previous-version upgrade/rollback fixtures after a versioned baseline exists | Contract, smoke, installation, upgrade | `TEST_PLAN.md` #8, #14, #51–53 | 2026-10-24 |
+| B-015 | Runtime compatibility | Node 22/24 and macOS/Linux CI matrix | OS compatibility | `TEST_PLAN.md` #46 | 2026-10-24 |
+| B-078 | Outstanding security and resilience suites | CodeQL; route fuzz/injection corpus; provider retry contracts; deadlock contention; DST and cooldown boundaries; recorded exploratory session | #23, #28, #33, #37, #42, #49, #58 | `TEST_PLAN.md` | 2026-10-24 |
+| B-078 | Pilot gates | Load/stress/spike/soak, ZAP, UAT and usability with real participants; set dates when pilot is selected; external penetration test before 1.0 | #16–19, #29, #36, #56, #59 | `TEST_PLAN.md`, Q-001 | 2026-10-24 |
+| B-032 | Visual regression | Component stories and screenshot baselines | Visual | `TEST_PLAN.md` #11 | 2026-10-24 |
+| B-036 | Browser matrix | Firefox and WebKit/iOS journeys | Browser/device | `TEST_PLAN.md` #44–45 | 2026-10-24 |
 
 ## Questions / decisions pending
 
@@ -92,6 +102,13 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 |---|---|---|---|
 | | Technical specifications 01–10, repository security baseline | 2026-10-22 | direct commits before branch protection |
 | | AI-Dev-Rules adoption (Claude Code and Codex) | 2026-10-22 | #1 |
+| B-081 | Local E2E preparation builds all workspace packages before Next, preventing stale dist code from invalidating browser verification; French native-editor regression exposed it | 2026-10-24 | this PR |
+| B-073 | React cache and child-state isolation by API base and host session, including cancellation of previous-session requests | 2026-10-24 | this PR |
+| B-074 | Export deadlines and caller cancellation reach images/PDF adapters; browser cleanup and real-work concurrency are regression-tested | 2026-10-24 | this PR |
+| B-075 | Per-delivery outbox leases, bounded handlers and attempt-fenced acknowledgements; two-worker PostgreSQL and stale-claim regressions | 2026-10-24 | this PR |
+| B-076 | Test inventory and branch-protection docs reconciled with implementation; remaining gaps explicitly tracked | 2026-10-24 | this PR |
+| B-077 | AST-based workspace architecture checks and positive/negative fixtures run in lint and the existing CI gate | 2026-10-24 | this PR |
+| | Compact demo toolbar, default learner profile, role/language switches, English/French shell and editor dictionaries, French example course, two attributed real video excerpts | 2026-10-24 | this PR |
 | B-064 | `styles.css` of the React package split by area (`base`, `content`, `video`, `columns`, `export`), imported in the original order; the flattened CSS is identical | 2026-10-24 | this PR |
 | B-063 | Column resize handle named in the editor's language (`createLessonEditorSchema`, en and fr in the back-office) | 2026-10-24 | this PR |
 | B-066 | Back-office download of a single lesson, drafts included, from its lesson page | 2026-10-24 | this PR |

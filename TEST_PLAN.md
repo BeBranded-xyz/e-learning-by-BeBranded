@@ -3,23 +3,28 @@
 > Status of every test category from `docs/reference/testing-catalogue.md`.
 > Every category is **required by default** (`core/testing.mdc`). Status is one of:
 > `active` (tool + command + gate filled in), `planned YYYY-MM-DD` (blocking after
-> that date), or `N/A: <reason>` (must be accepted by a reviewer).
+> that date), `overdue (B-...)` (unimplemented release gate), or `N/A: <reason>` (must be accepted by a reviewer).
 > Gates: `commit` | `pr` | `pre-prod` | `deploy` | `prod`.
 
 Last updated: 2026-10-24
 Owner: BeBranded maintainers
 
-> Specification stage: there is no code yet, so most categories are `planned`
-> for the roadmap phase that introduces the code they test
-> (`docs/specifications/09-roadmap.md`). Phases have no dates and run in
-> order (spec 09, Q13); a planned category becomes blocking when its phase starts.
+> Implementation status: phases 1–4b are implemented. The tables below distinguish
+> active suites from outstanding release gates. **Overdue** means the original
+> implementation milestone has passed; it is a backlog item, not a passing check.
+> Commands are listed only when implemented. Pilot-dependent work remains planned
+> before the pilot; it must be scheduled once the pilot date is known (B-078).
 
 ## Check command
 
 `make check` runs gitleaks (history and working tree), the relative doc link
-check, `git diff --check`, then `pnpm check`: Prettier, ESLint, typecheck,
+check, `git diff --check`, then `pnpm check`: Prettier, ESLint and architecture graph fixtures, typecheck,
 Vitest with coverage floors, knip, and the license allowlist. CI runs the same
 suites as separate jobs (`.github/workflows/ci.yml`) behind one `gate` check.
+
+The local E2E runner builds workspace packages before Next.js because Next resolves
+their `dist` exports. `E2E_SKIP_BUILD=1` is reserved for a build already produced from
+the current sources, as in CI.
 
 ## Coverage and mutation thresholds
 
@@ -39,40 +44,40 @@ config in the same PR. Tests that cannot be written yet are listed in
 | # | Category | Status | Tool | Command | Gate | Notes |
 |---|---|---|---|---|---|---|
 | 1 | Static Analysis | active | Prettier, ESLint (typescript-eslint strict, size limits), tsc strict, knip, gitleaks, doc link check | `make check` | commit | |
-| 2 | Unit Tests | active | Vitest | `pnpm test:unit` | commit | core: access, progress, schemas, events. Other packages join as they land |
+| 2 | Unit Tests | active | Vitest | `pnpm test:unit` | commit | core: access, progress, schemas, events. All nine packages and the demo have suites |
 | 3 | Property-Based Testing | active | fast-check | `pnpm test:unit` | commit | canAccess (child never wider than parent, deny wins, order independence), progress bounds, status monotony |
-| 4 | Mutation Testing | planned phase 1 | Stryker | `pnpm stryker run --incremental` | pr | core and server packages first |
+| 4 | Mutation Testing | overdue (B-014) | Stryker |  | pr | core and server packages first |
 | 5 | Component / Module Tests | active | Vitest + Testing Library (jsdom), fake HTTP boundary | `pnpm test:component` | commit | Catalog, course page, lesson player, My training: loading, empty, error, interactions, cache refresh |
 | 6 | Integration Tests | active | Vitest + Testcontainers (PostgreSQL 14) or `ELEARNING_TEST_DATABASE_URL` | `pnpm test:integration` | commit | Real Postgres, one schema per test file, never mocked |
 | 7 | API Tests | active | Vitest with real Request/Response and PostgreSQL | `pnpm test:integration` | commit | Every learner and admin route, error envelope, status codes (400, 401, 403, 404, 405, 409, 413, 415, 500), headers, request id |
-| 8 | Contract Tests | planned phase 1 | Zod schemas + API report (API Extractor) | `pnpm test:contract` | pr | Public API and HTTP contract |
+| 8 | Contract Tests | overdue (B-013, B-027) | Zod schemas + API report (API Extractor) |  | pr | Public API and HTTP contract |
 | 9 | End-to-End (E2E) Tests | active | Playwright on apps/demo (Chromium, desktop and Pixel 7 viewports), PostgreSQL through Testcontainers | `pnpm test:e2e` | pr | Course completion lesson by lesson, self-enrollment, access per role, drafts hidden, signed-out state, API boundary; video lesson played for real (synthetic ffmpeg stream): completion by watching, skip refused, forged heartbeat truncated, speed capped; quiz passed (lesson and course completed, corrections), failed until the attempts run out (corrections hidden), no answer in any response and forged answers scoring 0, SurveyJS form audited by axe; back-office: only the admin persona opens it, an admin builds a course without code (rule, chapter, text lesson with an uploaded image, true or false quiz, reorder, publish), a learner reads it with the image served by the file storage, and the tracking table and its CSV show the learner. Video upload through the back-office is not driven (B-058) |
 | 10 | UI / Frontend Tests | active | Testing Library, user-event | `pnpm test:component` | commit | Behavior by role and label, never implementation |
 | 11 | Visual Regression Testing | active (exports, spacing) / planned (components, B-032) | pdfjs layout checks on real Chromium PDFs; LibreOffice opens every exported .docx; spacing guards on the module CSS and the demo shell (`spacing.test.ts`) | `pnpm test:integration`, `pnpm --filter @bebranded/elearning-export validate:docx`, `pnpm test:unit` | commit, pr | Exports: heading sizes, column positions, page bounds, page numbers. Spacing: no literal length in a spacing property, no undefined step, no arbitrary Tailwind spacing. Component screenshots come with Storybook (B-032) |
 | 12 | Accessibility Testing | active | axe-core in component tests (including the UI kit contract, run on the default and the shadcn kits: `vitest --project demo`) and @axe-core/playwright in E2E (WCAG 2.0 to 2.2 A and AA), eslint-plugin-jsx-a11y-x | `pnpm test:component`, `pnpm test:e2e` | commit, pr | Every screen of the journeys audited in the real browser |
 | 13 | Regression Testing | active | Vitest | `pnpm test:unit` | commit | Every bug fix starts with a failing test |
-| 14 | Smoke Tests | planned phase 1 | Playwright | `pnpm test:smoke` | pr | Consumer fixture apps from the packed tarball |
+| 14 | Smoke Tests | overdue (B-013) | Playwright |  | pr | Consumer fixture apps from the packed tarball |
 | 15 | Sanity Tests | active | Vitest | `pnpm test:unit` | commit | |
 
 ## Performance Testing
 
 | # | Category | Status | Tool | Command | Gate | Notes |
 |---|---|---|---|---|---|---|
-| 16 | Load Testing | planned phase 5 | k6 on apps/demo |  | pre-prod | Heartbeat, catalog, quiz submission endpoints |
-| 17 | Stress Testing | planned phase 5 | k6 |  | pre-prod |  |
-| 18 | Spike Testing | planned phase 5 | k6 |  | pre-prod | Many learners starting a video at once |
-| 19 | Soak / Endurance Testing | planned phase 5 | k6 |  | pre-prod | Outbox growth, memory |
+| 16 | Load Testing | planned before pilot (B-078) | k6 on apps/demo |  | pre-prod | Heartbeat, catalog, quiz submission endpoints |
+| 17 | Stress Testing | planned before pilot (B-078) | k6 |  | pre-prod |  |
+| 18 | Spike Testing | planned before pilot (B-078) | k6 |  | pre-prod | Many learners starting a video at once |
+| 19 | Soak / Endurance Testing | planned before pilot (B-078) | k6 |  | pre-prod | Outbox growth, memory |
 | 20 | Scalability Testing | N/A: the module runs inside host processes; scaling is the host's. Per-request cost is covered by 16 |  |  |  |  |
 
 ## Reliability Testing
 
 | # | Category | Status | Tool | Command | Gate | Notes |
 |---|---|---|---|---|---|---|
-| 21 | Failure Injection | planned phase 2 | Vitest with fake adapters | `pnpm test:resilience` | pr | Video provider, file storage, event sink down or slow |
-| 22 | Timeout Testing | planned phase 2 | Vitest, fake clock | `pnpm test:resilience` | pr | Provider calls, PDF render timeout |
-| 23 | Retry Testing | active (outbox) / planned phase 2 (providers) | Vitest, injected clock | `pnpm test:integration` | commit | Failed delivery retried after backoff with the same event id; backoff bounds and cap |
+| 21 | Failure Injection | active | Vitest with fake adapters | `pnpm test:unit`, `pnpm test:integration` | pr | Provider, storage and export failures use fake boundaries; relay failures use PostgreSQL |
+| 22 | Timeout Testing | active | Vitest, fake clock | `pnpm test:unit`, `pnpm test:integration` | pr | Export deadlines, caller cancellation, resource cleanup and handler deadlines; fake clocks and controlled adapters |
+| 23 | Retry Testing | active (outbox) / overdue (B-078) (providers) | Vitest, injected clock | `pnpm test:integration` | commit | Failed delivery retried after backoff with the same event id; backoff bounds and cap |
 | 24 | Failover Testing | N/A: no infrastructure owned by the module |  |  |  |  |
-| 25 | Recovery Testing | planned phase 2 | Vitest + Testcontainers | `pnpm test:integration` | pr | Outbox redelivery after crash |
+| 25 | Recovery Testing | active | Vitest + Testcontainers | `pnpm test:integration` | pr | Expired leases reclaimed by another PostgreSQL worker; stale acknowledgements and failures are fenced |
 | 26 | Disaster Recovery Testing | N/A: data lives in the host's or a dedicated database operated by the host |  |  |  |  |
 | 27 | Chaos Engineering | N/A: no running service of our own |  |  |  |  |
 
@@ -80,12 +85,12 @@ config in the same PR. Tests that cannot be written yet are listed in
 
 | # | Category | Status | Tool | Command | Gate | Notes |
 |---|---|---|---|---|---|---|
-| 28 | SAST | planned phase 1 | CodeQL, eslint-plugin-security |  | pr |  |
-| 29 | DAST | planned phase 5 | ZAP baseline on apps/demo |  | pre-prod |  |
+| 28 | SAST | overdue (B-078) | CodeQL, eslint-plugin-security |  | pr |  |
+| 29 | DAST | planned before pilot (B-078) | ZAP baseline on apps/demo |  | pre-prod |  |
 | 30 | Dependency Security Testing | active | Dependabot alerts and updates (npm, actions), pnpm audit, license allowlist | `pnpm audit --audit-level=high && pnpm check:licenses` | pr | |
 | 31 | Authentication Testing | active | Vitest | `pnpm test:integration` | commit | No identity gives 401; invalid identity gives a generic 500; the resolver runs on every request |
 | 32 | Authorization Testing | active | Vitest + Testcontainers | `pnpm test:integration` | commit | Every audience type, deny wins, drafts and archived hidden, child never wider than parent, tenant crossing on reads and admin writes, shared catalog read-only, admin routes refused to non-admins, 404 instead of 403 for hidden content |
-| 33 | Injection Testing | active (content, SQL) / planned phase 1 (handlers) | Vitest, fast-check | `pnpm test:unit` | commit | XSS payloads and fuzzed text through the renderer, hostile links and schemes, CSS values in props, SQL injection through tenant filters. SSRF in exports: phase 4b |
+| 33 | Injection Testing | active (content, SQL) / overdue (B-078) (handlers) | Vitest, fast-check | `pnpm test:unit` | commit | XSS payloads and fuzzed text through the renderer, hostile links and schemes, CSS values in props, SQL injection through tenant filters. Exports never fetch arbitrary URLs; renderers block network access |
 | 34 | Web Security Testing | active (headers, CSRF) / planned (CSP) | Playwright | `pnpm test:e2e` | pr | Cross-origin writes refused, admin routes refused to learners, X-Frame-Options, nosniff, no X-Powered-By. Nonce-based CSP: B-035 |
 | 35 | Secret Scanning | active | gitleaks (CI full history + pre-commit hook), GitHub push protection | `make check` | commit | Workflow `Secret scan`, required check |
 | 36 | Penetration Testing | planned before 1.0.0 | external tester |  | pre-prod |  |
@@ -94,8 +99,8 @@ config in the same PR. Tests that cannot be written yet are listed in
 
 | # | Category | Status | Tool | Command | Gate | Notes |
 |---|---|---|---|---|---|---|
-| 37 | Fuzz Testing | active (documents) / planned phase 1 (routes) | fast-check | `pnpm test:unit` | commit | Arbitrary JSON into `validateLessonDocument` never throws; arbitrary text never yields an executable tag. Route inputs with the server package |
-| 38 | Differential Testing | planned phase 3 | Vitest | `pnpm test:unit` | pr | Editor document → SurveyJS conversion vs reference fixtures |
+| 37 | Fuzz Testing | active (documents) / overdue (B-078) (routes) | fast-check | `pnpm test:unit` | commit | Arbitrary JSON into `validateLessonDocument` never throws; arbitrary text never yields an executable tag. Route inputs with the server package |
+| 38 | Differential Testing | active (reference fixtures) | Vitest | `pnpm test:unit` | pr | Editor document → SurveyJS conversion vs reference fixtures |
 
 ## Database Testing
 
@@ -108,8 +113,8 @@ config in the same PR. Tests that cannot be written yet are listed in
 
 | # | Category | Status | Tool | Command | Gate | Notes |
 |---|---|---|---|---|---|---|
-| 41 | Race Condition Testing | active (enrollment, progress) / planned phase 2 (heartbeats, quizzes) | Vitest + Testcontainers | `pnpm test:integration` | commit | Racing first requests create one enrollment and one course.started; concurrent completions keep counts right; outbox claims never overlap |
-| 42 | Deadlock Testing | planned phase 2 | Testcontainers | `pnpm test:concurrency` | pr | Progress recomputation transactions |
+| 41 | Race Condition Testing | active | Vitest + Testcontainers | `pnpm test:integration` | commit | Racing first requests create one enrollment and one course.started; concurrent completions keep counts right; outbox claims never overlap  Parallel video budgets, quiz attempts/submissions and per-delivery outbox leases |
+| 42 | Deadlock Testing | overdue (B-078) | Testcontainers |  | pr | Progress recomputation transactions |
 | 43 | Idempotency Testing | active | Vitest + Testcontainers | `pnpm test:integration` | commit | start, complete and enroll repeated give the same state and no duplicate event; migrations re-run |
 
 ## Compatibility Testing
@@ -118,46 +123,46 @@ config in the same PR. Tests that cannot be written yet are listed in
 |---|---|---|---|---|---|---|
 | 44 | Browser Testing | active (Chromium) / planned (Firefox, WebKit) | Playwright | `pnpm test:e2e` | pr | B-036 |
 | 45 | Device Testing | active (Pixel 7 emulation on Chromium) / planned (iOS Safari ≥ 16 on WebKit, B-036) | Playwright device emulation | `pnpm test:e2e` | pr | Every journey, the back-office included, on the Pixel 7 profile |
-| 46 | Operating System Testing | planned phase 1 | CI matrix Linux + macOS |  | pr | Node ≥ 22.12 |
+| 46 | Operating System Testing | overdue (B-015) | CI matrix Linux + macOS |  | pr | Node ≥ 22.12 |
 | 47 | Responsive Testing | active | Playwright viewports | `pnpm test:e2e` | pr | Every journey on desktop and mobile; layout (`layout.spec.ts`): no page scrolls sideways, blocks one spacing step apart, fields of an inline form lined up; columns: authoring (slash menu, typing in each column, keyboard resize) and the learner layout side by side on desktop, stacked on mobile; exports downloaded as PDF and Word. Dragging (a drop on a block's edge, between columns, pointer resize, removing a column) on desktop: no drag handle on touch screens |
 
 ## Internationalization
 
 | # | Category | Status | Tool | Command | Gate | Notes |
 |---|---|---|---|---|---|---|
-| 48 | Localization Testing | active | Vitest | `pnpm test:unit` | commit | Every English message has a French one; host overrides; locale fallback; dates in UTC and percentages per locale |
-| 49 | Date / Time Testing | planned phase 1 | Vitest with fixed time zones | `pnpm test:i18n` | pr | Due dates, cooldowns, DST |
+| 48 | Localization Testing | active | Vitest | `pnpm test:unit`, `pnpm exec vitest run --project demo`, `pnpm test:e2e` | commit | Every English message has a French one; host overrides; locale fallback; dates in UTC and percentages per locale  Demo toolbar, locale persistence and role switches in English/French on desktop/mobile |
+| 49 | Date / Time Testing | overdue (B-078) | Vitest with fixed time zones |  | pr | Due dates, cooldowns, DST |
 | 50 | Currency / Number Testing | N/A: the module handles no money; numbers are scores and durations, covered by 2 |  |  |  |  |
 
 ## Deployment Testing
 
 | # | Category | Status | Tool | Command | Gate | Notes |
 |---|---|---|---|---|---|---|
-| 51 | Installation Testing | planned phase 1 | Consumer fixture apps from `pnpm pack` | `pnpm test:consumers` | pr | Per supported Next.js and React major |
-| 52 | Upgrade Testing | planned phase 1 | Testcontainers | `pnpm test:upgrade` | pr | Previous minor's schema and data |
-| 53 | Rollback Testing | planned phase 2 | Testcontainers | `pnpm test:upgrade` | pr | Previous package version against the new additive schema |
+| 51 | Installation Testing | overdue (B-013) | Consumer fixture apps from `pnpm pack` |  | pr | Per supported Next.js and React major |
+| 52 | Upgrade Testing | planned before first versioned release (B-013) | Testcontainers |  | pr | Previous minor's schema and data |
+| 53 | Rollback Testing | planned before first versioned release (B-013) | Testcontainers |  | pr | Previous package version against the new additive schema |
 | 54 | Configuration Testing | active | Vitest | `pnpm test:unit` | commit | createElearning and postgresStorage reject invalid options at startup; defaults documented |
 
 ## Business Testing
 
 | # | Category | Status | Tool | Command | Gate | Notes |
 |---|---|---|---|---|---|---|
-| 55 | Acceptance Testing | planned phase 1 | Playwright on apps/demo | `pnpm test:acceptance` | pre-prod |  |
-| 56 | User Acceptance Testing (UAT) | planned phase 5 | pilot host product |  | pre-prod |  |
-| 57 | Business Logic Testing | planned phase 1 | Vitest | `pnpm test:unit` | commit | Invariants in PROJECT.md section 7 |
+| 55 | Acceptance Testing | active | Playwright on apps/demo | `pnpm test:e2e` | pre-prod |  |
+| 56 | User Acceptance Testing (UAT) | planned before pilot (B-078) | pilot host product |  | pre-prod |  |
+| 57 | Business Logic Testing | active | Vitest | `pnpm test:unit` | commit | Invariants in PROJECT.md section 7 |
 
 ## Human Testing
 
 | # | Category | Status | Tool | Command | Gate | Notes |
 |---|---|---|---|---|---|---|
-| 58 | Exploratory Testing | planned phase 2 | session notes |  | pre-prod | Every release |
+| 58 | Exploratory Testing | overdue (B-078) | session notes |  | pre-prod | Every release |
 | 59 | Usability Testing | planned before the phase 5 pilot (B-059) | sessions with content authors, run by the maintainers |  | pre-prod | Editor and back-office are built; sessions need people and cannot be automated. Every finding becomes a regression test |
 
 ## Production Testing & Monitoring
 
 | # | Category | Status | Tool | Command | Gate | Notes |
 |---|---|---|---|---|---|---|
-| 60 | Error Monitoring | N/A as a service: the host owns monitoring. Logger and onMetric hook calls tested under 2 (planned phase 1) |  |  |  |  |
+| 60 | Error Monitoring | N/A as a service: the host owns monitoring. Logger and onMetric hook calls tested under 2 (overdue (B-078)) |  |  |  |  |
 | 61 | Logging | N/A as a service, see 60. Redaction of sensitive keys tested under 2 |  |  |  |  |
 | 62 | Metrics Monitoring | N/A as a service, see 60 |  |  |  |  |
 | 63 | Distributed Tracing | N/A as a service, see 60 |  |  |  |  |

@@ -1,5 +1,6 @@
 import { PDF_MARGINS, headerFooter } from "./pdf-renderer.js";
 import type { PdfRenderer, PdfRequest } from "./pdf-renderer.js";
+import { withAbortCleanup } from "../cancellation.js";
 
 // The parts of Playwright's API the adapter uses, so the package does not
 // depend on Playwright: the host passes its own `chromium` (playwright-core).
@@ -27,23 +28,25 @@ export type PlaywrightPdfOptions = {
 async function renderIn(browser: PlaywrightBrowser, request: PdfRequest): Promise<Uint8Array> {
   // No script, no network: every request the page would make is refused.
   const context = await browser.newContext({ javaScriptEnabled: false, offline: true });
-  try {
-    await context.route("**/*", (route) => route.abort());
-    const page = await context.newPage();
-    await page.setContent(request.html, { waitUntil: "load", timeout: request.timeoutMs });
-    const pdf = await page.pdf({
-      format: request.pageSize,
-      printBackground: true,
-      preferCSSPageSize: true,
-      displayHeaderFooter: true,
-      margin: PDF_MARGINS,
-      ...headerFooter(request),
-    });
-    // Drivers answer a Node Buffer; the port promises a plain Uint8Array.
-    return new Uint8Array(pdf);
-  } finally {
-    await context.close();
-  }
+  return withAbortCleanup(
+    request.signal,
+    () => context.close(),
+    async () => {
+      await context.route("**/*", (route) => route.abort());
+      const page = await context.newPage();
+      await page.setContent(request.html, { waitUntil: "load", timeout: request.timeoutMs });
+      const pdf = await page.pdf({
+        format: request.pageSize,
+        printBackground: true,
+        preferCSSPageSize: true,
+        displayHeaderFooter: true,
+        margin: PDF_MARGINS,
+        ...headerFooter(request),
+      });
+      // Drivers answer a Node Buffer; the port promises a plain Uint8Array.
+      return new Uint8Array(pdf);
+    },
+  );
 }
 
 /** PDF with Playwright's Chromium (Node and self-hosted servers). */

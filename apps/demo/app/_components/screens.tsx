@@ -10,6 +10,8 @@ import {
 import { ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
 
+import { useDemo } from "@/components/demo-context";
+
 import { Button } from "@/components/ui/button";
 import { elearningKit } from "@/registry/elearning/elearning-kit";
 
@@ -19,8 +21,15 @@ import { design } from "../../elearning.design";
 // Client Components; the pages around them stay Server Components.
 
 function Provider({ children }: { readonly children: ReactNode }) {
+  const { locale, sessionKey } = useDemo();
   return (
-    <ElearningProvider apiBase="/api/elearning" locale="en" design={design} ui={elearningKit}>
+    <ElearningProvider
+      apiBase="/api/elearning"
+      locale={locale}
+      sessionKey={sessionKey}
+      design={design}
+      ui={elearningKit}
+    >
       {children}
     </ElearningProvider>
   );
@@ -49,9 +58,10 @@ export function HomeScreen() {
 }
 
 export function CourseScreen({ slug }: { readonly slug: string }) {
+  const { messages } = useDemo();
   return (
     <Provider>
-      <BackLink href="/">All training</BackLink>
+      <BackLink href="/">{messages.allTraining}</BackLink>
       <CoursePage slug={slug} lessonHref={(lesson) => `/training/${slug}/${lesson.id}`} />
     </Provider>
   );
@@ -64,9 +74,10 @@ export function LessonScreen({
   readonly slug: string;
   readonly lessonId: string;
 }) {
+  const { messages } = useDemo();
   return (
     <Provider>
-      <BackLink href={`/training/${slug}`}>Back to the course</BackLink>
+      <BackLink href={`/training/${slug}`}>{messages.backToCourse}</BackLink>
       <LessonPlayer lessonId={lessonId} />
     </Provider>
   );

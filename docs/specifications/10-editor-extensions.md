@@ -163,6 +163,14 @@ flowchart LR
 2. renders Word with `docx`, or the HTML of `renderExportHtml` through a `PdfRenderer`;
 3. bounds the work: a 30 s deadline (`export_timeout`, 502), 2 renders at once and 8 waiting, then `export_busy` (429).
 
+The deadline includes queue time and image loading. Caller cancellation and
+timeout propagate through `loadImage(fileId, signal)`, `FileStorage.read(key,
+{ signal })` and the PDF renderer. Browser adapters close the current context
+or page and await cleanup. The response may time out before an uncooperative
+host adapter finishes, but its concurrency slot stays occupied until the actual
+work settles. Word generation cannot be interrupted inside the third-party
+serializer; it also keeps its slot until completion.
+
 PDF adapters receive the host's own browser library through a small structural interface, so the package bundles no browser and depends on none: `playwrightPdf` (playwright-core), `puppeteerPdf` (puppeteer-core with @sparticuz/chromium, or @cloudflare/puppeteer) and `gotenbergPdf` (HTTP). Playwright opens a context with JavaScript disabled, offline, and every route aborted; Puppeteer disables JavaScript and aborts every request except inlined `data:` pictures. Headers carry the title and footers the export date and page numbers. Word: Title and Heading styles (navigation pane, and a table of contents field in course exports), Word numbering with one instance per numbered list, repeated table header rows, callouts as one shaded cell with a colored border, the module's own Quote and Code styles; Word cannot embed WebP, so those images become a link to the lesson.
 
 ### Block mapping

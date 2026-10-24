@@ -1,6 +1,7 @@
 import type { DomainEvent, PendingEvent } from "@bebranded/elearning-core";
 
 import type { ResolvedOptions } from "../config.js";
+import { withHandlerDeadline } from "./handler-deadline.js";
 
 export type DeliveryReport = { readonly delivered: number; readonly failed: number };
 
@@ -22,15 +23,16 @@ function describe(error: unknown): string {
 
 async function deliverOne(event: PendingEvent, options: ResolvedOptions): Promise<boolean> {
   // Handlers are keyed by type; TypeScript cannot correlate `event.type` with the handler's parameter.
-  const handler = options.events[event.type] as ((event: DomainEvent) => Promise<void>) | undefined;
+  const handler = options.events[event.type] as
+    ((event: DomainEvent, context: { signal: AbortSignal }) => Promise<void>) | undefined;
   try {
     // No handler for this type: the event is acknowledged, nobody listens to it.
-    if (handler !== undefined) await handler(event);
-    await options.storage.outbox.markEventDelivered(event.id, options.clock());
+    if (handler !== undefined) await withHandlerDeadline((signal) => handler(event, { signal }));
+    await options.storage.outbox.markEventDelivered(event, options.clock());
     return true;
   } catch (error) {
     const nextAttempt = new Date(options.clock().getTime() + nextAttemptDelay(event.attempts));
-    await options.storage.outbox.markEventFailed(event.id, describe(error), nextAttempt);
+    await options.storage.outbox.markEventFailed(event, describe(error), nextAttempt);
     options.logger.warn("event delivery failed", {
       eventId: event.id,
       type: event.type,
@@ -46,15 +48,18 @@ async function deliverOne(event: PendingEvent, options: ResolvedOptions): Promis
  * Events are delivered in order, one at a time.
  */
 export async function deliverEvents(options: ResolvedOptions, limit = 50): Promise<DeliveryReport> {
-  const now = options.clock();
-  const events = await options.storage.outbox.claimPendingEvents(
-    limit,
-    now,
-    new Date(now.getTime() + LEASE_MS),
-  );
   let delivered = 0;
-  for (const event of events) {
+  let failed = 0;
+  for (let index = 0; index < limit; index += 1) {
+    const now = options.clock();
+    const [event] = await options.storage.outbox.claimPendingEvents(
+      1,
+      now,
+      new Date(now.getTime() + LEASE_MS),
+    );
+    if (event === undefined) break;
     if (await deliverOne(event, options)) delivered += 1;
+    else failed += 1;
   }
-  return { delivered, failed: events.length - delivered };
+  return { delivered, failed };
 }

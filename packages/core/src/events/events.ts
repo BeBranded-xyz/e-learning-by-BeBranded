@@ -74,5 +74,8 @@ export function parseEventPayload<T extends EventType>(type: T, payload: unknown
 
 /** Host handlers, keyed by event type. Handlers must be idempotent (`event.id`). */
 export type EventHandlers = {
-  readonly [K in EventType]?: (event: DomainEvent<K>) => Promise<void>;
+  readonly [K in EventType]?: (
+    event: DomainEvent<K>,
+    context: { readonly signal: AbortSignal },
+  ) => Promise<void>;
 };

@@ -49,3 +49,9 @@ import { myKit } from "./my-kit"; // optional: your design system's components (
 The components call the module's API mounted by the host (see
 `@bebranded/elearning-next`); they never hold a secret. Requires React 18.2
 or later. MIT licensed.
+
+For hosts that switch learners or tenants without reloading, pass
+`sessionKey={opaqueSessionScope}` to the provider. Change it on login, logout,
+tenant switches and permission changes. Changing `sessionKey` or `apiBase`
+clears the previous query cache, cancels its requests and resets child state.
+Never use an authentication token as the key. The admin provider accepts it too.

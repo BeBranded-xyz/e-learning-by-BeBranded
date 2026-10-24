@@ -43,6 +43,32 @@ afterAll(async () => {
 });
 
 describe("event outbox", () => {
+  it("ignores an acknowledgement from a worker whose lease was reclaimed", async () => {
+    const event = anEvent();
+    await append(event);
+    await database.storage.outbox.claimPendingEvents(1, later(0), later(60));
+    await database.storage.outbox.claimPendingEvents(1, later(61), later(121));
+
+    await database.storage.outbox.markEventDelivered({ id: event.id, attempts: 1 }, later(62));
+
+    expect(await database.storage.outbox.claimPendingEvents(1, later(122), later(182))).toEqual([
+      { ...event, attempts: 3 },
+    ]);
+  });
+
+  it("ignores a failure from an expired claim without shortening the new lease", async () => {
+    const event = anEvent();
+    await append(event);
+    await database.storage.outbox.claimPendingEvents(1, later(0), later(60));
+    await database.storage.outbox.claimPendingEvents(1, later(61), later(121));
+    await database.storage.outbox.markEventFailed(
+      { id: event.id, attempts: 1 },
+      "stale",
+      later(62),
+    );
+    expect(await database.storage.outbox.claimPendingEvents(1, later(63), later(123))).toEqual([]);
+  });
+
   it("claims due events oldest first, with their payload and attempt count", async () => {
     const first = anEvent(t0, null);
     const second = anEvent(later(1));
@@ -92,7 +118,7 @@ describe("event outbox", () => {
     const event = anEvent();
     await append(event);
     await database.storage.outbox.claimPendingEvents(10, later(0), later(60));
-    await database.storage.outbox.markEventDelivered(event.id, later(1));
+    await database.storage.outbox.markEventDelivered({ id: event.id, attempts: 1 }, later(1));
 
     expect(await database.storage.outbox.claimPendingEvents(10, later(3600), later(3660))).toEqual(
       [],
@@ -103,7 +129,11 @@ describe("event outbox", () => {
     const event = anEvent();
     await append(event);
     await database.storage.outbox.claimPendingEvents(10, later(0), later(60));
-    await database.storage.outbox.markEventFailed(event.id, "x".repeat(5000), later(300));
+    await database.storage.outbox.markEventFailed(
+      { id: event.id, attempts: 1 },
+      "x".repeat(5000),
+      later(300),
+    );
 
     expect(await database.storage.outbox.claimPendingEvents(10, later(299), later(359))).toEqual(
       [],
@@ -120,8 +150,13 @@ describe("event outbox", () => {
   it("does not reschedule an event that was already delivered", async () => {
     const event = anEvent();
     await append(event);
-    await database.storage.outbox.markEventDelivered(event.id, later(1));
-    await database.storage.outbox.markEventFailed(event.id, "late failure", later(0));
+    await database.storage.outbox.claimPendingEvents(1, later(0), later(60));
+    await database.storage.outbox.markEventDelivered({ id: event.id, attempts: 1 }, later(1));
+    await database.storage.outbox.markEventFailed(
+      { id: event.id, attempts: 1 },
+      "late failure",
+      later(0),
+    );
 
     expect(await database.storage.outbox.claimPendingEvents(10, later(10), later(70))).toEqual([]);
   });

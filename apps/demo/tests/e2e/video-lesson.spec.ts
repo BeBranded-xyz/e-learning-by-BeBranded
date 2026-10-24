@@ -4,7 +4,7 @@ import type { Page } from "@playwright/test";
 
 import { expect, expectAccessible, test } from "./fixtures";
 
-const LESSON = "Using a fire extinguisher";
+const LESSON = "Introducing a character";
 
 /** Opens the video lesson and waits until the stream is ready to play. */
 async function openVideoLesson(page: Page): Promise<string> {
@@ -119,7 +119,7 @@ test.describe("video lesson", () => {
   });
 
   test("the demo video route serves only its own files", async ({ request }) => {
-    const playlist = await request.get("/demo-video/video.m3u8");
+    const playlist = await request.get("/demo-video/opening.m3u8");
     const traversal = await request.get("/demo-video/..%2F..%2Fpackage.json");
     const unknown = await request.get("/demo-video/seg99.m4s");
 

@@ -21,7 +21,7 @@ export type DocumentExporter = {
     request: {
       readonly format: ExportFormat;
       /** Reads an uploaded image through the host's FileStorage; null when it is gone. */
-      readonly loadImage: (fileId: FileId) => Promise<Uint8Array | null>;
+      readonly loadImage: (fileId: FileId, signal?: AbortSignal) => Promise<Uint8Array | null>;
       readonly signal?: AbortSignal | undefined;
     },
   ): Promise<ExportedFile>;

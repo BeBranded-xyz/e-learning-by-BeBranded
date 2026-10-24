@@ -82,6 +82,7 @@ test.describe("access rules", () => {
 
   test("signed-out visitors are asked to sign in", async ({ page }) => {
     await page.goto("/");
+    await page.getByRole("combobox", { name: "Demo profile" }).selectOption("signed-out");
 
     await expect(
       page.getByRole("alert").filter({ hasText: "Sign in to see your training." }).first(),
@@ -128,7 +129,7 @@ test("the demo sign-in switches users", async ({ page }) => {
   await page.goto("/sign-in");
   await expectAccessible(page);
 
-  await page.getByRole("button", { name: "Morgan (manager)" }).click();
+  await page.getByRole("combobox", { name: "Demo profile" }).selectOption("manager");
 
   await expect(page.getByRole("link", { name: "Leading a team" })).toBeVisible();
 });

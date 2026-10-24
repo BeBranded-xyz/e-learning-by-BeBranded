@@ -10,7 +10,7 @@
   "scripts": {
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
-    "lint": "eslint . --max-warnings 0",
+    "lint": "eslint . --max-warnings 0 && pnpm check:architecture",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
@@ -22,7 +22,8 @@
     "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test:coverage && pnpm knip && pnpm check:licenses",
     "check:licenses": "pnpm -r --filter './packages/**' licenses list --prod --json | node scripts/check-licenses.mjs",
     "test:component": "vitest run --project component",
-    "test:e2e": "pnpm --filter @bebranded/elearning-demo test:e2e"
+    "test:e2e": "pnpm --filter @bebranded/elearning-demo test:e2e",
+    "check:architecture": "node --test scripts/architecture.test.mjs && node scripts/check-architecture.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "3.0.3",

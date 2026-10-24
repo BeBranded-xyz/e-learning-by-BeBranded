@@ -67,10 +67,11 @@ export async function storeFile(key: string, mimeType: string, body: Uint8Array)
 
 export async function readStoredFile(
   key: string,
+  signal?: AbortSignal,
 ): Promise<{ mimeType: string; body: Buffer } | null> {
   try {
     const meta: unknown = JSON.parse(
-      await readFile(path.join(demoFilesDir(), `${key}.json`), "utf8"),
+      await readFile(path.join(demoFilesDir(), `${key}.json`), { encoding: "utf8", signal }),
     );
     const mimeType =
       typeof meta === "object" &&
@@ -79,8 +80,9 @@ export async function readStoredFile(
       typeof meta.mimeType === "string"
         ? meta.mimeType
         : "application/octet-stream";
-    return { mimeType, body: await readFile(path.join(demoFilesDir(), key)) };
+    return { mimeType, body: await readFile(path.join(demoFilesDir(), key), { signal }) };
   } catch {
+    signal?.throwIfAborted();
     return null;
   }
 }
@@ -96,9 +98,9 @@ export const demoFileStorage: FileStorage = {
   },
   getReadUrl: (key, { ttlSeconds }) => Promise.resolve(signedUrl("get", key, ttlSeconds)),
   // Exports inline images from their bytes (spec 10); a missing file leaves the image out.
-  read: async (key) => {
+  read: async (key, options) => {
     if (!KEY.test(key)) throw new Error("not a demo file key");
-    const stored = await readStoredFile(key);
+    const stored = await readStoredFile(key, options?.signal);
     if (stored === null) throw new Error("demo file not found");
     return new Uint8Array(stored.body);
   },

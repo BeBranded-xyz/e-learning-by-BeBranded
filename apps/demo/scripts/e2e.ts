@@ -44,12 +44,22 @@ function run(command: string, args: string[], env: NodeJS.ProcessEnv): number {
   return spawnSync(command, args, { stdio: "inherit", env }).status ?? 1;
 }
 
+process.env.DEMO_VIDEO_FIXTURE = "1";
 const db = await database();
 let status: number;
 try {
   await prepare(db.url);
   const env = { ...process.env, ELEARNING_DATABASE_URL: db.url };
-  status = process.env.E2E_SKIP_BUILD === "1" ? 0 : run("next", ["build"], env);
+  status = 0;
+  if (process.env.E2E_SKIP_BUILD !== "1") {
+    // Next resolves the published package entries in dist, not Vitest's source condition.
+    status = run(
+      "pnpm",
+      ["--dir", "../..", "exec", "turbo", "run", "build", "--filter=./packages/**"],
+      env,
+    );
+    if (status === 0) status = run("next", ["build"], env);
+  }
   if (status === 0) status = run("playwright", ["test", ...process.argv.slice(2)], env);
 } finally {
   await db.stop();

@@ -14,7 +14,7 @@ RUN corepack enable
 COPY . .
 RUN pnpm install --frozen-lockfile
 RUN pnpm build && pnpm --filter @bebranded/elearning-demo build
-# The synthetic demo video, generated once at build time so the image needs no ffmpeg.
+# Encode the attributed demo excerpts at build time; the runtime needs no ffmpeg.
 RUN cd apps/demo && pnpm exec tsx -e 'import("./scripts/demo-video.ts").then((m) => m.ensureDemoVideo())'
 
 FROM node:24-bookworm-slim@sha256:55fb5f5a527ea2c5c4a95f963e48ef90aa38c7b346054fdc8ee9957a2b55d205

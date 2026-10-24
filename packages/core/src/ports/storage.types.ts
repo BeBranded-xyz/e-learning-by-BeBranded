@@ -161,12 +161,16 @@ export type StorageTransaction = StorageReads & StorageWrites;
 export type EventOutbox = {
   /**
    * Oldest undelivered events due at `now`. Claimed events are leased until
-   * `leaseUntil`, so concurrent workers never deliver the same event twice at
-   * the same time; an unacknowledged event becomes due again after the lease.
+   * `leaseUntil`; an unacknowledged event becomes due again after the lease.
+   * Acknowledgements must include the claim's attempts counter to fence stale workers.
    */
   claimPendingEvents(limit: number, now: Date, leaseUntil: Date): Promise<PendingEvent[]>;
-  markEventDelivered(id: string, at: Date): Promise<void>;
-  markEventFailed(id: string, error: string, nextAttemptAt: Date): Promise<void>;
+  markEventDelivered(claim: Pick<PendingEvent, "id" | "attempts">, at: Date): Promise<void>;
+  markEventFailed(
+    claim: Pick<PendingEvent, "id" | "attempts">,
+    error: string,
+    nextAttemptAt: Date,
+  ): Promise<void>;
 };
 
 export type StorageAdapter = StorageReads & {

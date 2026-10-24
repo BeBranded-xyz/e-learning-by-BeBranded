@@ -40,6 +40,12 @@ export function isPersona(value: string | undefined): value is DemoPersona {
   return value !== undefined && Object.hasOwn(DEMO_PERSONAS, value);
 }
 
+/** First visits start as a learner; explicit signed-out or invalid cookies grant no identity. */
+export function selectedPersona(value: string | undefined): DemoPersona | null {
+  if (value === undefined) return "staff";
+  return isPersona(value) ? value : null;
+}
+
 /**
  * Optional suffix appended to the persona's learner id, so automated tests
  * (and several people sharing one demo) each get a fresh learner.

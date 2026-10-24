@@ -127,7 +127,7 @@ server, outside this public repository (B-067 automates it).
 ### CI/CD and deployment plan
 
 - **Required checks / main branch protection**: ruleset "Protect main": PR
-  required (squash only, threads resolved), required check `gitleaks`, no force
+  required (squash only, threads resolved), required checks `gitleaks` and `All CI checks green`, no force
   push, no deletion.
 - **Deployable units**: each `@bebranded/elearning-*` package (published to
   npm), `apps/docs`. Selection and publishing follow
@@ -166,7 +166,7 @@ server, outside this public repository (B-067 automates it).
 - **Module owners, public APIs, allowed dependency graph**:
   `docs/specifications/02-architecture.md` (package table). `core` depends on
   nothing; adapters implement ports; `react` never imports server packages.
-- **Architecture enforcement**: phase 1 (dependency-cruiser or equivalent).
+- **Architecture enforcement**: `pnpm check:architecture` (TypeScript AST import graph, public entry points and transitive client/server checks), included in lint and CI.
 
 ## 7. Data & source of truth
 
@@ -275,7 +275,7 @@ Core rules always apply.
   `3389e34` is local only). After they merge, run
   `init.sh --dest . --target claude,codex --update` from AI-Dev-Rules `main`
   (`BACKLOG.md` B-001).
-- **Baseline**: no code; `make check` green.
+- **Baseline**: nine implemented packages and the Next.js demo; `make check` covers static analysis, architecture, types, unit/component/integration suites, coverage and licenses. Browser journeys and release gates are tracked in `TEST_PLAN.md`.
 - **Scoped exceptions**:
   - Dependabot instead of Renovate: maintainer decision (2026-10-23). It is
     built into GitHub and needs no organization app.

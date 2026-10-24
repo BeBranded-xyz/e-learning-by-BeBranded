@@ -12,25 +12,18 @@ function GitHubIcon() {
   );
 }
 
-/** "e-learning by BeBranded" with a link to the module's source code. */
-export function SourceLink() {
+/** Icon-only source link, with a localized accessible name. */
+export function SourceLink({ label }: { readonly label: string }) {
   return (
     <a
-      className="inline-flex min-h-11 items-center gap-2 rounded-md px-2 text-sm font-medium text-foreground underline-offset-4 hover:underline"
+      className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
       href={REPOSITORY}
+      aria-label={label}
+      title={label}
       rel="noopener noreferrer"
       target="_blank"
     >
-      {/* The BeBranded name and logo are trademarks of BeBranded, not covered by the MIT license. */}
-      <img
-        className="h-5 w-auto dark:brightness-0 dark:invert"
-        src="/logo-bebranded.svg"
-        alt="BeBranded"
-        width="94"
-        height="20"
-      />
       <GitHubIcon />
-      <span>Source code on GitHub</span>
     </a>
   );
 }

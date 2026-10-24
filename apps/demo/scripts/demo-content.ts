@@ -124,9 +124,24 @@ export const leadershipLesson = [
   paragraph(text("Meet each person on your team one to one.")),
 ];
 
-export const extinguisherNotes = [
+export const animationNotes = [
   heading(2, "What to remember"),
-  bullet("Pull the pin, aim at the base of the fire, squeeze, sweep."),
-  bullet("Keep your back to an exit."),
-  callout("warning", "Never fight a fire that is spreading: leave and raise the alarm."),
+  bullet("Notice how framing and movement introduce the character."),
+  bullet("Watch how light and sound establish the scene."),
+  paragraph(
+    text(
+      "30-second excerpt from Big Buck Bunny. © 2008 Blender Foundation / www.bigbuckbunny.org. CC BY 3.0. Trimmed and re-encoded for this demo.",
+    ),
+  ),
+];
+
+export const frenchWelcome = [
+  heading(2, "Apprendre à votre rythme"),
+  paragraph(
+    text("Explorez une leçon, regardez une vidéo et vérifiez vos connaissances avec un quiz."),
+  ),
+  bullet("Votre progression est enregistrée au fil de la formation."),
+  bullet(
+    "La langue de l’interface peut être changée à tout moment dans la barre de démonstration.",
+  ),
 ];

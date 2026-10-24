@@ -35,11 +35,12 @@ e-learning-by-BeBranded/
 |---------|----------|------------|
 | **core** | Domain types, validation schemas (Zod), pure business rules: progress computation, video segment merging, quiz grading, access-rule evaluation, rich-content validation. Port interfaces (`StorageAdapter`, `VideoProvider`, `IdentityResolver`, `EventSink`, `FileStorage`). | nothing (except Zod) |
 | **db** | Versioned PostgreSQL migrations, `StorageAdapter` implementation (Kysely on Postgres, Supabase-compatible), optional RLS policies, `elearning migrate` CLI. | core |
-| **server** | Framework-agnostic HTTP handlers (learner API and admin API), use-case orchestration, event emission. | core |
+| **server** | Framework-agnostic HTTP handlers (learner API and admin API), use-case orchestration, event emission. | core, editor/server |
 | **video** | `VideoProvider` adapters: Cloudflare Stream (default), Mux, Bunny Stream. Direct upload, signed URLs, encoding webhooks. | core |
 | **editor** | BlockNote integration: the module's block schema (standard blocks plus custom blocks such as callout, video embed and quiz questions), the authoring component, and server-side rendering of lesson content to HTML. | core |
 | **react** | Learner components: `<CourseCatalog>`, `<CoursePage>`, `<LessonPlayer>`, `<LessonContent>`, `<VideoPlayer>`, `<Quiz>`, `<ProgressBar>`. `<ElearningProvider>` (API client, theme, i18n). | core |
 | **admin** | Back-office components: content tree with drag & drop, lesson editor (from `editor`), quiz editor, access-rule management, learner tracking dashboard. | core, editor, react |
+| **export** | Server-side PDF and Word rendering, bounded concurrency, image inlining and cancellation. | core, editor/server |
 | **next** | Turnkey Next.js integration: `createElearningRouteHandler()`, Server Component helpers. A thin layer over `server`. | server |
 
 A Next.js host product usually installs `elearning-next`, `elearning-db`, `elearning-video` and `elearning-react`, plus `elearning-admin` if it has a back-office. Learner pages never load the editor bundle.
@@ -133,3 +134,16 @@ Details in [07 — Quizzes](07-quizzes.md).
 - At startup, the module checks that the schema version matches the code version and fails with an explicit error otherwise.
 - Host products receive updates through Renovate or Dependabot.
 - npm publishing runs from GitHub Actions with **npm provenance** and **trusted publishing** (OIDC, no long-lived npm token stored in the repository).
+
+## Automated boundary checks
+
+`pnpm check:architecture` parses workspace imports with TypeScript, validates the
+package dependency allowlist and declared dependencies, rejects private package
+subpaths and relative cross-package imports, and walks runtime imports transitively
+from client entries. Client code cannot reach Node builtins, server packages or the
+editor server entry point. Type-only host references do not create runtime edges.
+Positive and negative fixtures cover public imports, re-exports, dynamic imports,
+private subpaths and transitive server dependencies. The check runs inside `pnpm lint`
+and therefore in `make check` and the required CI static job. Third-party package
+internals are outside this workspace graph check; bundler and browser tests remain
+necessary.

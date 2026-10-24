@@ -56,6 +56,13 @@ export const { GET, POST, PATCH, PUT, DELETE } = createElearningRouteHandler(ele
 
 Components are Client Components: the page that renders them can stay a Server Component. Links point to the host's own routes through `courseHref` and `lessonHref`.
 
+Hosts that switch identity without a full page reload pass an opaque `sessionKey`
+to `ElearningProvider` (and `ElearningAdminProvider`). It changes on login, logout,
+tenant switches and permission changes. Changing this key or `apiBase` remounts
+the query cache and child state and cancels old queries; late responses cannot
+populate the new session. The key contains no token or personal data. Omitting
+it is supported for hosts whose identity is fixed for the lifetime of the provider.
+
 ```tsx
 // app/training/[courseSlug]/page.tsx
 import { ElearningProvider, CoursePage } from "@bebranded/elearning-react";
@@ -157,6 +164,13 @@ The module emits business events. The host subscribes to them to trigger its own
 
 - Events are written to `event_outbox` **in the same transaction** as the state change, then delivered to the handlers (at least once, with retries and backoff). Host handlers must be **idempotent** (every event has an `id`).
 - Delivery can be in-process (function) or through a signed HTTP webhook (HMAC), depending on configuration.
+- The in-process relay claims one event immediately before delivery with a 60 s
+  lease. A handler receives `{ signal }` as its second argument and has a 30 s
+  deadline; it must propagate cancellation to its I/O. An expired handler is
+  retried with backoff. The storage acknowledgement includes `{ id, attempts }`,
+  so a stale worker cannot overwrite a newer claim. Delivery remains at least
+  once: cancellation cannot undo external side effects, which hosts deduplicate
+  by event id. Custom storage adapters must implement this fencing contract.
 
 ## 6. Branding and theming
 
@@ -244,3 +258,26 @@ Every input is validated with Zod. Every error uses one envelope, `{ "error": { 
 | 415 | `unsupported_media_type`, `file_type_not_allowed` |
 | 500 | `internal_error` |
 | 502 | `export_timeout` |
+
+## Demo shell and localization
+
+The demonstration opens directly as the learner persona. A compact toolbar shows
+“Learning by BeBranded” on the left, role and language selectors, then the
+BeBranded website link and an accessible icon-only GitHub link at the right edge.
+Controls wrap on small screens. The legacy `/sign-in` URL redirects to the catalog.
+Explicit signed-out and invalid persona cookies resolve to no identity.
+
+English and French cover the shell, learner components, back-office and editor.
+The demo follows the browser language on first visit and stores an explicit choice
+in a cookie; locale changes preserve the current route and persona. Host products
+pass their locale to `ElearningProvider` / `AdminProvider`; UI kits and templates
+receive localized labels from those providers. Course content has an independent
+`locale`: changing interface language does not machine-translate authored lessons.
+The seed includes a French course and two locally served, attributed video excerpts
+with the same verified-progress path as provider videos (see the root README).
+
+Validated toolbar screenshots: [desktop](../screenshots/demo-desktop.png) and
+[mobile](../screenshots/demo-mobile.png). The native BlockNote menus use the locale
+at editor creation. An in-place language switch preserves the current unsaved
+document; native menus adopt the new locale when the editor next opens (live
+dictionary replacement is tracked in B-080).

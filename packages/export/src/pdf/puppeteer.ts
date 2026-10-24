@@ -1,5 +1,6 @@
 import { PDF_MARGINS, headerFooter } from "./pdf-renderer.js";
 import type { PdfRenderer, PdfRequest } from "./pdf-renderer.js";
+import { withAbortCleanup } from "../cancellation.js";
 
 // The parts of Puppeteer's API the adapter uses. puppeteer-core with
 // @sparticuz/chromium (serverless) and @cloudflare/puppeteer (Browser
@@ -31,27 +32,29 @@ const allowed = (url: string) => url.startsWith("data:");
 
 async function renderIn(browser: PuppeteerBrowser, request: PdfRequest): Promise<Uint8Array> {
   const page = await browser.newPage();
-  try {
-    await page.setJavaScriptEnabled(false);
-    await page.setRequestInterception(true);
-    page.on("request", (pending) => {
-      void (allowed(pending.url()) ? pending.continue() : pending.abort());
-    });
-    await page.setContent(request.html, { waitUntil: "load", timeout: request.timeoutMs });
-    const pdf = await page.pdf({
-      format: request.pageSize,
-      printBackground: true,
-      preferCSSPageSize: true,
-      displayHeaderFooter: true,
-      margin: PDF_MARGINS,
-      timeout: request.timeoutMs,
-      ...headerFooter(request),
-    });
-    // Drivers answer a Node Buffer; the port promises a plain Uint8Array.
-    return new Uint8Array(pdf);
-  } finally {
-    await page.close();
-  }
+  return withAbortCleanup(
+    request.signal,
+    () => page.close(),
+    async () => {
+      await page.setJavaScriptEnabled(false);
+      await page.setRequestInterception(true);
+      page.on("request", (pending) => {
+        void (allowed(pending.url()) ? pending.continue() : pending.abort());
+      });
+      await page.setContent(request.html, { waitUntil: "load", timeout: request.timeoutMs });
+      const pdf = await page.pdf({
+        format: request.pageSize,
+        printBackground: true,
+        preferCSSPageSize: true,
+        displayHeaderFooter: true,
+        margin: PDF_MARGINS,
+        timeout: request.timeoutMs,
+        ...headerFooter(request),
+      });
+      // Drivers answer a Node Buffer; the port promises a plain Uint8Array.
+      return new Uint8Array(pdf);
+    },
+  );
 }
 
 /** PDF with any Puppeteer-compatible browser (serverless Chromium, Cloudflare Browser Rendering). */

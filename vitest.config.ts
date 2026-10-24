@@ -16,6 +16,8 @@ export default defineConfig({
   resolve: { conditions: [sourceCondition, ...defaultServerConditions] },
   ssr: { resolve: { conditions: [sourceCondition, ...defaultServerConditions] } },
   test: {
+    // Bound browser-emulation memory and contention on developer machines and CI.
+    maxWorkers: 4,
     projects: [
       {
         test: {

@@ -7,8 +7,8 @@ import { chromium } from "playwright-core";
 
 import { design } from "../elearning.design";
 import { demoFileStorage } from "./demo-files";
-import { DEMO_VIDEO_PLAYLIST } from "./demo-video";
-import { LEARNER_SUFFIX_COOKIE, PERSONA_COOKIE, isPersona, learnerFor } from "./demo-users";
+import { demoVideoPlaylist } from "./demo-video";
+import { LEARNER_SUFFIX_COOKIE, PERSONA_COOKIE, selectedPersona, learnerFor } from "./demo-users";
 import { readEnv } from "./env";
 
 function cookie(request: Request, name: string): string | undefined {
@@ -25,17 +25,17 @@ function create(): Elearning {
   return createElearning({
     storage: postgresStorage({ connectionString: env.ELEARNING_DATABASE_URL, maxConnections: 5 }),
     identity: (request) => {
-      const persona = cookie(request, PERSONA_COOKIE);
+      const persona = selectedPersona(cookie(request, PERSONA_COOKIE));
       return Promise.resolve(
-        isPersona(persona) ? learnerFor(persona, cookie(request, LEARNER_SUFFIX_COOKIE)) : null,
+        persona !== null ? learnerFor(persona, cookie(request, LEARNER_SUFFIX_COOKIE)) : null,
       );
     },
-    // The demo has no video account: every video lesson plays the local test pattern.
+    // Attributed video excerpts are served locally; no video-provider account is needed.
     // The demo never receives webhooks, so the secret is random per process.
     // Editor images and attachments go to the local disk behind signed URLs.
     files: demoFileStorage,
     video: fakeVideoProvider({
-      playbackUrl: () => DEMO_VIDEO_PLAYLIST,
+      playbackUrl: demoVideoPlaylist,
       webhookSecret: crypto.randomUUID(),
     }),
     // PDF through the Chromium Playwright installs (`playwright install chromium`), launched
