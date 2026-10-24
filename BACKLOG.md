@@ -17,10 +17,8 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 |---|---|---|---|---|---|---|---|
 | B-038 | Live contract test against a dedicated Cloudflare Stream test account (recorded fixtures only for now) | test | P3 | maintainers | spec 06 | 2026-10-23 | Maintainer decision: simulations first |
 | B-039 | Purge `video_sessions` rows untouched for 24 h (only live sessions need `last_seq`), as a scheduled function the host triggers; add to the data lifecycle inventory | ops | P2 | maintainers | `modules/data-lifecycle`, spec 03 | 2026-10-23 | One row per player load; cascades with lesson progress meanwhile |
-| B-041 | Back-office warning when a published video has no captions (spec 06, "Accessibility"); `VideoPlayer` relies on provider HLS subtitles or `video.captions` | feature | P2 | maintainers | spec 06, phase 4 | 2026-10-23 | Linked from the `media-has-caption` suppression in `VideoPlayer.tsx` |
 | B-042 | Refresh an expired playback URL mid-session (sessions longer than the video + 15 min): refetch the lesson and swap the source at the current position | feature | P3 | maintainers | spec 06 | 2026-10-23 | `VideoPlayer` keeps its first URL |
 | B-043 | Bundle budget check for `@bebranded/elearning-react` (30 kB gzip, excluding hls.js), so a static import of hls.js would fail CI | test | P2 | maintainers | spec 08, "Performance" | 2026-10-23 | hls.js is a dynamic import today |
-| B-046 | Quiz authoring UI in the back-office: slash-menu entries for the question blocks, correct ticks, points and explanation fields, the "N learners have already taken this quiz" warning from `learners_attempted` | feature | P2 | maintainers | spec 07, phase 4 | 2026-10-23 | `quizEditorSchema` and `PUT /admin/lessons/:id/quiz` exist |
 | B-047 | Formatted quiz prompts and options (bold, links, code) instead of plain text, rendered safely in SurveyJS | feature | P3 | maintainers | spec 07, "Authoring" | 2026-10-23 | Formatting is dropped today |
 | B-048 | Add `quiz_attempts` (answers, scores) to the data lifecycle inventory and to `deleteLearnerData` / `exportLearnerData` (B-019) | ops | P2 | maintainers | `modules/data-lifecycle` | 2026-10-23 | Attempts cascade with lesson_progress |
 | B-049 | Recommended rate limit for quiz attempt opening and submission in the `rateLimit` hook (B-028) | feature | P2 | maintainers | spec 08 | 2026-10-23 | Attempt limits and cooldowns already bound grading |
@@ -43,8 +41,7 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | B-018 | Opt-in RLS policies migration for direct Supabase reads, with `can_access` SQL mirroring core, and policy tests (anonymous, owner, other user) | feature | P3 | maintainers | spec 05, "RLS" | 2026-10-23 | Tables currently default-deny for every role but the owner |
 | B-019 | GDPR: `deleteLearnerData`, `exportLearnerData`, retention purge job for inactive learners | feature | P2 | maintainers | spec 08, `modules/data-lifecycle` | 2026-10-23 | Not in the phase 1 roadmap; needed before a production pilot |
 | B-020 | Audit suppression GHSA-vfj7-8cjw-p6xm (braces, dev-only via kysely-codegen) expires 2026-11-22: upgrade when a patched version exists, or re-justify | debt | P2 | maintainers | `pnpm-workspace.yaml` | 2026-10-23 | No patched version published |
-| B-021 | Re-enable `exactOptionalPropertyTypes` in `packages/editor` when BlockNote's types support it | debt | P3 | maintainers | `PROJECT.md` exceptions | 2026-10-23 | Check on every BlockNote upgrade |
-| B-022 | Authoring menu (phase 4): hide heading levels 4 to 6 and media blocks until uploads exist, so authors cannot insert what the validator rejects | feature | P2 | maintainers | spec 08 | 2026-10-23 | |
+| B-021 | Re-enable `exactOptionalPropertyTypes` in `packages/editor` and `packages/admin` when BlockNote's types support it | debt | P3 | maintainers | `PROJECT.md` exceptions | 2026-10-23 | Check on every BlockNote upgrade |
 | B-025 | Cursor pagination for collection routes (`limit`, `next_cursor`); today collections return everything with `next_cursor: null` | feature | P2 | maintainers | `modules/api-design` | 2026-10-23 | Catalogs are small in phase 1 |
 | B-026 | `Idempotency-Key` on admin creates; `ETag` / `If-Match` on admin edits of shared content | feature | P2 | maintainers | `modules/api-design` | 2026-10-23 | Learner actions are idempotent by state already |
 | B-027 | OpenAPI document generated from the Zod schemas, committed and diffed in CI, Spectral lint | feature | P2 | maintainers | `modules/api-design` | 2026-10-23 | |
@@ -88,7 +85,10 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 |---|---|---|---|
 | | Technical specifications 01–10, repository security baseline | 2026-10-22 | direct commits before branch protection |
 | | AI-Dev-Rules adoption (Claude Code and Codex) | 2026-10-22 | #1 |
-| B-040 | Resumable tus uploads for videos over 200 MB (server and Cloudflare adapter; the uploader comes with the back-office) | 2026-10-24 | this PR |
+| B-022 | Authoring menu hides headings 4 to 6, audio and video | 2026-10-24 | this PR |
+| B-041 | Back-office warning for a ready video without captions | 2026-10-24 | this PR |
+| B-046 | Quiz authoring UI: question types in the slash menu, question panel, already-taken warning | 2026-10-24 | this PR |
+| B-040 | Resumable tus uploads for videos over 200 MB (server and Cloudflare adapter #33, browser uploader this PR) | 2026-10-24 | #33, this PR |
 | B-045 | Reports: course and learner tracking, quiz reporting with per-question correct rate, CSV export | 2026-10-24 | #32 |
 | B-044 | Admin grant of extra quiz attempts per learner, append-only grants | 2026-10-24 | #31 |
 | B-051 | Course assignments: storage and `canAssign`, then the admin API with enrollment on the next visit | 2026-10-24 | #26, this PR |

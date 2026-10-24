@@ -265,7 +265,8 @@ Core rules always apply.
     reads (spec 05, "RLS") come in a later migration (`BACKLOG.md` B-018),
     off by default. Confirmed by the maintainer (2026-10-23).
     Owner: maintainers. Review: when B-018 lands.
-  - `exactOptionalPropertyTypes` is off in `packages/editor` only: BlockNote
+  - `exactOptionalPropertyTypes` is off in `packages/editor` and `packages/admin` only
+    (the two packages that type BlockNote editors): BlockNote
     0.56's generic types (optional props such as `heading.isToggleable`) do not
     type-check with it. The editor package keeps every other strict option.
     Owner: maintainers. Review: on each BlockNote upgrade (`BACKLOG.md` B-021).
