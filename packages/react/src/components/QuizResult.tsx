@@ -3,6 +3,7 @@
 import type { ApiQuizAttempt, ApiQuizResult } from "@bebranded/elearning-core";
 
 import { useElearning } from "../provider/context.js";
+import { useUi } from "../ui/kit.js";
 import { correctionViews } from "../quiz/corrections.js";
 
 export type QuizResultProps = {
@@ -41,6 +42,7 @@ function Corrections({ attempt, result }: Omit<QuizResultProps, "onRetry">) {
 /** The graded attempt: score, outcome and, when the lesson allows it, the corrections. */
 export function QuizResult({ attempt, result, onRetry }: QuizResultProps) {
   const { i18n } = useElearning();
+  const { Button } = useUi();
   const percent = i18n.formatPercent(result.score);
   return (
     <section className="el-quiz-result" data-passed={result.passed}>
@@ -57,11 +59,7 @@ export function QuizResult({ attempt, result, onRetry }: QuizResultProps) {
         })}
       </p>
       <Corrections attempt={attempt} result={result} />
-      {onRetry === null ? null : (
-        <button type="button" className="el-button" onClick={onRetry}>
-          {i18n.t("quiz.retry")}
-        </button>
-      )}
+      {onRetry === null ? null : <Button onClick={onRetry}>{i18n.t("quiz.retry")}</Button>}
     </section>
   );
 }

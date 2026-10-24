@@ -134,7 +134,7 @@
 }
 :where(.el-quiz-question-type) {
   font-size: 0.875rem;
-  color: var(--el-color-muted);
+  color: var(--el-color-muted-foreground);
 }
 :where(.el-quiz-choice[data-correct="true"]) {
   font-weight: 600;
@@ -152,7 +152,7 @@
   background: var(--el-color-surface);
 }
 :where(.el-admin-stats dt) {
-  color: var(--el-color-muted);
+  color: var(--el-color-muted-foreground);
   font-size: 0.875rem;
 }
 :where(.el-admin-stats dd) {

@@ -9,8 +9,8 @@
   align-items: center;
   gap: calc(var(--el-space) / 2);
 }
-:where(.el-export-error) {
+/* The error message takes its own line under the buttons. */
+:where(.el-export > [role="alert"]) {
   flex-basis: 100%;
   margin: 0;
-  color: var(--el-color-danger);
 }
