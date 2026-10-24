@@ -35,6 +35,7 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | B-066 | Back-office download of a single lesson (drafts included) from the lesson editor page; admins download the whole course today | feature | P3 | maintainers | spec 10 | 2026-10-24 | Lesson detail payload has no `export_formats` |
 | B-063 | Localize the column resize handle's accessible name ("Resize columns" is English): pass a label from the admin translator into the column block spec | feature | P2 | maintainers | `modules/i18n`, `modules/frontend` | 2026-10-24 | The editor package has no translator |
 | B-064 | Split `packages/react/src/styles.css` (304 lines, over the 300-line limit since phase 3) by area (layout, content, player, course), each imported by `styles.css` as `columns.css` is | debt | P3 | maintainers | `core/code-standards` | 2026-10-24 | Grew by its `@import` only |
+| B-067 | Deploy the public demo automatically after each merge into `main` (CI job, only when `apps/demo` or a package it uses changed), with a smoke test and the previous image kept for rollback | ops | P2 | maintainers | `modules/deployments`, `modules/infra` | 2026-10-24 | Redeployed by hand with a script on the server today |
 | B-001 | Re-run `init.sh --target claude,codex --update` from AI-Dev-Rules `main` once its PRs #1, #2, #3 are merged; commit the new `.ruleset-version` | ops | P1 | maintainers | AI-Dev-Rules #1–#3 | 2026-10-22 | Current install comes from a local integration of those PRs |
 
 ## Next
@@ -85,6 +86,7 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 
 | ID | Question | Who decides | Blocking | Asked on | Link |
 |---|---|---|---|---|---|
+| Q-002 | The public demo lets anyone sign in as the admin persona and edit content or upload files. Reset it on a schedule (database and uploads), put it behind basic auth, or make the back-office read-only there? | Maxime | No | 2026-10-24 | `PROJECT.md` section 5 |
 | Q-001 | Which host product pilots the module? Still undecided on 2026-10-23; the demo app stays the only host | Maxime | Phase 5 | 2026-10-22 | spec 09, Q4 |
 
 ## Done (last 30 days, then prune)
