@@ -74,11 +74,13 @@ test.describe("layout", () => {
     await page.getByRole("link", { name: "Fire safety check" }).click();
     await expect(page.getByRole("heading", { level: 2, name: "Fire safety check" })).toBeVisible();
     await expectNoHorizontalScroll(page);
+    // Each field of an inline form keeps its label above its control, whatever the row wraps to.
     const assign = page.getByRole("form", { name: "Assign" });
-    const field = await assign.getByLabel("Role").boundingBox();
-    const audience = await assign.getByLabel("Audience").boundingBox();
+    const label = await assign.getByText("Role", { exact: true }).boundingBox();
+    const input = await assign.getByLabel("Role").boundingBox();
 
-    expect(Math.round(field?.y ?? 0)).toBe(Math.round(audience?.y ?? -1));
+    expect(Math.round(label?.x ?? 0)).toBe(Math.round(input?.x ?? -1));
+    expect(label?.y ?? 0).toBeLessThan(input?.y ?? -1);
 
     await page.getByRole("link", { name: "Fire safety quiz" }).click();
     await expect(page.getByRole("heading", { level: 2, name: "Fire safety quiz" })).toBeVisible();
