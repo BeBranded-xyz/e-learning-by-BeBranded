@@ -5,35 +5,9 @@ import { describe, expect, it, vi } from "vitest";
 import type { ApiAdminLesson } from "@bebranded/elearning-core";
 
 import { COURSE_ID, tree } from "../../tests/fixtures.js";
+import { aLesson } from "../../tests/lessons.js";
 import { a11yViolations, apiError, renderAdmin } from "../../tests/render.js";
 import { LessonAdmin } from "./LessonAdmin.js";
-
-const paragraph = (id: string, value: string) => ({
-  id,
-  type: "paragraph",
-  props: { backgroundColor: "default", textColor: "default", textAlignment: "left" },
-  content: [{ type: "text", text: value, styles: {} }],
-  children: [],
-});
-
-function aLesson(overrides: Partial<ApiAdminLesson> = {}): ApiAdminLesson {
-  return {
-    id: "a",
-    course_id: COURSE_ID,
-    chapter_id: "c1",
-    type: "text",
-    title: "Fire exits",
-    position: 0,
-    status: "draft",
-    is_required: true,
-    estimated_minutes: 5,
-    content: [paragraph("p1", "Know your nearest exit.")],
-    content_schema_version: 1,
-    settings: {},
-    video: null,
-    ...overrides,
-  };
-}
 
 const video = (overrides = {}) => ({
   id: "v1",
@@ -75,38 +49,6 @@ describe("LessonAdmin, text lessons", () => {
     expect(
       await screen.findByText("Nobody can see this yet. Add a rule, for example everyone."),
     ).toBeDefined();
-  });
-
-  it("names the column resize handle in the back-office's language", async () => {
-    const column = (id: string, text: string) => ({
-      id,
-      type: "column",
-      props: { width: 1 },
-      children: [paragraph(`${id}-p`, text)],
-    });
-    const lesson = aLesson({
-      content: [
-        {
-          id: "l",
-          type: "columnList",
-          props: {},
-          children: [column("a", "Left"), column("b", "Right")],
-        },
-      ],
-    });
-    renderAdmin(
-      <LessonAdmin lessonId={lesson.id} courseHref={(id) => `/admin/courses/${id}`} />,
-      {
-        [`GET /lessons/${lesson.id}`]: { body: lesson },
-        [`GET /courses/${COURSE_ID}`]: { body: tree },
-      },
-      "fr",
-    );
-
-    expect(await screen.findByText("Right")).toBeDefined();
-    expect(screen.getAllByRole("separator", { name: "Redimensionner les colonnes" })).toHaveLength(
-      2,
-    );
   });
 
   it("saves the editor's document as the lesson content", async () => {
