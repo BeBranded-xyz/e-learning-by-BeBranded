@@ -41,7 +41,7 @@ import "@bebranded/elearning-admin/styles.css";
   admins. The server refuses every admin route to a learner whose identity
   has `isAdmin: false` anyway (spec 04).
 - `ElearningAdminProvider` takes the props of `ElearningProvider` (`apiBase`,
-  `locale`, `theme`, `messages`, `fetcher`) plus `adminMessages` to override
+  `locale`, `design`, `ui`, `messages`, `fetcher`) plus `adminMessages` to override
   back-office strings.
 - `roles` suggests the host's roles in the audience fields (spec 05).
 - `LessonAdmin` edits one lesson: settings, then the editor of its type, then

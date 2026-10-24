@@ -45,6 +45,11 @@ export type DesignExportTheme = {
   readonly textColor: string;
   readonly mutedColor: string;
   readonly borderColor: string;
+  /** Quiet backgrounds: callouts, code. */
+  readonly surfaceColor: string;
+  readonly successColor: string;
+  readonly warningColor: string;
+  readonly destructiveColor: string;
   readonly fontFamily: string;
   readonly headingFontFamily: string;
   readonly brandName: string;
@@ -65,6 +70,10 @@ export function designToExportTheme(design: ElearningDesign): DesignExportTheme 
     textColor: hex(colors.foreground),
     mutedColor: hex(colors.mutedForeground),
     borderColor: hex(colors.border),
+    surfaceColor: hex(colors.muted),
+    successColor: hex(colors.success),
+    warningColor: hex(colors.warning),
+    destructiveColor: hex(colors.destructive),
     fontFamily: design.fonts.body,
     headingFontFamily: design.fonts.heading,
     brandName: design.brand.name,

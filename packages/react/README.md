@@ -12,7 +12,10 @@ pnpm add @bebranded/elearning-react
 import { CoursePage, ElearningProvider } from "@bebranded/elearning-react";
 import "@bebranded/elearning-react/styles.css";
 
-<ElearningProvider apiBase="/api/elearning" locale="fr" theme={{ colors: { primary: "#5B3DF5" } }}>
+import design from "./elearning.design"; // one design file: colors, fonts, radius (spec 11)
+import { myKit } from "./my-kit"; // optional: your design system's components (UiKit)
+
+<ElearningProvider apiBase="/api/elearning" locale="fr" design={design} ui={myKit}>
   <CoursePage slug="safety" lessonHref={(lesson) => `/training/safety/${lesson.id}`} />
 </ElearningProvider>;
 ```
