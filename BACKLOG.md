@@ -32,7 +32,6 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | B-061 | Create columns by dragging a block onto another block's left or right edge (spec 10, "Editing behavior"); the slash menu is the only way today | feature | P3 | maintainers | spec 10, ADR-0001 | 2026-10-24 | Needs a drop target on block edges |
 | B-062 | Playwright journeys for the remaining column behaviors: drag a block between columns and out of the list, resize with the pointer, remove a column until the list dissolves | test | P2 | maintainers | spec 10 "Testing", `TEST_PLAN.md` #9, #47 | 2026-10-24 | Creating, typing, keyboard resize and the learner layout are covered (`columns.spec.ts`); the rest by editor tests on a mounted editor |
 | B-065 | Visual regression of exported PDF pages (Playwright screenshots of rendered pages) and validation of .docx files in LibreOffice headless, per spec 10 "Testing" | test | P2 | maintainers | spec 10, `TEST_PLAN.md` #11 | 2026-10-24 | Text extraction and XML structure are tested today |
-| B-066 | Back-office download of a single lesson (drafts included) from the lesson editor page; admins download the whole course today | feature | P3 | maintainers | spec 10 | 2026-10-24 | Lesson detail payload has no `export_formats` |
 | B-064 | Split `packages/react/src/styles.css` (304 lines, over the 300-line limit since phase 3) by area (layout, content, player, course), each imported by `styles.css` as `columns.css` is | debt | P3 | maintainers | `core/code-standards` | 2026-10-24 | Grew by its `@import` only |
 | B-001 | Re-run `init.sh --target claude,codex --update` from AI-Dev-Rules `main` once its PRs #1, #2, #3 are merged; commit the new `.ruleset-version` | ops | P1 | maintainers | AI-Dev-Rules #1–#3 | 2026-10-22 | Current install comes from a local integration of those PRs |
 
@@ -93,6 +92,7 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | | Technical specifications 01–10, repository security baseline | 2026-10-22 | direct commits before branch protection |
 | | AI-Dev-Rules adoption (Claude Code and Codex) | 2026-10-22 | #1 |
 | B-063 | Column resize handle named in the editor's language (`createLessonEditorSchema`, en and fr in the back-office) | 2026-10-24 | this PR |
+| B-066 | Back-office download of a single lesson, drafts included, from its lesson page | 2026-10-24 | this PR |
 | | Export UI: download buttons on course and lesson pages and in the back-office, learner-export setting in course settings, demo exporter (Playwright) and journeys for exports and columns; phase 4b complete | 2026-10-24 | this PR |
 | | Multi-column layout: spike go (ADR-0001), core validation, editor blocks with resize, slash items, learner, HTML and Word rendering; lesson and quiz editor schemas no longer share blocks | 2026-10-24 | this PR |
 | B-022 | Authoring menu hides headings 4 to 6, audio and video | 2026-10-24 | #35 |
