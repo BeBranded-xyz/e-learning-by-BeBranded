@@ -2,6 +2,8 @@ import type { LessonBlock } from "@bebranded/elearning-core";
 
 import { element, escapeHtml } from "./html.js";
 import { renderInline } from "./render-inline.js";
+import { renderFile, renderImage } from "./render-media.js";
+import type { RenderOptions } from "./render-media.js";
 import { renderTable } from "./render-table.js";
 
 type ListType = "bulletListItem" | "numberedListItem" | "checkListItem";
@@ -33,15 +35,16 @@ function blockAttributes(props: object): Record<string, string | undefined> {
   };
 }
 
-function childrenHtml(children: LessonBlock[]): string {
+function childrenHtml(children: LessonBlock[], options: RenderOptions): string {
   return children.length === 0
     ? ""
-    : element("div", { class: "el-block-children" }, renderBlocks(children));
+    : element("div", { class: "el-block-children" }, renderBlocks(children, options));
 }
 
-function renderListItem(block: ListBlock): string {
+function renderListItem(block: ListBlock, options: RenderOptions): string {
   const inner =
-    renderInline(block.content) + (block.children.length > 0 ? renderBlocks(block.children) : "");
+    renderInline(block.content) +
+    (block.children.length > 0 ? renderBlocks(block.children, options) : "");
   if (block.type !== "checkListItem") return element("li", blockAttributes(block.props), inner);
   const box = `<input type="checkbox" disabled${block.props.checked ? " checked" : ""}>`;
   return element(
@@ -51,48 +54,49 @@ function renderListItem(block: ListBlock): string {
   );
 }
 
-function renderList(items: ListBlock[]): string {
+function renderList(items: ListBlock[], options: RenderOptions): string {
   const [first] = items;
   if (first === undefined) return "";
   const { tag, className } = LIST_TAGS[first.type];
   const start = first.type === "numberedListItem" ? first.props.start : undefined;
-  return element(tag, { class: className, start }, items.map(renderListItem).join(""));
+  return element(
+    tag,
+    { class: className, start },
+    items.map((item) => renderListItem(item, options)).join(""),
+  );
 }
 
-function renderHeading(block: Extract<LessonBlock, { type: "heading" }>): string {
+function renderHeading(
+  block: Extract<LessonBlock, { type: "heading" }>,
+  options: RenderOptions,
+): string {
   const heading = element(
     `h${block.props.level}`,
     blockAttributes(block.props),
     renderInline(block.content),
   );
-  if (block.props.isToggleable !== true) return heading + childrenHtml(block.children);
+  if (block.props.isToggleable !== true) return heading + childrenHtml(block.children, options);
   return element(
     "details",
     { class: "el-toggle" },
-    element("summary", {}, heading) + renderBlocks(block.children),
+    element("summary", {}, heading) + renderBlocks(block.children, options),
   );
 }
 
-function renderBlock(block: Exclude<LessonBlock, ListBlock>): string {
+type LeafBlock = Extract<
+  LessonBlock,
+  { type: "codeBlock" | "table" | "divider" | "image" | "file" }
+>;
+
+const LEAF_TYPES: ReadonlySet<string> = new Set(["codeBlock", "table", "divider", "image", "file"]);
+
+function isLeafBlock(block: LessonBlock): block is LeafBlock {
+  return LEAF_TYPES.has(block.type);
+}
+
+/** Blocks without children of their own to render. */
+function renderLeafBlock(block: LeafBlock, options: RenderOptions): string {
   switch (block.type) {
-    case "paragraph":
-      return (
-        element("p", blockAttributes(block.props), renderInline(block.content)) +
-        childrenHtml(block.children)
-      );
-    case "heading":
-      return renderHeading(block);
-    case "toggleListItem":
-      return element(
-        "details",
-        { class: "el-toggle", ...blockAttributes(block.props) },
-        element("summary", {}, renderInline(block.content)) + renderBlocks(block.children),
-      );
-    case "quote":
-      return (
-        element("blockquote", blockAttributes(block.props), renderInline(block.content)) +
-        childrenHtml(block.children)
-      );
     case "codeBlock": {
       const code = escapeHtml(block.content.map((item) => item.text).join(""));
       return element(
@@ -105,6 +109,36 @@ function renderBlock(block: Exclude<LessonBlock, ListBlock>): string {
       return renderTable(block.content);
     case "divider":
       return "<hr>";
+    case "image":
+      return renderImage(block, options);
+    case "file":
+      return renderFile(block, options);
+  }
+}
+
+function renderBlock(
+  block: Exclude<LessonBlock, ListBlock | LeafBlock>,
+  options: RenderOptions,
+): string {
+  switch (block.type) {
+    case "paragraph":
+      return (
+        element("p", blockAttributes(block.props), renderInline(block.content)) +
+        childrenHtml(block.children, options)
+      );
+    case "heading":
+      return renderHeading(block, options);
+    case "toggleListItem":
+      return element(
+        "details",
+        { class: "el-toggle", ...blockAttributes(block.props) },
+        element("summary", {}, renderInline(block.content)) + renderBlocks(block.children, options),
+      );
+    case "quote":
+      return (
+        element("blockquote", blockAttributes(block.props), renderInline(block.content)) +
+        childrenHtml(block.children, options)
+      );
     case "callout":
       return element(
         "div",
@@ -115,13 +149,13 @@ function renderBlock(block: Exclude<LessonBlock, ListBlock>): string {
           ...blockAttributes(block.props),
         },
         element("div", { class: "el-callout-content" }, renderInline(block.content)) +
-          childrenHtml(block.children),
+          childrenHtml(block.children, options),
       );
   }
 }
 
 /** Consecutive list items of the same type form one list, as in BlockNote. */
-export function renderBlocks(blocks: LessonBlock[]): string {
+export function renderBlocks(blocks: LessonBlock[], options: RenderOptions = {}): string {
   let html = "";
   let pending: ListBlock[] = [];
   for (const block of blocks) {
@@ -129,10 +163,10 @@ export function renderBlocks(blocks: LessonBlock[]): string {
       pending.push(block);
       continue;
     }
-    html += renderList(pending);
+    html += renderList(pending, options);
     pending = [];
     if (isListBlock(block)) pending.push(block);
-    else html += renderBlock(block);
+    else html += isLeafBlock(block) ? renderLeafBlock(block, options) : renderBlock(block, options);
   }
-  return html + renderList(pending);
+  return html + renderList(pending, options);
 }

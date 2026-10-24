@@ -1,11 +1,14 @@
 import { z } from "zod";
 
+import { fileIdSchema } from "./ids.js";
 import type { LessonBlock } from "./lesson-document.types.js";
 
 /**
  * The subset of BlockNote JSON that lesson content may contain (spec 08,
  * "Rich content"). Unknown block types, props and fields are rejected.
- * Media blocks (image, file, audio, video) arrive with file uploads in phase 4.
+ * Image and file blocks only point to files uploaded through the module
+ * (`elearning-file:<id>`); audio and video blocks stay rejected (video
+ * lessons carry videos).
  */
 
 export const LESSON_DOCUMENT_LIMITS = {
@@ -40,6 +43,24 @@ export const safeUrlSchema = z
     if (!URL.canParse(value)) return false;
     return (ALLOWED_URL_PROTOCOLS as readonly string[]).includes(new URL(value).protocol);
   }, "Only https, http and mailto links are allowed");
+
+/** How a lesson document points to an uploaded file; resolved to a signed URL when rendered. */
+export const FILE_URL_PREFIX = "elearning-file:";
+
+export const fileUrlSchema = z
+  .string()
+  .max(FILE_URL_PREFIX.length + 36)
+  .refine(
+    (value) =>
+      value.startsWith(FILE_URL_PREFIX) &&
+      fileIdSchema.safeParse(value.slice(FILE_URL_PREFIX.length)).success,
+    "Images and files must be uploaded through the module",
+  );
+
+/** An empty url is a media block whose upload has not finished; it renders nothing. */
+const mediaUrlSchema = z.union([z.literal(""), fileUrlSchema]);
+const fileNameSchema = z.string().max(255);
+const captionSchema = z.string().max(1_000);
 
 const stylesSchema = z.strictObject({
   bold: z.literal(true).optional(),
@@ -141,6 +162,29 @@ export const lessonBlockSchema: z.ZodType<LessonBlock> = z.discriminatedUnion("t
   block("table", { textColor: colorSchema }, tableContentSchema),
   block("divider", {}, z.undefined().optional()),
   block("callout", { ...colorProps, variant: calloutVariantSchema }, inlineContentSchema),
+  block(
+    "image",
+    {
+      textAlignment: alignmentSchema,
+      backgroundColor: colorSchema,
+      name: fileNameSchema,
+      url: mediaUrlSchema,
+      caption: captionSchema,
+      showPreview: z.boolean(),
+      previewWidth: z.int().min(1).max(10_000).optional(),
+    },
+    z.undefined().optional(),
+  ),
+  block(
+    "file",
+    {
+      backgroundColor: colorSchema,
+      name: fileNameSchema,
+      url: mediaUrlSchema,
+      caption: captionSchema,
+    },
+    z.undefined().optional(),
+  ),
 ]);
 
 export const lessonDocumentSchema = z

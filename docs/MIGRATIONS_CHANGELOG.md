@@ -98,4 +98,15 @@ Last updated: 2026-10-24
 - Rollback: documented in header
 - RLS: enabled, no policy (default deny, as every table)
 - Types regenerated: yes
+- PR: #26
+
+## 20261024000200_files
+- Date: 2026-10-24
+- Type: schema
+- Tables: files
+- Summary: images and attachments uploaded from the lesson editor through the host's `FileStorage` port (spec 03, spec 04 section 4). Only the storage key, MIME type, size and uploader are kept; the storage key is unique.
+- Breaking: no
+- Rollback: documented in header
+- RLS: enabled, no policy (default deny, as every table)
+- Types regenerated: yes
 - PR: this PR

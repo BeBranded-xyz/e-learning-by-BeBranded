@@ -9,6 +9,7 @@ export {
   chapterIdSchema,
   courseIdSchema,
   enrollmentIdSchema,
+  fileIdSchema,
   learnerIdSchema,
   lessonIdSchema,
   tenantIdSchema,
@@ -22,6 +23,7 @@ export type {
   ChapterId,
   CourseId,
   EnrollmentId,
+  FileId,
   LearnerId,
   LessonId,
   TenantId,
@@ -59,9 +61,11 @@ export type {
 
 export {
   ALLOWED_URL_PROTOCOLS,
+  FILE_URL_PREFIX,
   LESSON_DOCUMENT_LIMITS,
   calloutVariantSchema,
   colorSchema,
+  fileUrlSchema,
   inlineContentSchema,
   lessonBlockSchema,
   lessonDocumentSchema,
@@ -79,6 +83,7 @@ export type {
   TextStyles,
 } from "./content/lesson-document.types.js";
 export { validateLessonDocument } from "./content/lesson-document.js";
+export { collectFileIds, fileIdFromUrl, fileUrl } from "./content/file-references.js";
 export type { ContentIssue, ContentIssueCode } from "./content/lesson-document.js";
 
 export {
@@ -211,6 +216,13 @@ export type {
   AssignmentStorageWrites,
   CourseAssignment,
 } from "./ports/assignment-storage.types.js";
+
+export type {
+  FileStorage,
+  FileStorageReads,
+  FileStorageWrites,
+  StoredFile,
+} from "./ports/file-storage.types.js";
 
 export type {
   Quiz,

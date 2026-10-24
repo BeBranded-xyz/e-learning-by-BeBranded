@@ -17,6 +17,7 @@ import * as rules from "./access-rules.queries.js";
 import * as assignments from "./assignments.queries.js";
 import { withConflicts } from "./database-errors.js";
 import * as content from "./content.queries.js";
+import * as files from "./files.queries.js";
 import * as lessons from "./lessons.queries.js";
 import * as outbox from "./outbox.queries.js";
 import * as progress from "./progress.queries.js";
@@ -70,6 +71,7 @@ function reads(db: Kysely<DB>): StorageReads {
       assignments.listCourseAssignments(db, scope, courseId),
     listPendingAssignments: (scope, learner) =>
       assignments.listPendingAssignments(db, scope, learner),
+    findFiles: (scope, ids) => files.findFiles(db, scope, ids),
   };
 }
 
@@ -110,6 +112,7 @@ function writes(db: Kysely<DB>): StorageWrites {
     saveCourseAssignment: (scope, assignment) =>
       assignments.saveCourseAssignment(db, scope, assignment),
     deleteCourseAssignment: (scope, id) => assignments.deleteCourseAssignment(db, scope, id),
+    insertFile: (scope, file) => files.insertFile(db, scope, file),
   };
 }
 

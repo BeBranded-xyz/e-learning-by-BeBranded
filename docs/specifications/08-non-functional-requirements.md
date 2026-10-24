@@ -14,7 +14,7 @@ Security is a first-class requirement. The module runs inside other companies' p
   - documents are validated against the module's block schema on write: allowed block types only, no raw HTML block, maximum size and depth;
   - link and media URLs go through a protocol allowlist (`https:`, `http:`, `mailto:`), so `javascript:` and `data:` URLs are rejected;
   - documents are also limited in total JSON size, nesting and table cells, measured iteratively so a hostile document cannot exhaust the stack;
-  - media blocks (image, file, audio, video) are rejected until file uploads exist (phase 4); external image URLs stay rejected after that;
+  - image and file blocks may only point to files uploaded through the module (`elearning-file:<id>`); external and `data:` URLs are rejected, and audio and video blocks stay rejected (video lessons carry videos). When a lesson is rendered, each file is resolved to a short-lived signed URL; a file of another tenant, or a deleted one, renders nothing;
   - server-side rendering escapes all text, and the rendered HTML then goes through an allowlist-based sanitizer (`sanitize-html`, MIT) as defense in depth. Colors and alignment are emitted as data attributes from validated enums, never as inline styles;
   - lesson pages ship a strict **Content Security Policy** recommendation in the integration guide.
 - **Quizzes**: correct answers never leave the server for learners (see [07 — Quizzes](07-quizzes.md#security-correct-answers-never-reach-the-client)).

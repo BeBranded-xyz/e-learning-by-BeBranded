@@ -186,6 +186,25 @@
 :where(.el-callout[data-variant="danger"]) {
   border-color: var(--el-color-danger);
 }
+:where(.el-figure) {
+  margin-block: var(--el-space);
+  margin-inline: 0;
+}
+:where(.el-figure img) {
+  max-inline-size: 100%;
+  block-size: auto;
+  border-radius: var(--el-radius);
+}
+:where(.el-media-caption) {
+  margin-block-start: calc(var(--el-space) / 2);
+  color: var(--el-color-muted);
+}
+:where(.el-file) {
+  margin-block: var(--el-space);
+  padding: var(--el-space);
+  border: 1px solid var(--el-color-border);
+  border-radius: var(--el-radius);
+}
 :where([data-text-alignment="center"]) {
   text-align: center;
 }

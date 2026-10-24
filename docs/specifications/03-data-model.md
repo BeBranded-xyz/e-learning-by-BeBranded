@@ -92,7 +92,7 @@ erDiagram
 
 The quiz options (passing score, attempts, cooldown, time limit, shuffling, corrections) live in the lesson's `settings`.
 
-**`files`**: `id`, `tenant_id`, `storage_key`, `mime_type`, `size_bytes`, `uploaded_by`, `created_at`. Images and attachments uploaded from the editor are stored through the host's `FileStorage` port. Only the key is stored here.
+**`files`**: `id`, `tenant_id`, `storage_key`, `mime_type`, `size_bytes`, `uploaded_by`, `created_at`. Images and attachments uploaded from the editor are stored through the host's `FileStorage` port. Only the key is stored here. The key is unique; the MIME type is lowercase `type/subtype`. Lesson and quiz documents point to a file as `elearning-file:<id>`; a file is readable by the scopes that can read the content (its tenant, plus every tenant for a shared-catalog file).
 
 ### Access
 

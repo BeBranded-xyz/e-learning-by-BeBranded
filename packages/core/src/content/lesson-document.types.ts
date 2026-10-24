@@ -50,6 +50,11 @@ type Block<T extends string, P, C> = {
   children: LessonBlock[];
 };
 
+/** Blocks without inline content (BlockNote's `content: "none"`). */
+type ContentlessBlock<T extends string, P> = Omit<Block<T, P, undefined>, "content"> & {
+  content?: undefined;
+};
+
 export type LessonBlock =
   | Block<"paragraph", TextProps, InlineContent>
   | Block<
@@ -64,7 +69,23 @@ export type LessonBlock =
   | Block<"quote", ColorProps, InlineContent>
   | Block<"codeBlock", { language: string }, PlainContent>
   | Block<"table", { textColor: Color }, TableContent>
-  | (Omit<Block<"divider", Record<string, never>, undefined>, "content"> & { content?: undefined })
-  | Block<"callout", ColorProps & { variant: CalloutVariant }, InlineContent>;
+  | ContentlessBlock<"divider", Record<string, never>>
+  | Block<"callout", ColorProps & { variant: CalloutVariant }, InlineContent>
+  | ContentlessBlock<
+      "image",
+      {
+        textAlignment: TextAlignment;
+        backgroundColor: Color;
+        name: string;
+        url: string;
+        caption: string;
+        showPreview: boolean;
+        previewWidth?: number | undefined;
+      }
+    >
+  | ContentlessBlock<
+      "file",
+      { backgroundColor: Color; name: string; url: string; caption: string }
+    >;
 
 export type LessonDocument = LessonBlock[];
