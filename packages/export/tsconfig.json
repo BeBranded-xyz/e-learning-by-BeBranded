@@ -4,5 +4,5 @@
     "noEmit": true,
     "customConditions": ["@bebranded/source"]
   },
-  "include": ["src", "tests"]
+  "include": ["src", "tests", "scripts"]
 }
