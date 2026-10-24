@@ -5,53 +5,55 @@
  *   import "@bebranded/elearning-react/quiz.css";
  */
 
-:where(.el-quiz-intro, .el-quiz-result, .el-quiz-form) {
-  margin: var(--el-space) 0;
-  padding: var(--el-space);
-  border: 1px solid var(--el-color-border);
-  border-radius: var(--el-radius);
-  background: var(--el-color-surface);
-}
+@layer elearning {
+  :where(.el-quiz-intro, .el-quiz-result, .el-quiz-form) {
+    margin: var(--el-space) 0;
+    padding: var(--el-space);
+    border: 1px solid var(--el-color-border);
+    border-radius: var(--el-radius);
+    background: var(--el-color-surface);
+  }
 
-:where(.el-quiz-rules) {
-  margin: 0 0 var(--el-space);
-  padding-inline-start: calc(var(--el-space) * 1.25);
-}
+  :where(.el-quiz-rules) {
+    margin: 0 0 var(--el-space);
+    padding-inline-start: calc(var(--el-space) * 1.25);
+  }
 
-:where(.el-quiz-passed, .el-quiz-result[data-passed="true"] .el-quiz-score) {
-  color: var(--el-color-success);
-  font-weight: 600;
-}
+  :where(.el-quiz-passed, .el-quiz-result[data-passed="true"] .el-quiz-score) {
+    color: var(--el-color-success);
+    font-weight: 600;
+  }
 
-:where(.el-quiz-result[data-passed="false"] .el-quiz-score) {
-  color: var(--el-color-danger);
-  font-weight: 600;
-}
+  :where(.el-quiz-result[data-passed="false"] .el-quiz-score) {
+    color: var(--el-color-danger);
+    font-weight: 600;
+  }
 
-:where(.el-quiz-notice:empty) {
-  display: none;
-}
+  :where(.el-quiz-notice:empty) {
+    display: none;
+  }
 
-:where(.el-quiz-timer) {
-  margin: 0 0 var(--el-space);
-  font-variant-numeric: tabular-nums;
-  font-weight: 600;
-}
+  :where(.el-quiz-timer) {
+    margin: 0 0 var(--el-space);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
 
-:where(.el-quiz-corrections ol) {
-  padding-inline-start: calc(var(--el-space) * 1.25);
-}
+  :where(.el-quiz-corrections ol) {
+    padding-inline-start: calc(var(--el-space) * 1.25);
+  }
 
-:where(.el-quiz-correction) {
-  margin-bottom: var(--el-space);
-  padding-inline-start: calc(var(--el-space) / 2);
-  border-inline-start: 3px solid var(--el-color-danger);
-}
+  :where(.el-quiz-correction) {
+    margin-bottom: var(--el-space);
+    padding-inline-start: calc(var(--el-space) / 2);
+    border-inline-start: 3px solid var(--el-color-danger);
+  }
 
-:where(.el-quiz-correction[data-correct="true"]) {
-  border-inline-start-color: var(--el-color-success);
-}
+  :where(.el-quiz-correction[data-correct="true"]) {
+    border-inline-start-color: var(--el-color-success);
+  }
 
-:where(.el-quiz-correction-title) {
-  font-weight: 600;
+  :where(.el-quiz-correction-title) {
+    font-weight: 600;
+  }
 }

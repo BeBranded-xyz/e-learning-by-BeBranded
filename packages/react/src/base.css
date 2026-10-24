@@ -3,113 +3,143 @@
  * @bebranded/elearning-react, imported by styles.css. Zero specificity.
  */
 
-:where(.el-root) {
-  /* Defaults when the host passes no design file (spec 11); the design's names. */
-  --el-color-background: #ffffff;
-  --el-color-foreground: #111827;
-  --el-color-card: #f7f7f9;
-  --el-color-card-foreground: #111827;
-  --el-color-primary: #4338ca;
-  --el-color-primary-foreground: #ffffff;
-  --el-color-secondary: #f3f4f6;
-  --el-color-secondary-foreground: #111827;
-  --el-color-muted: #f3f4f6;
-  --el-color-muted-foreground: #4b5563;
-  --el-color-accent: #eef2ff;
-  --el-color-accent-foreground: #312e81;
-  --el-color-destructive: #b91c1c;
-  --el-color-destructive-foreground: #ffffff;
-  --el-color-success: #15803d;
-  --el-color-success-foreground: #ffffff;
-  --el-color-warning: #a16207;
-  --el-color-warning-foreground: #ffffff;
-  --el-color-border: #d1d5db;
-  --el-color-input: #d1d5db;
-  --el-color-ring: #4338ca;
-  --el-color-surface: var(--el-color-card);
-  --el-color-text: var(--el-color-foreground);
-  --el-color-danger: var(--el-color-destructive);
-  --el-radius: 8px;
-  --el-font-family: inherit;
-  --el-font-heading: inherit;
-  --el-font-mono: ui-monospace, monospace;
-  --el-space: 1rem;
-
-  color: var(--el-color-text);
-  background: var(--el-color-background);
-  font-family: var(--el-font-family);
-  line-height: 1.5;
-}
-
-@media (prefers-color-scheme: dark) {
-  :where(.el-root:not(.light, .light *)) {
-    --el-color-background: #111827;
-    --el-color-foreground: #f9fafb;
-    --el-color-card: #1f2937;
-    --el-color-card-foreground: #f9fafb;
-    --el-color-primary: #a5b4fc;
-    --el-color-primary-foreground: #111827;
-    --el-color-secondary: #374151;
-    --el-color-secondary-foreground: #f9fafb;
-    --el-color-muted: #1f2937;
-    --el-color-muted-foreground: #d1d5db;
-    --el-color-accent: #312e81;
-    --el-color-accent-foreground: #eef2ff;
-    --el-color-destructive: #fca5a5;
-    --el-color-destructive-foreground: #111827;
-    --el-color-success: #86efac;
-    --el-color-success-foreground: #111827;
-    --el-color-warning: #fcd34d;
-    --el-color-warning-foreground: #111827;
-    --el-color-border: #4b5563;
-    --el-color-input: #4b5563;
-    --el-color-ring: #a5b4fc;
+@layer elearning {
+  :where(.el-root) {
+    /* Defaults when the host passes no design file (spec 11); the design's names. */
+    --el-color-background: #ffffff;
+    --el-color-foreground: #111827;
+    --el-color-card: #f7f7f9;
+    --el-color-card-foreground: #111827;
+    --el-color-primary: #4338ca;
+    --el-color-primary-foreground: #ffffff;
+    --el-color-secondary: #f3f4f6;
+    --el-color-secondary-foreground: #111827;
+    --el-color-muted: #f3f4f6;
+    --el-color-muted-foreground: #4b5563;
+    --el-color-accent: #eef2ff;
+    --el-color-accent-foreground: #312e81;
+    --el-color-destructive: #b91c1c;
+    --el-color-destructive-foreground: #ffffff;
+    --el-color-success: #15803d;
+    --el-color-success-foreground: #ffffff;
+    --el-color-warning: #a16207;
+    --el-color-warning-foreground: #ffffff;
+    --el-color-border: #d1d5db;
+    --el-color-input: #d1d5db;
+    --el-color-ring: #4338ca;
     --el-color-surface: var(--el-color-card);
     --el-color-text: var(--el-color-foreground);
     --el-color-danger: var(--el-color-destructive);
+    --el-radius: 8px;
+    --el-font-family: inherit;
+    --el-font-heading: inherit;
+    --el-font-mono: ui-monospace, monospace;
+    --el-space: 1rem;
+
+    color: var(--el-color-text);
+    background: var(--el-color-background);
+    font-family: var(--el-font-family);
+    line-height: 1.5;
   }
-}
 
-/* Layout and cards */
-:where(.el-grid) {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
-  gap: var(--el-space);
-  padding: 0;
-  list-style: none;
-}
-:where(.el-card) {
-  height: 100%;
-  padding: var(--el-space);
-  border: 1px solid var(--el-color-border);
-  border-radius: var(--el-radius);
-  background: var(--el-color-surface);
-}
-:where(.el-card-title) {
-  margin: 0 0 0.5rem;
-  font-size: 1.125rem;
-}
-:where(.el-root a) {
-  color: var(--el-color-primary);
-}
-:where(.el-meta, .el-card-due, .el-state) {
-  color: var(--el-color-muted-foreground);
-}
+  @media (prefers-color-scheme: dark) {
+    :where(.el-root:not(.light, .light *)) {
+      --el-color-background: #111827;
+      --el-color-foreground: #f9fafb;
+      --el-color-card: #1f2937;
+      --el-color-card-foreground: #f9fafb;
+      --el-color-primary: #a5b4fc;
+      --el-color-primary-foreground: #111827;
+      --el-color-secondary: #374151;
+      --el-color-secondary-foreground: #f9fafb;
+      --el-color-muted: #1f2937;
+      --el-color-muted-foreground: #d1d5db;
+      --el-color-accent: #312e81;
+      --el-color-accent-foreground: #eef2ff;
+      --el-color-destructive: #fca5a5;
+      --el-color-destructive-foreground: #111827;
+      --el-color-success: #86efac;
+      --el-color-success-foreground: #111827;
+      --el-color-warning: #fcd34d;
+      --el-color-warning-foreground: #111827;
+      --el-color-border: #4b5563;
+      --el-color-input: #4b5563;
+      --el-color-ring: #a5b4fc;
+      --el-color-surface: var(--el-color-card);
+      --el-color-text: var(--el-color-foreground);
+      --el-color-danger: var(--el-color-destructive);
+    }
+  }
 
-/* Visible focus everywhere (WCAG 2.4.7) */
-:where(.el-root :focus-visible) {
-  outline: 3px solid var(--el-color-ring);
-  outline-offset: 2px;
-}
+  /* Layout and cards */
+  :where(.el-grid) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+    gap: var(--el-space);
+    padding: 0;
+    list-style: none;
+  }
+  :where(.el-card) {
+    height: 100%;
+    padding: var(--el-space);
+    border: 1px solid var(--el-color-border);
+    border-radius: var(--el-radius);
+    background: var(--el-color-surface);
+  }
+  :where(.el-card-title) {
+    margin: 0 0 0.5rem;
+    font-size: 1.125rem;
+  }
+  :where(.el-root a) {
+    color: var(--el-color-primary);
+  }
+  :where(.el-meta, .el-card-due, .el-state) {
+    color: var(--el-color-muted-foreground);
+  }
 
-/* Course outline */
-:where(.el-outline-lessons) {
-  padding-left: 1.25rem;
-}
-:where(.el-outline-lesson) {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-  align-items: baseline;
-  padding: 0.25rem 0;
+  /* Visible focus everywhere (WCAG 2.4.7) */
+  :where(.el-root :focus-visible) {
+    outline: 3px solid var(--el-color-ring);
+    outline-offset: 2px;
+  }
+
+  /* Course outline */
+  :where(.el-outline-lessons) {
+    padding-left: 1.25rem;
+  }
+  :where(.el-outline-lesson) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    align-items: baseline;
+    padding: 0.25rem 0;
+  }
+
+  /* Type: the module sets its own scale, so a host's CSS reset changes nothing. */
+  :where(.el-root :is(h1, h2, h3, h4)) {
+    color: var(--el-color-foreground);
+    font-family: var(--el-font-heading);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+  :where(.el-root h1) {
+    margin: 0 0 0.75rem;
+    font-size: 1.875rem;
+  }
+  :where(.el-root h2) {
+    margin: 1.5rem 0 0.75rem;
+    font-size: 1.375rem;
+  }
+  :where(.el-root h3) {
+    margin: 1.25rem 0 0.5rem;
+    font-size: 1.125rem;
+  }
+  :where(.el-root h4) {
+    margin: 1rem 0 0.5rem;
+    font-size: 1rem;
+  }
+  :where(.el-outline-lessons) {
+    list-style: decimal;
+  }
 }

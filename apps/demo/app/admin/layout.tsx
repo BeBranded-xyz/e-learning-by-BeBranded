@@ -14,9 +14,15 @@ export default async function AdminLayout({ children }: { readonly children: Rea
   const persona = (await cookies()).get(PERSONA_COOKIE)?.value;
   const isAdmin = isPersona(persona) && DEMO_PERSONAS[persona].learner.isAdmin;
   return (
-    <>
-      <h1>Back-office</h1>
-      {isAdmin ? children : <p role="alert">Only the training admin can open the back-office.</p>}
-    </>
+    <div className="grid gap-6">
+      <h1 className="text-3xl font-semibold tracking-tight">Back-office</h1>
+      {isAdmin ? (
+        children
+      ) : (
+        <p role="alert" className="text-destructive">
+          Only the training admin can open the back-office.
+        </p>
+      )}
+    </div>
   );
 }

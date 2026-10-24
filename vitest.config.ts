@@ -1,3 +1,5 @@
+import { fileURLToPath } from "node:url";
+
 import { defaultServerConditions } from "vite";
 import { defineConfig } from "vitest/config";
 
@@ -30,6 +32,17 @@ export default defineConfig({
           setupFiles: ["packages/react/tests/setup.ts", "packages/admin/tests/setup.ts"],
           // jsdom with BlockNote editors and axe audits of whole pages: a full parallel run
           // took a page audit past the 5 s default (CourseAdmin, 5.4 s).
+          testTimeout: 15_000,
+        },
+      },
+      {
+        // The demo's shadcn kit and registry (spec 11); `@/` is the demo's root, as in its tsconfig.
+        resolve: { alias: { "@": fileURLToPath(new URL("./apps/demo", import.meta.url)) } },
+        test: {
+          name: "demo",
+          environment: "jsdom",
+          include: ["apps/demo/{registry,lib}/**/*.test.{ts,tsx}"],
+          setupFiles: ["packages/react/tests/setup.ts"],
           testTimeout: 15_000,
         },
       },

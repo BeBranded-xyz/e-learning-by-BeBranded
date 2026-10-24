@@ -33,6 +33,7 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | B-062 | Playwright journeys for the remaining column behaviors: drag a block between columns and out of the list, resize with the pointer, remove a column until the list dissolves | test | P2 | maintainers | spec 10 "Testing", `TEST_PLAN.md` #9, #47 | 2026-10-24 | Creating, typing, keyboard resize and the learner layout are covered (`columns.spec.ts`); the rest by editor tests on a mounted editor |
 | B-066 | Back-office download of a single lesson (drafts included) from the lesson editor page; admins download the whole course today | feature | P3 | maintainers | spec 10 | 2026-10-24 | Lesson detail payload has no `export_formats` |
 | B-067 | Deploy the public demo automatically after each merge into `main` (CI job, only when `apps/demo` or a package it uses changed), with a smoke test and the previous image kept for rollback | ops | P2 | maintainers | `modules/deployments`, `modules/infra` | 2026-10-24 | Redeployed by hand with a script on the server today |
+| B-068 | Nonce the design file's `<style>` elements (the demo layout's and the provider's `nonce` prop) once the nonce-based CSP lands (B-035); shadcn's Progress also sets an inline style | security | P2 | maintainers | spec 08, spec 11 | 2026-10-24 | The demo sends no CSP yet |
 | B-001 | Re-run `init.sh --target claude,codex --update` from AI-Dev-Rules `main` once its PRs #1, #2, #3 are merged; commit the new `.ruleset-version` | ops | P1 | maintainers | AI-Dev-Rules #1–#3 | 2026-10-22 | Current install comes from a local integration of those PRs |
 
 ## Next
@@ -55,13 +56,11 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | B-030 | Size budget in CI for `@bebranded/elearning-react` (size-limit, < 30 kB gzip with TanStack Query) | test | P2 | maintainers | `PROJECT.md` section 12 | 2026-10-23 | Measured by hand in the PR |
 | B-031 | Server Component variants of the catalog, course page and lesson (data fetched on the server, no client JS for text lessons), per spec 08 | feature | P2 | maintainers | spec 08, "Performance" | 2026-10-23 | Phase 1 ships Client Components |
 | B-032 | Storybook (or Ladle) stories for every exported component, with visual regression | test | P2 | maintainers | `modules/frontend`, `TEST_PLAN.md` #11 | 2026-10-23 | |
-| B-033 | Dark mode options (`darkMode: "media" \| "class" \| "off"`) and theme contrast warnings (spec 04, spec 08) | feature | P3 | maintainers | spec 04, section 6 | 2026-10-23 | Planned in spec 11 and ADR-0002 (phase 4c) |
 | B-034 | Upstream to AI-Dev-Rules: the pre-commit hook mistakes `grep -n` (or any `-n`) in a chained command for `git commit -n` and blocks it | debt | P3 | | | 2026-10-23 | Hit while committing a fix |
 | B-035 | Nonce-based Content Security Policy in apps/demo and in the integration guide (spec 08) | feature | P2 | maintainers | spec 08 | 2026-10-23 | Needs Next.js proxy middleware |
 | B-036 | E2E on Firefox and WebKit (iOS Safari ≥ 16 target) | test | P2 | maintainers | `TEST_PLAN.md` #44, #45 | 2026-10-23 | |
 | B-052 | Role and grade assignments do not set a due date on an existing self enrollment; decide whether they should | question | P3 | maintainers | spec 05 | 2026-10-24 | Pending lookup skips enrolled courses |
 | B-003 | Write the delivery plan (packages as units, trusted publishing, one publisher) before adding a release workflow | docs | P2 | maintainers | `modules/library-publishing` | 2026-10-22 | `release.yml` template is manual-only until then |
-| B-004 | Design-system decisions: component catalogue, themes, icon set, enforcement | docs | P2 | maintainers | `PROJECT.md` section 4 | 2026-10-22 | Planned in spec 11 and ADR-0002 (phase 4c) |
 | B-005 | Evaluate the `audit-trail` module for admin actions (content publishing, access rules, assignments) | question | P2 | maintainers | | 2026-10-22 | |
 | B-006 | Evaluate the `data-fetching` module for the React packages | question | P3 | maintainers | | 2026-10-22 | |
 
@@ -95,6 +94,8 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | B-064 | `styles.css` of the React package split by area (`base`, `content`, `video`, `columns`, `export`), imported in the original order; the flattened CSS is identical | 2026-10-24 | this PR |
 | B-063 | Column resize handle named in the editor's language (`createLessonEditorSchema`, en and fr in the back-office) | 2026-10-24 | this PR |
 | B-065 | Export checks: PDF layout read back with pdfjs (found and fixed lesson headings printing smaller than body text), every exported .docx opened by LibreOffice in CI | 2026-10-24 | this PR |
+| B-004 | Design system: one design file (`defineDesign`), UI kits with a contract suite, shadcn/ui as theme 1 (registry), the demo rebuilt with it | 2026-10-24 | #49–#53 |
+| B-033 | Dark mode (`darkMode`: media, class, off) and contrast warnings (`checkDesign`) | 2026-10-24 | #50 |
 | | Export UI: download buttons on course and lesson pages and in the back-office, learner-export setting in course settings, demo exporter (Playwright) and journeys for exports and columns; phase 4b complete | 2026-10-24 | this PR |
 | | Multi-column layout: spike go (ADR-0001), core validation, editor blocks with resize, slash items, learner, HTML and Word rendering; lesson and quiz editor schemas no longer share blocks | 2026-10-24 | this PR |
 | B-022 | Authoring menu hides headings 4 to 6, audio and video | 2026-10-24 | #35 |

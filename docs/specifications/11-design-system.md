@@ -6,7 +6,7 @@ A host adopts the module without looking like a foreign body. **One design file*
 
 - **Codified, not hand-tuned**: whoever takes over or installs the project reads one file, `elearning.design.ts`, and changing it changes every surface.
 - **Graftable**: shadcn/ui is the first kit. Another host plugs its own (MUI, Chakra, an internal kit) without forking the module.
-- **No imposed CSS stack**: the packages still ship plain CSS with `:where()` (spec 04, section 6). Tailwind and Radix are dependencies of the shadcn kit only.
+- **No imposed CSS stack**: the packages still ship plain CSS (spec 04, section 6), every rule in the `elearning` **cascade layer**: any unlayered host CSS and any later layer win over it. A Tailwind host declares the order once, before any CSS, so the module comes after Tailwind's reset and before its utilities: `@layer theme, base, elearning, components, utilities;`. The module sets its own type scale and lesson content flow, so a reset changes nothing. Tailwind and Radix are dependencies of the shadcn kit only.
 - **Accessibility stays in the module**: labels, ARIA attributes, focus order and live regions are decided by the module and passed to the kit, which only draws.
 
 ## The design file
@@ -74,7 +74,7 @@ export default defineDesign({
 
 ## Theme 1: shadcn/ui
 
-The demo publishes a **shadcn registry** at `https://e-learning.bebranded.xyz/r/`, built with `shadcn build` from `apps/demo/registry.json`:
+The demo publishes a **shadcn registry** at `https://e-learning.bebranded.xyz/r/`. `pnpm --filter @bebranded/elearning-demo registry` (part of the demo's build) writes it from `apps/demo/lib/registry/registry.ts` and the design file, in the format `shadcn build` produces, without the CLI's dependencies:
 
 | Item | Type | What it installs |
 |---|---|---|
@@ -83,7 +83,7 @@ The demo publishes a **shadcn registry** at `https://e-learning.bebranded.xyz/r/
 | `elearning-kit` | `registry:lib` | `lib/elearning-kit.tsx`, the `UiKit` drawn with shadcn components; it pulls in `button`, `card`, `badge`, `alert`, `progress`, `input`, `textarea`, `select`, `checkbox`, `label` and `table` |
 | `elearning` | `registry:item` | All three at once |
 
-A shadcn host runs `npx shadcn add https://e-learning.bebranded.xyz/r/elearning.json`, then passes `design` and `ui={elearningKit}` to the provider. Every value in the registry comes from the demo's `elearning.design.ts`; a test checks that the built theme item matches it.
+A shadcn host runs `npx shadcn add https://e-learning.bebranded.xyz/r/elearning.json`, then passes `design` and `ui={elearningKit}` to the provider. Every value in the registry comes from the demo's `elearning.design.ts`; a test checks that the built theme item matches it. The kit and the design file need the `@bebranded/*` packages, so the one-command install works once they are published (B-003); the theme item installs today.
 
 ## The demo
 

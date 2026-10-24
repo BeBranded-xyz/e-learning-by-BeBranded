@@ -38,6 +38,11 @@
     },
     "packages/admin": {
       "project": ["src/**/*.{ts,tsx}", "tests/**/*.{ts,tsx}"]
+    },
+    "apps/demo": {
+      "entry": ["components/ui/*.tsx", "scripts/*.ts"],
+      "project": ["**/*.{ts,tsx}"],
+      "ignoreDependencies": ["tailwindcss", "tw-animate-css"]
     }
   }
 }

@@ -50,3 +50,4 @@ playwright-report/
 
 # Next.js
 next-env.d.ts
+apps/demo/public/r/

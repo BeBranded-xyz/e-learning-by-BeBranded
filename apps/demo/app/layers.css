@@ -1,0 +1,6 @@
+/*
+ * Cascade layer order, declared before any other CSS (spec 11): the module's
+ * styles come after Tailwind's reset and before its utilities, so the shadcn
+ * kit's utility classes always win over the module's defaults.
+ */
+@layer theme, base, elearning, components, utilities;

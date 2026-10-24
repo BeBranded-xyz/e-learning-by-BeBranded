@@ -101,8 +101,8 @@ Last updated: 2026-10-24
   demo (`/r/`).
 - **Shared components**: `@bebranded/elearning-react` (learner, phase 1) and `@bebranded/elearning-admin` (back-office, phase 4), which reuses the learner provider, tokens, buttons and loading and error states.
 - **API contract types**: `packages/core/src/api/api.types.ts` (learner) and `admin-api.types.ts` (admin), implemented by the server presenters and consumed by the React and admin clients.
-- **Styling approach**: packages ship plain CSS with low specificity
-  (`:where()`), no imposed framework. The demo and the shadcn kit use Tailwind v4
+- **Styling approach**: packages ship plain CSS in the `elearning` cascade
+  layer, with low specificity (`:where()`), no imposed framework. The demo and the shadcn kit use Tailwind v4
   and shadcn/ui.
 - **Themes**: light and dark from the design file (`darkMode`: media, class or
   off).

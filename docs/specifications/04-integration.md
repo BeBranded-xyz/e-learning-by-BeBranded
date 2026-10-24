@@ -162,7 +162,7 @@ The module emits business events. The host subscribes to them to trigger its own
 
 One design file (`elearning.design.ts`, validated by `defineDesign`) declares colors in light and dark, fonts, radius and brand, and drives the learner UI, the back-office and the exports. The module draws its buttons, cards, fields, badges, alerts, progress bars and tables through a swappable UI kit; shadcn/ui is the first kit. See [11 — Design system](11-design-system.md).
 
-- **No imposed CSS dependency.** The packages ship plain CSS with low specificity (`:where()`), driven by `--el-*` variables, so the host can override them.
+- **No imposed CSS dependency.** The packages ship plain CSS in the `elearning` cascade layer, with low specificity (`:where()`), driven by `--el-*` variables, so any host CSS wins. A Tailwind host orders the layers: `@layer theme, base, elearning, components, utilities;`.
 - The BlockNote editor and the rendered lesson content are themed with the same variables.
 - **Headless** mode: every component also exposes a hook (`useCourse`, `useLessonPlayer`, `useQuiz`…), so the host can rebuild the UI with its own design system.
 
