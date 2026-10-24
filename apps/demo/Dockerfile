@@ -24,6 +24,8 @@ RUN npx -y playwright-core@1.64.1 install --with-deps chromium \
   && rm -rf /var/lib/apt/lists/* /root/.npm
 WORKDIR /app
 COPY --from=build --chown=node:node /app /app
+# Uploaded files (demo FileStorage): owned by the app user, so a volume mounted here is writable.
+RUN mkdir -p /tmp/elearning-demo-files && chown node:node /tmp/elearning-demo-files
 USER node
 WORKDIR /app/apps/demo
 EXPOSE 3000
