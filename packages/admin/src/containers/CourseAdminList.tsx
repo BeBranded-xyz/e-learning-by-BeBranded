@@ -13,11 +13,12 @@ import { statusTone } from "../components/status-tone.js";
 export type CourseAdminListProps = {
   /** The host's back-office page of a course. */
   readonly courseHref: (course: ApiAdminCourse) => string;
+  readonly createHref?: string;
   readonly onCreated?: ((course: ApiAdminCourse) => void) | undefined;
 };
 
 /** Every course the admin can manage, plus the shared catalog read only, and a creation form. */
-export function CourseAdminList({ courseHref, onCreated }: CourseAdminListProps) {
+export function CourseAdminList({ courseHref, onCreated, createHref }: CourseAdminListProps) {
   const { Badge } = useUi();
   const { t } = useAdmin();
   const courses = useAdminCourses();
@@ -38,7 +39,7 @@ export function CourseAdminList({ courseHref, onCreated }: CourseAdminListProps)
       <p className="el-meta">{t.t("workspace.help")}</p>
       <div className="el-author-toolbar">
         <TextField label={t.t("courses.search")} value={search} onChange={setSearch} />
-        <a className="el-author-create-card" href="#new-course">
+        <a className="el-author-create-card" href={createHref ?? "#new-course"}>
           + {t.t("workspace.new")}
         </a>
       </div>
@@ -62,7 +63,7 @@ export function CourseAdminList({ courseHref, onCreated }: CourseAdminListProps)
           </li>
         ))}
       </ul>
-      <CourseCreateForm onCreated={onCreated} />
+      {createHref ? null : <CourseCreateForm onCreated={onCreated} />}
     </section>
   );
 }

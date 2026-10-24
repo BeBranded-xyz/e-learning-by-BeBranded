@@ -3,6 +3,8 @@
 A **reusable, embeddable e-learning module** for existing applications (ERPs, business web apps, client portals).
 Instead of rebuilding training features in every product, we maintain **one versioned module**. Each host product adds its own branding (colors, typography, theme) and plugs in its own users and roles.
 
+Last updated: 2026-10-25
+
 > **Status: phases 1 (foundations), 2 (video), 3 (quizzes), 4 (back-office) and 4b (editor extensions) done, not published yet.** Text, video and quiz lessons, verified video completion, server-graded quizzes, access rules, assignments, progress, reports, multi-column lessons, PDF and Word export, the learner UI and the back-office work end to end in the demo app. The pilot comes next (see the [roadmap](docs/specifications/09-roadmap.md)).
 
 **Live demo**: https://e-learning.bebranded.xyz (fictional profiles and sample content).
@@ -116,7 +118,11 @@ Existing demo installations should review their earlier sample courses when upda
 
 The demo back-office has a persistent left sidebar, clickable course and lesson
 cards, and separate sections for structure, content, completion, access,
-tracking and preview. Create chapters, add text/video/quiz lessons, edit their
+tracking and preview. The header stays visible; the sidebar and content scroll
+independently within the admin viewport. Create a course at `/admin/courses/new`
+with its initial settings. Chapter secondary actions and lesson creation expand
+on demand, and course language uses a full localized selector. Create chapters,
+add text/video/quiz lessons, edit their
 content and publish through Settings. Access rules control visibility;
 assignments enroll an allowed audience. Course completion can require all
 required lessons or a chosen percentage. Video and quiz settings expose their

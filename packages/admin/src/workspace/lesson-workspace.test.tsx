@@ -36,7 +36,7 @@ describe("lesson workspace", () => {
     expect(screen.getByRole("link", { name: "Back to the course" }).getAttribute("href")).toBe(
       `/courses/${COURSE_ID}`,
     );
-    await userEvent.click(screen.getByRole("button", { name: "Settings" }));
+    await userEvent.click(screen.getByRole("tab", { name: "Settings" }));
     await userEvent.clear(screen.getByLabelText("Title"));
     await userEvent.type(screen.getByLabelText("Title"), "Revised title");
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
@@ -44,11 +44,11 @@ describe("lesson workspace", () => {
     const body = requests.find((item) => item.key === "PATCH /lessons/a")?.body;
     expect(body).toMatchObject({ title: "Revised title" });
     expect(body).not.toHaveProperty("is_required");
-    await userEvent.click(screen.getByRole("button", { name: "Access" }));
+    await userEvent.click(screen.getByRole("tab", { name: "Access" }));
     expect(screen.getByText(/inherit/i)).toBeDefined();
-    await userEvent.click(screen.getByRole("button", { name: "Completion" }));
+    await userEvent.click(screen.getByRole("tab", { name: "Completion" }));
     expect(screen.getByLabelText("Required to complete the course")).toBeDefined();
-    await userEvent.click(screen.getByRole("button", { name: "Preview" }));
+    await userEvent.click(screen.getByRole("tab", { name: "Preview" }));
     await screen.findByText("Saved draft");
   });
 
@@ -69,7 +69,7 @@ describe("lesson workspace", () => {
       replies,
     );
     await screen.findByText("Saved draft");
-    await userEvent.click(screen.getByRole("button", { name: "Content" }));
+    await userEvent.click(screen.getByRole("tab", { name: "Content" }));
     expect(onSectionChange).toHaveBeenCalledWith("content");
   });
 

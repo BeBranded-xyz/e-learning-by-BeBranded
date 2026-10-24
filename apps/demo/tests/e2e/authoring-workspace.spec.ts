@@ -6,7 +6,7 @@ import { addLesson, createVisibleCourse } from "./admin-steps";
 import { expect, expectAccessible, test } from "./fixtures";
 
 const section = async (page: Page, name: string) =>
-  page.getByRole("button", { name, exact: true }).click();
+  page.getByRole("tab", { name, exact: true }).click();
 
 async function videoFixture() {
   const dir = path.join(process.cwd(), ".demo-video-test");

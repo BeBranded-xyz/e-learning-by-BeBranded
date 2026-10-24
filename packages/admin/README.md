@@ -7,6 +7,8 @@ with image and file uploads, the video uploader (resumable above 200 MB),
 the quiz editor, and the reports. Themed with the same `--el-*` CSS variables as
 `@bebranded/elearning-react`, in English and French.
 
+Last updated: 2026-10-25
+
 ```sh
 pnpm add @bebranded/elearning-admin @bebranded/elearning-react @mantine/core @mantine/hooks
 ```
@@ -94,3 +96,19 @@ Preview renders **saved** draft content at desktop or mobile width through
 `GET /v1/admin/lessons/:id/preview`. Save edits and refresh to see changes.
 It uses the learner renderer, signed video playback and a read-only quiz,
 without enrollment, progress, video sessions or quiz attempts.
+
+### Navigation and creation
+
+Set `createHref` on both `CourseAdminList` and `AuthorNavigation` to route
+creation to a dedicated page. Without it, the catalog keeps its inline creation
+form. Mount the exported `CourseCreateForm` with `showSettings` and `onCreated`
+to collect title, slug, summary, language and enrollment mode before redirecting
+to the new draft. Server-rendered creation fields stay disabled until hydration
+attaches their handlers.
+
+Workspace navigation is an ARIA tablist: arrows wrap between tabs, Home/End
+select the first/last, and the selected tab controls its labeled panel.
+Hidden panels preserve edits. Chapter secondary controls are grouped in a named
+disclosure; lesson creation expands when requested. Course language uses a
+stable ISO 639-1 catalog with English/French labels and retains existing
+regional or legacy tags. UI translations remain English and French.

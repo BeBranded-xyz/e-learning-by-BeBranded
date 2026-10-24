@@ -1,5 +1,6 @@
 "use client";
 
+import { WorkspacePanel } from "./WorkspacePanel.js";
 import type { ApiAdminLesson, ApiCourseTree } from "@bebranded/elearning-core";
 import { ExportActions } from "@bebranded/elearning-react";
 import { LessonEditor } from "../lesson/LessonEditor.js";
@@ -16,10 +17,10 @@ type Props = {
 export function LessonEditPanels({ lesson, course, section, onDeleted }: Props) {
   return (
     <>
-      <div className="el-author-panel" hidden={section !== "content"}>
+      <WorkspacePanel scope={lesson.id} section="content" active={section}>
         <LessonEditor lesson={lesson} />
-      </div>
-      <div className="el-author-panel" hidden={section !== "settings"}>
+      </WorkspacePanel>
+      <WorkspacePanel scope={lesson.id} section="settings" active={section}>
         <LessonSettings
           key={lesson.id}
           lesson={lesson}
@@ -27,10 +28,10 @@ export function LessonEditPanels({ lesson, course, section, onDeleted }: Props) 
           showRequired={false}
         />
         <ExportActions kind="lesson" id={lesson.id} formats={course.export_formats} />
-      </div>
-      <div className="el-author-panel" hidden={section !== "completion"}>
+      </WorkspacePanel>
+      <WorkspacePanel scope={lesson.id} section="completion" active={section}>
         <LessonValidation key={lesson.id} lesson={lesson} />
-      </div>
+      </WorkspacePanel>
     </>
   );
 }

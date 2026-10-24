@@ -27,7 +27,7 @@ async function writeColumns(page: Page) {
 
   await page.getByRole("button", { name: "Save the content" }).click();
   await expect(page.getByRole("status").filter({ hasText: "Saved" })).toBeVisible();
-  await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await page.getByRole("tab", { name: "Settings", exact: true }).click();
   await page.getByRole("form", { name: "Layout" }).getByRole("button", { name: "Publish" }).click();
   await expect(page.getByRole("button", { name: "Back to draft" })).toBeVisible();
 }
@@ -44,7 +44,7 @@ test.describe("columns", () => {
     await addLesson(page, "Basics", "Layout", "Text");
     await writeColumns(page);
     await page.goto(courseUrl);
-    await page.getByRole("button", { name: "Settings", exact: true }).click();
+    await page.getByRole("tab", { name: "Settings", exact: true }).click();
     await page.getByRole("form", { name: title }).getByRole("button", { name: "Publish" }).click();
     await expect(page.getByRole("form", { name: title }).getByText("Published")).toBeVisible();
 

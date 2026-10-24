@@ -7,6 +7,7 @@ import { useAdmin } from "../provider/admin-context.js";
 export type AuthorNavigationProps = {
   readonly courseId?: string;
   readonly lessonId?: string;
+  readonly createHref?: string;
   readonly catalogHref: string;
   readonly courseHref: (id: string) => string;
   readonly lessonHref: (id: string) => string;
@@ -67,7 +68,7 @@ export function AuthorNavigation(props: AuthorNavigationProps) {
       <a className="el-author-nav-home" href={props.catalogHref}>
         {t.t("workspace.courses")}
       </a>
-      <a className="el-author-nav-new" href={`${props.catalogHref}#new-course`}>
+      <a className="el-author-nav-new" href={props.createHref ?? `${props.catalogHref}#new-course`}>
         + {t.t("workspace.new")}
       </a>
       {tree.data ? <NavigationOutline course={tree.data} routes={props} /> : null}

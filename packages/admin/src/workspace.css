@@ -126,7 +126,7 @@
     cursor: pointer;
     padding-block: var(--el-space-2);
   }
-  :where(.el-admin-chapter summary::after) {
+  :where(.el-admin-chapter-header::after) {
     content: "⌄";
     margin-inline-start: auto;
   }

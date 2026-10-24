@@ -1,4 +1,5 @@
 "use client";
+import { WorkspacePanel } from "./WorkspacePanel.js";
 import type { ApiCourseTree } from "@bebranded/elearning-core";
 import { ExportActions } from "@bebranded/elearning-react";
 import type { CourseAdminProps } from "../containers/CourseAdmin.js";
@@ -30,25 +31,34 @@ export function CourseWorkspaceView({ tree, section, onSectionChange, routes: pr
         status={tree.status}
         subtitle={`${t.t("workspace.chapters", { count: tree.chapters.length })} · ${t.t("workspace.lessons", { count: lessons.length })}`}
       />
-      <WorkspaceNavigation sections={COURSE_SECTIONS} active={section} onChange={onSectionChange} />
-      <div className="el-author-panel" hidden={section !== "structure"}>
+      <WorkspaceNavigation
+        scope={tree.id}
+        sections={COURSE_SECTIONS}
+        active={section}
+        onChange={onSectionChange}
+      />
+      <WorkspacePanel scope={tree.id} section="structure" active={section}>
         <p className="el-meta">{t.t("workspace.chapterHelp")}</p>
         <ContentTree course={tree} lessonHref={props.lessonHref} />
-      </div>
-      <div className="el-author-panel" hidden={section !== "settings"}>
+      </WorkspacePanel>
+      <WorkspacePanel scope={tree.id} section="settings" active={section}>
         <CourseSettings key={tree.id} course={tree} onDeleted={props.onDeleted} />
         <ExportActions kind="course" id={tree.id} formats={tree.export_formats} />
-      </div>
-      <div className="el-author-panel" hidden={section !== "completion"}>
+      </WorkspacePanel>
+      <WorkspacePanel scope={tree.id} section="completion" active={section}>
         <CompletionSettings key={tree.id} course={tree} />
-      </div>
-      <div className="el-author-panel" hidden={section !== "access"}>
+      </WorkspacePanel>
+      <WorkspacePanel scope={tree.id} section="access" active={section}>
         <CourseAccess course={tree} roles={props.roles} />
-      </div>
-      {section === "tracking" ? (
-        <CourseReport courseId={tree.id} learnerHref={props.learnerHref} />
-      ) : null}
-      {section === "preview" ? <CoursePreview course={tree} /> : null}
+      </WorkspacePanel>
+      <WorkspacePanel scope={tree.id} section="tracking" active={section}>
+        {section === "tracking" ? (
+          <CourseReport courseId={tree.id} learnerHref={props.learnerHref} />
+        ) : null}
+      </WorkspacePanel>
+      <WorkspacePanel scope={tree.id} section="preview" active={section}>
+        {section === "preview" ? <CoursePreview course={tree} /> : null}
+      </WorkspacePanel>
     </article>
   );
 }

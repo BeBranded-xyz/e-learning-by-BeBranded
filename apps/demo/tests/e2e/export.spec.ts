@@ -82,7 +82,7 @@ test.describe("exports", () => {
     await signInAs("admin");
     const courseUrl = await createVisibleCourse(page, title);
 
-    await page.getByRole("button", { name: "Settings", exact: true }).click();
+    await page.getByRole("tab", { name: "Settings", exact: true }).click();
     const word = await downloaded(page, () =>
       page
         .getByRole("group", { name: "Download the course" })
@@ -91,10 +91,10 @@ test.describe("exports", () => {
     );
     expect(await head(word, 2)).toBe("PK");
 
-    await page.getByRole("button", { name: "Structure", exact: true }).click();
+    await page.getByRole("tab", { name: "Structure", exact: true }).click();
     await addLesson(page, "Basics", "Draft notes", "Text");
     await page.getByRole("link", { name: "Draft notes", exact: true }).click();
-    await page.getByRole("button", { name: "Settings", exact: true }).click();
+    await page.getByRole("tab", { name: "Settings", exact: true }).click();
     const lessonPdf = await downloaded(page, () =>
       page
         .getByRole("group", { name: "Download the lesson" })
@@ -104,7 +104,7 @@ test.describe("exports", () => {
     expect(await head(lessonPdf, 5)).toBe("%PDF-");
     await page.goto(courseUrl);
 
-    await page.getByRole("button", { name: "Settings", exact: true }).click();
+    await page.getByRole("tab", { name: "Settings", exact: true }).click();
     const settings = page.getByRole("form", { name: title });
     await settings.getByRole("checkbox", { name: /Learners can download/ }).check();
     await settings.getByRole("button", { name: "Save" }).click();

@@ -62,6 +62,7 @@ export const en = {
   "access.course": "Course audience",
   "access.chapters": "Chapter audiences",
   "access.enrollment": "Enrollment and assignments",
+  "chapter.actions": "Actions for {title}",
   "chapter.rename": "Chapter title",
   "video.notes": "Notes and transcript",
   "video.demoLimit": "Demo uploads: MP4 or WebM, up to 50 MB and 15 minutes.",

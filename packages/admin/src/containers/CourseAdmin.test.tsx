@@ -92,8 +92,7 @@ describe("CourseAdmin", () => {
     const title = await screen.findByLabelText("Title");
     await userEvent.clear(title);
     await userEvent.type(title, "Safety 2026 ");
-    await userEvent.clear(screen.getByLabelText("Language"));
-    await userEvent.type(screen.getByLabelText("Language"), "fr");
+    await userEvent.selectOptions(screen.getByLabelText("Language"), "fr");
     await userEvent.selectOptions(screen.getByLabelText("Who can enroll"), "assignment_only");
     await userEvent.click(screen.getByRole("checkbox", { name: /Learners can download/ }));
     await userEvent.click(
