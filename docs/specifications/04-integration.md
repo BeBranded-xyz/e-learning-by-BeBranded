@@ -2,6 +2,8 @@
 
 This document describes the **contract** between the module and the product that embeds it. It boils down to five ports (identity, storage, video, files, events), plus route mounting and theming.
 
+Last updated: 2026-10-25
+
 ## Integration example (Next.js App Router)
 
 ```ts
@@ -290,7 +292,10 @@ and lesson cards are links; chapter cards disclose their lessons and editing
 controls with a keyboard-operable button. Creation actions identify what they add.
 
 A course workspace separates Structure, Settings, Completion, Access, Tracking and
-Preview. Section navigation is reflected in the host URL. Settings include course
+Preview using linked keyboard-accessible tabs. The demo creates courses on
+`/admin/courses/new` with title, slug, summary, language and enrollment mode;
+new courses remain drafts with no implicit access grant. Reusable catalogs and
+sidebars accept `createHref`; omitting it retains inline creation. Section navigation is reflected in the host URL. Settings include course
 language and enrollment mode; access explains default deny, inheritance and the
 difference between visibility and assignment. Chapters can be renamed, ordered,
 published and given their own audience rules. Lessons have content, validation,

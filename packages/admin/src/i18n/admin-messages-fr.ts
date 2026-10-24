@@ -65,6 +65,7 @@ export const fr: AdminMessages = {
   "access.course": "Public de la formation",
   "access.chapters": "Public des chapitres",
   "access.enrollment": "Inscription et affectations",
+  "chapter.actions": "Actions pour {title}",
   "chapter.rename": "Titre du chapitre",
   "video.notes": "Notes et transcription",
   "video.demoLimit": "Envoi dans la démo : MP4 ou WebM, jusqu’à 50 Mo et 15 minutes.",

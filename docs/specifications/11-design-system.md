@@ -2,6 +2,8 @@
 
 A host adopts the module without looking like a foreign body. **One design file** declares every visual decision (colors in light and dark, fonts, radius, spacing, brand) and drives the learner UI, the back-office, and the PDF and Word exports. The module draws its buttons, cards, fields, badges, alerts, progress bars and tables through a **UI kit**: a small typed interface with a plain default. A host swaps the kit for its own design system. **Theme 1 is shadcn/ui**, distributed as a shadcn registry and used by the demo. See [ADR-0002](../adr/0002-design-file-and-ui-kits.md).
 
+Last updated: 2026-10-25
+
 ## Goals
 
 - **Codified, not hand-tuned**: whoever takes over or installs the project reads one file, `elearning.design.ts`, and changing it changes every surface.
@@ -142,3 +144,32 @@ with an explicit refresh action and no learner-state writes.
 Verified layouts: [desktop](../screenshots/authoring-desktop.png) and
 [mobile](../screenshots/authoring-mobile.png). Browser upload tests use a
 synthetic video fixture; the normal demo seed uses attributed video excerpts.
+
+## Navigation and authoring refinement
+
+The demo header stays visible while scrolling. Its actual rendered height,
+including wrapped controls and text zoom, defines the remaining admin viewport.
+The sidebar fills that remaining height and scrolls independently of the main
+content; the administration footer belongs to the main content pane. Mobile
+navigation remains collapsible and fits within the available viewport.
+
+Course creation has a dedicated route with initial settings, separate from the
+catalog. Reusable catalog/navigation components accept an optional creation URL
+and preserve the inline form behavior when omitted. Authoring sections use
+keyboard-accessible tabs with active state, linked tab panels and arrow/Home/End
+navigation. Panels preserve unsaved editor state when switching sections.
+
+Chapter headers emphasize title, status and lesson count. Secondary actions live
+in a named disclosure, and lesson creation expands on demand. Lists, creation
+actions, chapter contents and forms have explicit token-based spacing, including
+when a host uses a CSS reset. Course language uses a localized native selector
+of ISO 639-1 language codes and preserves existing regional or legacy tags.
+The catalog and labels are stored with the package: browser ICU data must not
+remove options or change the server-rendered form during hydration.
+
+Verified refinement layouts: [desktop](../screenshots/navigation-desktop.png),
+[mobile](../screenshots/navigation-mobile.png) and
+[course settings](../screenshots/navigation-settings.png). Chapter action panels
+close after publication/reordering, outside clicks or Escape; Escape returns
+focus to their trigger. Creation fields wait for client hydration before
+accepting input so an early title edit cannot lose its generated slug.

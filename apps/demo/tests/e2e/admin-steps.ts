@@ -7,6 +7,8 @@ import { expect } from "./fixtures";
 async function createCourse(page: Page, title: string): Promise<string> {
   await page.goto("/admin");
   await expect(page.getByRole("heading", { name: "Courses" })).toBeVisible();
+  await page.locator(".el-author-create-card").click();
+  await expect(page).toHaveURL(/\/admin\/courses\/new$/);
   const form = page.getByRole("form", { name: "New course" });
   await form.getByLabel("Title").fill(title);
   await form.getByRole("button", { name: "Create" }).click();
@@ -21,6 +23,10 @@ export async function addLesson(
   type: "Text" | "Quiz" | "Video",
 ) {
   const item = page.getByRole("listitem", { name: chapter });
+  const disclosure = item.locator(".el-author-add-lesson");
+  if (!(await disclosure.evaluate((element) => (element as HTMLDetailsElement).open))) {
+    await disclosure.locator("summary").click();
+  }
   await item.getByLabel("New lesson title").fill(title);
   await item.getByLabel("Lesson type").selectOption({ label: type });
   const created = page.waitForResponse(
@@ -36,15 +42,17 @@ export async function addLesson(
 /** A course everyone can see, with a published "Basics" chapter; answers its admin URL. */
 export async function createVisibleCourse(page: Page, title: string): Promise<string> {
   const courseUrl = await createCourse(page, title);
-  await page.getByRole("button", { name: "Access", exact: true }).click();
+  await page.getByRole("tab", { name: "Access", exact: true }).click();
   const rules = page.getByRole("region", { name: "Access", exact: true });
   await rules.getByRole("button", { name: "Add a rule" }).click();
   await expect(rules.getByText("Allow: Everyone")).toBeVisible();
-  await page.getByRole("button", { name: "Structure", exact: true }).click();
+  await page.getByRole("tab", { name: "Structure", exact: true }).click();
   await page.getByLabel("New chapter title").fill("Basics");
   await page.getByRole("button", { name: "Add a chapter" }).click();
   const chapter = page.getByRole("listitem", { name: "Basics" });
+  await chapter.getByLabel("Actions for Basics", { exact: true }).click();
   await chapter.getByRole("button", { name: "Publish" }).click();
-  await expect(chapter.getByRole("button", { name: "Back to draft" })).toBeVisible();
+  await expect(chapter.getByText("Published", { exact: true })).toBeVisible();
+  await expect(chapter.locator(".el-chapter-actions")).not.toHaveAttribute("open", "");
   return courseUrl;
 }

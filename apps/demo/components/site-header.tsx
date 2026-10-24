@@ -16,7 +16,7 @@ export function SiteHeader({
   readonly messages: DemoMessages;
 }) {
   return (
-    <header className="border-b bg-background text-sm">
+    <header className="demo-site-header border-b bg-background text-sm">
       <div className="flex w-full flex-wrap items-center gap-x-4 gap-y-2 px-4 py-2">
         <a href="/" className="inline-flex min-h-8 items-center font-semibold tracking-tight">
           {messages.title}

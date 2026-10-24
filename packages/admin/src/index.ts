@@ -38,3 +38,6 @@ export { AuthorNavigation } from "./workspace/AuthorNavigation.js";
 export type { AuthorNavigationProps } from "./workspace/AuthorNavigation.js";
 export { COURSE_SECTIONS, LESSON_SECTIONS } from "./workspace/WorkspaceNavigation.js";
 export type { CourseSection, LessonSection } from "./workspace/WorkspaceNavigation.js";
+
+export { CourseCreateForm } from "./components/CourseCreateForm.js";
+export type { CourseCreateFormProps } from "./components/CourseCreateForm.js";

@@ -31,7 +31,7 @@ export function AddChapterForm({ courseId, position }: { courseId: string; posit
   return (
     <form
       id="new-chapter"
-      className="el-admin-inline-form"
+      className="el-author-add-chapter"
       onSubmit={submit}
       aria-label={t.t("tree.addChapter")}
     >

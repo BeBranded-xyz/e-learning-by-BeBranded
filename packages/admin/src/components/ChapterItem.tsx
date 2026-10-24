@@ -2,13 +2,10 @@
 
 import type { ApiAdminLessonSummary, ApiCourseTree } from "@bebranded/elearning-core";
 
-import { useCourseMutation } from "../hooks/admin-queries.js";
 import { useAdmin } from "../provider/admin-context.js";
-import { ChapterSettings } from "./ChapterSettings.js";
+import { ChapterActions } from "./ChapterActions.js";
 import { AddLessonForm } from "./AddLessonForm.js";
-import { DeleteButton } from "./DeleteButton.js";
 import { DropZone } from "./DropZone.js";
-import { MoveButtons } from "./Fields.js";
 import { LessonItem } from "./LessonItem.js";
 import { useUi } from "@bebranded/elearning-react";
 import { statusTone } from "./status-tone.js";
@@ -27,42 +24,6 @@ export type ChapterItemProps = {
   /** Drops the dragged lesson at `index` of this chapter. */
   readonly onDrop: (index: number) => void;
 };
-
-function ChapterActions({ chapter, courseId, busy, onMoveChapter }: ChapterItemProps) {
-  const { Button } = useUi();
-  const { t } = useAdmin();
-  const update = useCourseMutation(courseId, (admin, body: Readonly<Record<string, unknown>>) =>
-    admin.updateChapter(chapter.id, body),
-  );
-  const remove = useCourseMutation(courseId, (admin) => admin.deleteChapter(chapter.id));
-  const published = chapter.status === "published";
-  return (
-    <span className="el-admin-actions">
-      <MoveButtons
-        disabled={busy}
-        onMove={onMoveChapter}
-        labels={{
-          up: t.t("action.moveUp", { title: chapter.title }),
-          down: t.t("action.moveDown", { title: chapter.title }),
-        }}
-      />
-      <Button
-        disabled={update.isPending}
-        onClick={() => {
-          update.mutate({ status: published ? "draft" : "published" });
-        }}
-      >
-        {published ? t.t("action.unpublish") : t.t("action.publish")}
-      </Button>
-      <DeleteButton
-        title={chapter.title}
-        onConfirm={() => {
-          remove.mutate(undefined);
-        }}
-      />
-    </span>
-  );
-}
 
 function ChapterLessons(props: ChapterItemProps) {
   const { t } = useAdmin();
@@ -105,22 +66,17 @@ export function ChapterItem(props: ChapterItemProps) {
   const { chapter, editable } = props;
   return (
     <li className="el-admin-chapter" aria-labelledby={`chapter-${chapter.id}`}>
+      {editable ? <ChapterActions {...props} /> : null}
       <details open>
         <summary className="el-admin-chapter-header">
           <h4 id={`chapter-${chapter.id}`}>{chapter.title}</h4>
           <Badge tone={statusTone(chapter.status)} data-status={chapter.status}>
             {t.t(`status.${chapter.status}`)}
           </Badge>
+          <span className="el-meta">
+            {t.t("workspace.lessons", { count: chapter.lessons.length })}
+          </span>
         </summary>
-        {editable ? (
-          <div className="el-author-stack">
-            <details className="el-author-rename">
-              <summary>{t.t("action.edit")}</summary>
-              <ChapterSettings key={chapter.id} courseId={props.courseId} chapter={chapter} />
-            </details>
-            <ChapterActions {...props} />
-          </div>
-        ) : null}
         <ChapterLessons {...props} />
         {editable ? (
           <AddLessonForm

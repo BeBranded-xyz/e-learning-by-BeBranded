@@ -33,7 +33,7 @@ test("persists language across learner and admin pages and isolates role changes
   await expect(page.getByRole("combobox", { name: "Langue" })).toHaveValue("fr");
   await page.getByRole("combobox", { name: "Profil de démonstration" }).selectOption("admin");
   await expect(page).toHaveURL(/\/admin$/);
-  await expect(page.getByRole("heading", { name: "Nouvelle formation" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Formations", exact: true })).toBeVisible();
   await expectAccessible(page);
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("lang", "fr");

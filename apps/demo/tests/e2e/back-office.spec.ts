@@ -38,7 +38,7 @@ async function writeTextLesson(page: Page) {
   await expect(editor.locator("img")).toHaveCount(1);
   await page.getByRole("button", { name: "Save the content" }).click();
   await expect(page.getByRole("status").filter({ hasText: "Saved" })).toBeVisible();
-  await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await page.getByRole("tab", { name: "Settings", exact: true }).click();
   await page
     .getByRole("form", { name: "Welcome" })
     .getByRole("button", { name: "Publish" })
@@ -64,7 +64,7 @@ async function writeQuizLesson(page: Page, courseUrl: string) {
   const answer = await saved;
   expect(answer.status(), await answer.text()).toBe(200);
   await expect(page.getByText("1 question(s) saved.")).toBeVisible();
-  await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await page.getByRole("tab", { name: "Settings", exact: true }).click();
   await page.getByRole("form", { name: "Check" }).getByRole("button", { name: "Publish" }).click();
   await expect(
     page.getByRole("form", { name: "Check" }).getByRole("button", { name: "Back to draft" }),
@@ -97,7 +97,7 @@ test.describe("back-office", () => {
     await writeTextLesson(page);
     await writeQuizLesson(page, courseUrl);
     await page.goto(courseUrl);
-    await page.getByRole("button", { name: "Settings", exact: true }).click();
+    await page.getByRole("tab", { name: "Settings", exact: true }).click();
     await page.getByRole("form", { name: title }).getByRole("button", { name: "Publish" }).click();
     await expect(page.getByRole("form", { name: title }).getByText("Published")).toBeVisible();
 
@@ -121,7 +121,7 @@ test.describe("back-office", () => {
 
     await signInAs("admin");
     await page.goto(courseUrl);
-    await page.getByRole("button", { name: "Tracking", exact: true }).click();
+    await page.getByRole("tab", { name: "Tracking", exact: true }).click();
     const tracking = page.getByRole("region", { name: "Tracking" });
     await expect(tracking.getByRole("table")).toContainText("demo-staff-");
     const csv = await page.request.get(

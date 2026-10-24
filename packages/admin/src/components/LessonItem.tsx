@@ -30,22 +30,28 @@ export function LessonItem({ lesson, href, editable, busy, ...actions }: LessonI
         onDragStart={actions.onDragStart}
         onDrop={actions.onDropBefore}
       >
-        <a className="el-author-lesson-link" href={href}>
-          {lesson.title}
-        </a>
-        <Badge>{t.t(`type.${lesson.type}`)}</Badge>
-        <Badge tone={statusTone(lesson.status)} data-status={lesson.status}>
-          {t.t(`status.${lesson.status}`)}
-        </Badge>
+        <div className="el-author-lesson-info">
+          <a className="el-author-lesson-link" href={href}>
+            {lesson.title}
+          </a>
+          <div className="el-author-lesson-meta">
+            <Badge>{t.t(`type.${lesson.type}`)}</Badge>
+            <Badge tone={statusTone(lesson.status)} data-status={lesson.status}>
+              {t.t(`status.${lesson.status}`)}
+            </Badge>
+          </div>
+        </div>
         {editable ? (
-          <MoveButtons
-            disabled={busy}
-            onMove={actions.onMove}
-            labels={{
-              up: t.t("action.moveUp", { title: lesson.title }),
-              down: t.t("action.moveDown", { title: lesson.title }),
-            }}
-          />
+          <span className="el-admin-actions">
+            <MoveButtons
+              disabled={busy}
+              onMove={actions.onMove}
+              labels={{
+                up: t.t("action.moveUp", { title: lesson.title }),
+                down: t.t("action.moveDown", { title: lesson.title }),
+              }}
+            />
+          </span>
         ) : null}
       </DropZone>
     </li>

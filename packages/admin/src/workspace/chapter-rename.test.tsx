@@ -20,6 +20,9 @@ it("keeps saved feedback after the chapter heading refreshes to its new title", 
     },
   });
   const chapter = await screen.findByRole("listitem", { name: "Basics" });
+  await userEvent.click(
+    within(chapter).getByLabelText("Actions for Basics", { selector: "summary" }),
+  );
   await userEvent.click(within(chapter).getByText("Edit", { selector: "summary" }));
   const form = within(chapter).getByRole("form", { name: "Edit: Basics" });
   await userEvent.clear(within(form).getByLabelText("Chapter title"));

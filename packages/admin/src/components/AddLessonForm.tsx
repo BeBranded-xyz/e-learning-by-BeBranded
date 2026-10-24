@@ -17,6 +17,40 @@ export type AddLessonFormProps = {
   readonly position: number;
 };
 
+function LessonFields({
+  title,
+  type,
+  onTitle,
+  onType,
+}: {
+  title: string;
+  type: LessonType;
+  onTitle: (value: string) => void;
+  onType: (value: LessonType) => void;
+}) {
+  const { t } = useAdmin();
+  return (
+    <>
+      <TextField
+        label={t.t("tree.lessonTitle")}
+        required
+        maxLength={200}
+        value={title}
+        onChange={onTitle}
+      />
+      <SelectField
+        label={t.t("field.lessonType")}
+        value={type}
+        options={(["text", "video", "quiz"] as const).map((value) => ({
+          value,
+          label: t.t(`type.${value}`),
+        }))}
+        onChange={onType}
+      />
+    </>
+  );
+}
+
 /** Adds a draft lesson at the end of a chapter. */
 export function AddLessonForm({ courseId, chapterId, position }: AddLessonFormProps) {
   const { Button } = useUi();
@@ -38,27 +72,19 @@ export function AddLessonForm({ courseId, chapterId, position }: AddLessonFormPr
     );
   };
   return (
-    <form className="el-admin-inline-form" onSubmit={submit} aria-label={t.t("tree.addLesson")}>
-      <TextField
-        label={t.t("tree.lessonTitle")}
-        required
-        maxLength={200}
-        value={title}
-        onChange={setTitle}
-      />
-      <SelectField
-        label={t.t("field.lessonType")}
-        value={type}
-        options={(["text", "video", "quiz"] as const).map((value) => ({
-          value,
-          label: t.t(`type.${value}`),
-        }))}
-        onChange={setType}
-      />
-      <Button type="submit" disabled={create.isPending}>
-        {t.t("tree.addLesson")}
-      </Button>
-      <ErrorAlert error={create.error} />
-    </form>
+    <details className="el-author-add-lesson">
+      <summary>{t.t("tree.addLesson")}</summary>
+      <form
+        className="el-author-creation-form"
+        onSubmit={submit}
+        aria-label={t.t("tree.addLesson")}
+      >
+        <LessonFields title={title} type={type} onTitle={setTitle} onType={setType} />
+        <Button type="submit" disabled={create.isPending}>
+          {t.t("tree.addLesson")}
+        </Button>
+        <ErrorAlert error={create.error} />
+      </form>
+    </details>
   );
 }

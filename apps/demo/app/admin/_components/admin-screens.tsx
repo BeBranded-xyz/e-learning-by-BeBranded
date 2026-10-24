@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  CourseCreateForm,
   CourseWorkspace,
   COURSE_SECTIONS,
   LESSON_SECTIONS,
@@ -42,6 +43,7 @@ export function CoursesScreen() {
   return (
     <>
       <CourseAdminList
+        createHref="/admin/courses/new"
         courseHref={(course) => courseHref(course.id)}
         onCreated={(course) => {
           router.push(courseHref(course.id));
@@ -97,5 +99,22 @@ export function LearnerScreen({ learnerId }: { readonly learnerId: string }) {
       <a href="/admin">← {messages.allCourses}</a>
       <LearnerReport learnerId={learnerId} courseHref={courseHref} />
     </>
+  );
+}
+
+export function CourseCreateScreen() {
+  const router = useRouter();
+  const { messages } = useDemo();
+  return (
+    <section className="el-author-workspace">
+      <a href="/admin">← {messages.allCourses}</a>
+      <p className="el-meta">{messages.createCourseHelp}</p>
+      <CourseCreateForm
+        showSettings
+        onCreated={(course) => {
+          router.push(courseHref(course.id));
+        }}
+      />
+    </section>
   );
 }

@@ -1,0 +1,162 @@
+@layer elearning {
+  :where(.el-admin-courses, .el-admin-tree) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--el-space-4);
+  }
+  :where(.el-admin-courses > h2, .el-admin-courses > p, .el-admin-tree > h3, .el-admin-tree > p) {
+    margin: 0;
+  }
+  :where(.el-author-toolbar > :first-child) {
+    flex: 1 1 16rem;
+    max-inline-size: 32rem;
+  }
+  :where(.el-author-toolbar > .el-author-create-card) {
+    inline-size: auto;
+    block-size: auto;
+    min-block-size: 2.75rem;
+    flex-direction: row;
+    align-items: center;
+    align-self: end;
+    padding: var(--el-space-2) var(--el-space-4);
+    background: var(--el-color-primary);
+    color: var(--el-color-primary-foreground);
+  }
+  :where(.el-author-sections) {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: var(--el-space-2);
+    padding-block-end: 0;
+  }
+  :where(.el-author-tab) {
+    display: inline-flex;
+    flex-shrink: 0;
+    padding-block: var(--el-space-1);
+    border-block-end: 2px solid transparent;
+  }
+  :where(.el-author-tab[data-active="true"]) {
+    border-block-end-color: var(--el-color-primary);
+  }
+  :where(.el-author-panel[data-section="structure"]) {
+    border: 0;
+    padding: 0;
+  }
+  :where(.el-admin-chapters) {
+    gap: var(--el-space-4);
+  }
+  :where(.el-admin-chapter) {
+    position: relative;
+  }
+  :where(.el-admin-chapter-header) {
+    padding-inline-end: var(--el-space-8);
+  }
+  :where(.el-admin-chapter > details > :not(summary)) {
+    margin-block-start: var(--el-space-4);
+  }
+  :where(.el-admin-lessons, .el-admin-chapter > details > .el-admin-drop) {
+    inline-size: 100%;
+  }
+  :where(.el-admin-lesson) {
+    padding: var(--el-space-3) var(--el-space-4);
+  }
+  :where(.el-admin-lesson > .el-admin-drop) {
+    flex-wrap: nowrap;
+    inline-size: 100%;
+    gap: var(--el-space-3);
+  }
+  :where(.el-author-lesson-info) {
+    display: grid;
+    gap: var(--el-space-2);
+    flex: 1;
+    min-inline-size: 0;
+  }
+  :where(.el-author-lesson-link) {
+    overflow-wrap: anywhere;
+  }
+  :where(.el-author-lesson-meta) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--el-space-2);
+  }
+  :where(.el-chapter-actions) {
+    position: absolute;
+    inset-block-start: var(--el-space-4);
+    inset-inline-end: var(--el-space-4);
+    z-index: 5;
+  }
+  :where(.el-chapter-actions > summary) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-block-size: 2.75rem;
+    min-inline-size: 2.75rem;
+    padding: var(--el-space-2);
+    list-style: none;
+    cursor: pointer;
+    border: 1px solid var(--el-color-border);
+    border-radius: var(--el-radius);
+    background: var(--el-color-background);
+  }
+  :where(.el-chapter-action-panel) {
+    position: absolute;
+    inset-inline-end: 0;
+    inline-size: min(20rem, calc(100vw - var(--el-space-8)));
+    display: grid;
+    gap: var(--el-space-3);
+    padding: var(--el-space-4);
+    margin-block-start: var(--el-space-2);
+    border: 1px solid var(--el-color-border);
+    border-radius: var(--el-radius);
+    background: var(--el-color-background);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--el-color-text) 12%, transparent);
+  }
+  :where(.el-author-rename > form) {
+    display: grid;
+    gap: var(--el-space-3);
+    margin-block-start: var(--el-space-3);
+  }
+  :where(.el-author-add-lesson > summary) {
+    padding: var(--el-space-3);
+    cursor: pointer;
+    color: var(--el-color-primary);
+    border: 1px dashed var(--el-color-border);
+    border-radius: var(--el-radius);
+  }
+  :where(.el-author-creation-form, .el-author-add-chapter) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--el-space-4);
+    align-items: end;
+    padding: var(--el-space-4);
+    border: 1px dashed var(--el-color-border);
+    border-radius: var(--el-radius);
+  }
+  :where(.el-author-creation-form) {
+    margin-block-start: var(--el-space-3);
+  }
+  :where(
+    .el-author-creation-form > button,
+    .el-author-creation-form > [role="alert"],
+    .el-author-add-chapter > [role="alert"]
+  ) {
+    grid-column: 1 / -1;
+  }
+  :where(.el-author-creation-form > button) {
+    justify-self: start;
+  }
+  :where(.el-admin-form) {
+    gap: var(--el-space-4);
+  }
+  :where(
+    .el-chapter-actions > summary:focus-visible,
+    .el-author-add-lesson > summary:focus-visible
+  ) {
+    outline: 2px solid var(--el-color-primary);
+    outline-offset: 2px;
+  }
+  @media (width < 40rem) {
+    :where(.el-author-creation-form, .el-author-add-chapter) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}

@@ -111,11 +111,11 @@ describe("authoring", () => {
       { [`GET /courses/${COURSE_ID}`]: { body: tree } },
     );
     await screen.findByRole("heading", { name: "Safety basics" });
-    await userEvent.click(screen.getByRole("button", { name: "Settings" }));
+    await userEvent.click(screen.getByRole("tab", { name: "Settings" }));
     await userEvent.clear(screen.getByLabelText("Title"));
     await userEvent.type(screen.getByLabelText("Title"), "My unsaved title");
-    await userEvent.click(screen.getByRole("button", { name: "Structure" }));
-    await userEvent.click(screen.getByRole("button", { name: "Settings" }));
+    await userEvent.click(screen.getByRole("tab", { name: "Structure" }));
+    await userEvent.click(screen.getByRole("tab", { name: "Settings" }));
     expect(screen.getByLabelText<HTMLInputElement>("Title").value).toBe("My unsaved title");
     expect(screen.getByLabelText("New chapter title")).toBeDefined();
   });

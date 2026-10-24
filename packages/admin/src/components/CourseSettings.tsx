@@ -6,6 +6,7 @@ import type { SyntheticEvent } from "react";
 
 import { useCourseMutation } from "../hooks/admin-queries.js";
 import { useAdmin } from "../provider/admin-context.js";
+import { LanguageField } from "./LanguageField.js";
 import { DeleteButton } from "./DeleteButton.js";
 import { ErrorAlert } from "./ErrorAlert.js";
 import { CheckboxField, SelectField, TextField } from "./Fields.js";
@@ -25,7 +26,7 @@ type Draft = Pick<
 
 const PATTERN = "[a-z0-9]+(-[a-z0-9]+)*";
 
-type TextKey = "title" | "slug" | "summary" | "locale";
+type TextKey = "title" | "slug" | "summary";
 
 const TEXT_FIELDS: readonly {
   key: TextKey;
@@ -34,19 +35,11 @@ const TEXT_FIELDS: readonly {
 }[] = [
   { key: "title", label: "field.title", input: { required: true, maxLength: 200 } },
   { key: "slug", label: "field.slug", input: { required: true, maxLength: 100, pattern: PATTERN } },
-  {
-    key: "locale",
-    label: "field.locale",
-    input: { required: true, pattern: "[a-z]{2}(-[A-Z]{2})?", maxLength: 5 },
-  },
   { key: "summary", label: "field.summary", input: { multiline: true, maxLength: 2000 } },
 ];
 
-function CourseFields(props: {
-  draft: Draft;
-  disabled: boolean;
-  onChange: (draft: Draft) => void;
-}) {
+type CourseFieldsProps = { draft: Draft; disabled: boolean; onChange: (draft: Draft) => void };
+function CourseFields(props: CourseFieldsProps) {
   const { t } = useAdmin();
   const { draft, disabled } = props;
   const set = (patch: Partial<Draft>) => {
@@ -58,18 +51,14 @@ function CourseFields(props: {
   }));
   return (
     <>
-      {TEXT_FIELDS.map((field) => (
-        <TextField
-          key={field.key}
-          {...field.input}
-          label={t.t(field.label)}
-          disabled={disabled}
-          value={draft[field.key] ?? ""}
-          onChange={(value) => {
-            set({ [field.key]: value });
-          }}
-        />
-      ))}
+      <CourseTextFields {...props} />
+      <LanguageField
+        value={draft.locale}
+        disabled={disabled}
+        onChange={(locale) => {
+          set({ locale });
+        }}
+      />
       <SelectField
         label={t.t("field.enrollmentMode")}
         disabled={disabled}
@@ -88,6 +77,26 @@ function CourseFields(props: {
           }}
         />
       )}
+    </>
+  );
+}
+
+function CourseTextFields({ draft, disabled, onChange }: CourseFieldsProps) {
+  const { t } = useAdmin();
+  return (
+    <>
+      {TEXT_FIELDS.map((field) => (
+        <TextField
+          key={field.key}
+          {...field.input}
+          label={t.t(field.label)}
+          disabled={disabled}
+          value={draft[field.key] ?? ""}
+          onChange={(value) => {
+            onChange({ ...draft, [field.key]: value });
+          }}
+        />
+      ))}
     </>
   );
 }

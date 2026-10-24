@@ -99,6 +99,7 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 
 | ID | Task | Closed on | PR |
 |---|---|---|---|
+| B-085 | Admin navigation, bounded scrolling, dedicated course creation, keyboard tabs, progressive chapter actions, spacing and localized language selection | 2026-10-25 | this PR |
 | B-084 | Optional demo-wide Dashly help/feedback widget with private runtime configuration and cross-screen browser checks | 2026-10-25 | this PR |
 | B-082 | Course authoring workspace: sidebar, chapter/lesson structure, validation controls, access guidance and read-only saved preview | 2026-10-24 | this PR |
 | B-083 | Bounded local video uploads, encoding, signed HLS playback and browser verification | 2026-10-24 | this PR |

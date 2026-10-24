@@ -9,6 +9,7 @@ import "./globals.css";
 
 import { designToShadcnCss } from "@bebranded/elearning-core/design";
 
+import { HeaderSizeObserver } from "@/components/header-size-observer";
 import { DemoFeedback } from "@/components/demo-feedback";
 import { readEnv } from "@/lib/env";
 
@@ -38,6 +39,7 @@ export default async function RootLayout({ children }: { readonly children: Reac
       </head>
       <body className="flex min-h-dvh flex-col">
         <SiteHeader {...session} messages={messages} />
+        <HeaderSizeObserver />
         <DemoMain>
           <DemoProvider locale={session.locale} sessionKey={session.sessionKey}>
             {children}

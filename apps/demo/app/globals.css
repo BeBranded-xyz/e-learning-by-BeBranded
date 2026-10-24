@@ -54,3 +54,27 @@
     font-family: var(--font-heading);
   }
 }
+
+.demo-site-header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 30;
+  flex-shrink: 0;
+}
+.demo-admin-main {
+  block-size: calc(100dvh - var(--demo-header-height, 3rem));
+  min-block-size: 0;
+  overflow: hidden;
+}
+body:has(.demo-admin-main) {
+  overflow: hidden;
+}
+body:has(.demo-admin-main) > footer {
+  display: none;
+}
+.demo-admin-main > .el-root,
+.demo-admin-main > .el-root > .el-root,
+.demo-admin-main .el-admin:has(> .demo-admin-shell) {
+  block-size: 100%;
+  min-block-size: 0;
+}
