@@ -1,0 +1,154 @@
+/*
+ * Lesson content of @bebranded/elearning-react, imported by styles.css: the
+ * HTML rendered by the server (packages/editor) and BlockNote's colors.
+ * Zero specificity like styles.css.
+ */
+
+/* Lesson content rendered by the server (packages/editor) */
+:where(.el-content) {
+  max-width: 72ch;
+}
+:where(.el-content table) {
+  border-collapse: collapse;
+}
+:where(.el-content th, .el-content td) {
+  padding: 0.5rem;
+  border: 1px solid var(--el-color-border);
+  text-align: start;
+}
+:where(.el-table-wrapper) {
+  overflow-x: auto;
+}
+:where(.el-content pre) {
+  overflow-x: auto;
+  padding: var(--el-space);
+  border-radius: var(--el-radius);
+  background: var(--el-color-surface);
+}
+:where(.el-content blockquote) {
+  margin-inline: 0;
+  padding-inline-start: var(--el-space);
+  border-inline-start: 4px solid var(--el-color-border);
+}
+:where(.el-block-children) {
+  padding-inline-start: 1.5rem;
+}
+
+:where(.el-checklist) {
+  padding-inline-start: 0;
+  list-style: none;
+}
+:where(.el-checklist li) {
+  display: flex;
+  gap: 0.5rem;
+}
+:where(.el-checklist li[data-checked] span) {
+  text-decoration: line-through;
+  color: var(--el-color-muted);
+}
+:where(.el-toggle summary) {
+  cursor: pointer;
+}
+:where(.el-toggle summary :is(h1, h2, h3)) {
+  display: inline;
+}
+:where(.el-callout) {
+  margin-block: var(--el-space);
+  padding: var(--el-space);
+  border-inline-start: 4px solid var(--el-color-primary);
+  border-radius: var(--el-radius);
+  background: var(--el-color-surface);
+}
+:where(.el-callout[data-variant="success"]) {
+  border-color: var(--el-color-success);
+}
+:where(.el-callout[data-variant="warning"]) {
+  border-color: #b45309;
+}
+:where(.el-callout[data-variant="danger"]) {
+  border-color: var(--el-color-danger);
+}
+:where(.el-figure) {
+  margin-block: var(--el-space);
+  margin-inline: 0;
+}
+:where(.el-figure img) {
+  max-inline-size: 100%;
+  block-size: auto;
+  border-radius: var(--el-radius);
+}
+:where(.el-media-caption) {
+  margin-block-start: calc(var(--el-space) / 2);
+  color: var(--el-color-muted);
+}
+:where(.el-file) {
+  margin-block: var(--el-space);
+  padding: var(--el-space);
+  border: 1px solid var(--el-color-border);
+  border-radius: var(--el-radius);
+}
+:where([data-text-alignment="center"]) {
+  text-align: center;
+}
+:where([data-text-alignment="right"]) {
+  text-align: end;
+}
+:where([data-text-alignment="justify"]) {
+  text-align: justify;
+}
+
+/* BlockNote's color names, mapped to readable values */
+:where([data-text-color="gray"]) {
+  color: #6b7280;
+}
+:where([data-text-color="brown"]) {
+  color: #92400e;
+}
+:where([data-text-color="red"]) {
+  color: #b91c1c;
+}
+:where([data-text-color="orange"]) {
+  color: #c2410c;
+}
+:where([data-text-color="yellow"]) {
+  color: #a16207;
+}
+:where([data-text-color="green"]) {
+  color: #15803d;
+}
+:where([data-text-color="blue"]) {
+  color: #1d4ed8;
+}
+:where([data-text-color="purple"]) {
+  color: #7e22ce;
+}
+:where([data-text-color="pink"]) {
+  color: #be185d;
+}
+:where([data-background-color="gray"]) {
+  background: #f3f4f6;
+}
+:where([data-background-color="brown"]) {
+  background: #fef3c7;
+}
+:where([data-background-color="red"]) {
+  background: #fee2e2;
+}
+:where([data-background-color="orange"]) {
+  background: #ffedd5;
+}
+:where([data-background-color="yellow"]) {
+  background: #fef9c3;
+}
+:where([data-background-color="green"]) {
+  background: #dcfce7;
+}
+:where([data-background-color="blue"]) {
+  background: #dbeafe;
+}
+:where([data-background-color="purple"]) {
+  background: #f3e8ff;
+}
+:where([data-background-color="pink"]) {
+  background: #fce7f3;
+}
