@@ -3,15 +3,14 @@ import type { AddressInfo } from "node:net";
 
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { chromium } from "playwright-core";
-import puppeteer from "puppeteer-core";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { elearningExport, playwrightPdf, puppeteerPdf } from "../../src/index.js";
+import { elearningExport, playwrightPdf } from "../../src/index.js";
 import type { PdfRenderer } from "../../src/index.js";
 import { IMAGE_ID, courseExport, lessonExport } from "../fixtures/documents.js";
 import { PNG_1X1 } from "../fixtures/images.js";
 
-// Real headless Chromium (Playwright's build), through both adapters.
+// Real headless Chromium (Playwright's build). The Puppeteer adapter is unit tested against a fake browser.
 
 async function pdfText(bytes: Uint8Array): Promise<{ pages: number; text: string }> {
   const pdf = await getDocument({ data: bytes.slice(), useSystemFonts: false }).promise;
@@ -33,10 +32,6 @@ const server = createServer((_request, response) => {
 
 const renderers: Record<string, PdfRenderer> = {
   playwright: playwrightPdf({ launch: () => chromium.launch() }),
-  puppeteer: puppeteerPdf({
-    launch: () => puppeteer.launch({ executablePath: chromium.executablePath(), headless: true }),
-    reuse: true,
-  }),
 };
 
 beforeAll(async () => {
@@ -125,20 +120,7 @@ describe.each(Object.entries(renderers))("PDF through %s", (_name, renderer) => 
 });
 
 describe("browser lifecycle", () => {
-  it("opens and closes a browser per render without reuse, and closing unused renderers is a no-op", async () => {
-    let launches = 0;
-    const renderer = puppeteerPdf({
-      launch: () => {
-        launches += 1;
-        return puppeteer.launch({ executablePath: chromium.executablePath(), headless: true });
-      },
-    });
-
-    await renderer.render(request(raw("<p>one</p>")));
-    await renderer.render(request(raw("<p>two</p>")));
-
-    expect(launches).toBe(2);
-    await expect(renderer.close?.()).resolves.toBeUndefined();
+  it("closing a renderer that never rendered is a no-op", async () => {
     await expect(
       playwrightPdf({ launch: () => chromium.launch() }).close?.(),
     ).resolves.toBeUndefined();
