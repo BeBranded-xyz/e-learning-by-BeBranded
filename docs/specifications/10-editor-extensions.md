@@ -204,8 +204,8 @@ The PDF renderer runs a browser on the server. It must never become a way to rea
 ## Testing
 
 - **Golden fixtures**: a set of BlockNote documents covering every block type, rendered to `ExportDocument`, HTML, PDF and DOCX.
-- PDF: text extracted from the output is compared with the expected text, plus visual regression on rendered pages (Playwright screenshots).
-- DOCX: the generated XML is checked for expected styles and structure, and opened in LibreOffice headless in CI to make sure the file is valid.
+- PDF: text extracted from the output is compared with the expected text. **Layout checks** read sizes and positions back from real Chromium PDFs with pdfjs: lesson headings print larger than body text in level order, columns sit side by side with their share of the row, every line stays inside the page, every page is numbered. They replace pixel snapshots, which depend on the fonts of each operating system.
+- DOCX: the generated XML is checked for expected styles and structure. In CI, each fixture `.docx` (lesson, course, columns) is converted by headless LibreOffice and its text checked (`pnpm --filter @bebranded/elearning-export validate:docx`).
 - Columns: editor tests on a mounted editor (structure, resize by keys and by dragging, undo, dissolving, nesting refused) and Playwright scenarios for every behavior in the editing table, on desktop and mobile widths (planned with the demo journeys, BACKLOG).
 - Security tests: a document with an external image URL, `javascript:` links, oversized content and hostile text must be rejected or neutralized, and the renderer must not make any network request (verified by request interception).
 
