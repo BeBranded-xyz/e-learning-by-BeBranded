@@ -1,0 +1,45 @@
+{
+  "name": "@bebranded/elearning-export",
+  "version": "0.0.0",
+  "description": "Server-only PDF and Word export of the BeBranded e-learning module.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BeBranded-xyz/e-learning-by-BeBranded.git",
+    "directory": "packages/export"
+  },
+  "homepage": "https://github.com/BeBranded-xyz/e-learning-by-BeBranded#readme",
+  "bugs": "https://github.com/BeBranded-xyz/e-learning-by-BeBranded/issues",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "exports": {
+    ".": {
+      "@bebranded/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "browser": "./dist/browser-guard.js",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@bebranded/elearning-core": "workspace:^",
+    "@bebranded/elearning-editor": "workspace:^",
+    "docx": "^9.7.2"
+  },
+  "devDependencies": {
+    "jszip": "3.10.2",
+    "pdfjs-dist": "6.3.289",
+    "playwright-core": "1.64.1",
+    "puppeteer-core": "25.12.0"
+  }
+}

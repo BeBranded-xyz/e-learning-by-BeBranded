@@ -63,6 +63,10 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with: { node-version-file: .node-version, cache: pnpm }
       - run: pnpm install --frozen-lockfile
+      # PDF export tests render with real headless Chromium (Playwright's build).
+      - name: Install Chromium for the PDF export tests
+        run: pnpm --filter @bebranded/elearning-export exec playwright-core install --with-deps chromium
+        timeout-minutes: 5
       # Integration tests start PostgreSQL with Testcontainers (Docker is on the runner).
       - run: pnpm test:coverage
       - name: Generated database types and bundled migrations are up to date

@@ -3,6 +3,7 @@ import type {
   ExportListItem,
   ExportTableCell,
   ExportText,
+  FileId,
 } from "@bebranded/elearning-core";
 
 import { element, escapeHtml } from "../render/html.js";
@@ -10,7 +11,7 @@ import { renderInline } from "../render/render-inline.js";
 
 export type ExportRenderContext = {
   /** Data URI of an inlined image; images without one are left out (never fetched). */
-  readonly imageSrc: (fileId: string) => string | undefined;
+  readonly imageSrc: (fileId: FileId) => string | undefined;
   /** Content heading levels are shifted under the document and section titles. */
   readonly headingOffset: number;
   /** The lesson page attachments link to. */

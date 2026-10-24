@@ -103,6 +103,7 @@ Nothing sensitive may ever be committed. A secret pushed once must be considered
   - any code from ClassroomIO, LearnHouse or CourseLit (AGPL).
 - **Dual-licensed dependencies** are allowed when one option is on the allowlist, and we use that option. Example: `jszip` (MIT or GPL-3.0), used under MIT.
 - An automated license check in CI fails the build on any dependency outside the allowlist.
+- **Zlib** is accepted for `pako` only (a dependency of `jszip`, used by `docx`), as a recorded exception: it is a permissive, notice-only license.
 - Notable dependencies checked: BlockNote core / react / server-util (MPL-2.0), SurveyJS Form Library (MIT), hls.js (Apache-2.0), Kysely (MIT), Zod (MIT).
 
 ## Observability

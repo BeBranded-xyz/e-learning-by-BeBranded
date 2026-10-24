@@ -247,6 +247,7 @@ export type {
   CourseAssignment,
 } from "./ports/assignment-storage.types.js";
 
+export type { DocumentExporter, ExportFormat, ExportedFile } from "./ports/exporter.types.js";
 export type { ReportStorageReads } from "./ports/report-storage.types.js";
 
 export type {

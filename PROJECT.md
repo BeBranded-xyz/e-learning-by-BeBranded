@@ -65,7 +65,7 @@ Last updated: 2026-10-24
 | Authentication | none: provided by the host through `IdentityResolver` | |
 | File storage | host-provided `FileStorage` port | S3/R2 and Supabase Storage adapters planned |
 | Video | Cloudflare Stream (default), Mux, Bunny | `VideoProvider` port |
-| Export | headless Chromium (PDF), `docx` (Word) | Spec 10, clean-room |
+| Export | headless Chromium (PDF) through host-provided adapters, `docx` (Word) | `@bebranded/elearning-export`, spec 10, clean-room |
 | Monitoring / errors | host-injected logger and `onMetric` hook | |
 | Background jobs | event outbox, delivery triggered by the host | |
 | Feature flags | none | |
@@ -272,6 +272,10 @@ Core rules always apply.
     0.56's generic types (optional props such as `heading.isToggleable`) do not
     type-check with it. The editor package keeps every other strict option.
     Owner: maintainers. Review: on each BlockNote upgrade (`BACKLOG.md` B-021).
+  - `pako` (`MIT AND Zlib`), a dependency of `jszip`, which `docx` needs for Word
+    export, is a license exception in `scripts/check-licenses.mjs`. The Zlib license
+    is permissive (keep the notice; no copyleft). Owner: maintainers. Review: on
+    every `docx` major upgrade.
   - The license allowlist covers the dependency trees of the published
     packages (`packages/*`). The private demo app is not distributed; through
     Next.js it pulls `@img/sharp-libvips` (LGPL-3.0, optional image
