@@ -16,6 +16,7 @@ const ALLOWED = new Set([
 // Package name -> reason. Keep this list short and reviewed.
 const EXCEPTIONS = new Map([
   // ["some-package", "Vendor-approved commercial license, contract #123"],
+  ["pako", "MIT AND Zlib: zlib port used by jszip (docx export); Zlib is permissive, notice-only (PROJECT.md)"],
 ]);
 
 function tokenize(expression) {

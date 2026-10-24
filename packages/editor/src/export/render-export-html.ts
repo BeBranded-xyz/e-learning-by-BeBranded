@@ -1,6 +1,6 @@
 import sanitizeHtml from "sanitize-html";
 
-import type { ExportDocument, ExportSection } from "@bebranded/elearning-core";
+import type { ExportDocument, ExportSection, FileId } from "@bebranded/elearning-core";
 
 import { element, escapeHtml } from "../render/html.js";
 import { renderExportBlocks } from "./export-blocks.js";
@@ -9,7 +9,7 @@ import type { ExportTheme, PageSize } from "./export-css.js";
 
 export type ExportHtmlOptions = {
   /** Data URI of an inlined image (spec 10: never a URL, nothing is fetched at render time). */
-  readonly imageSrc: (fileId: string) => string | undefined;
+  readonly imageSrc: (fileId: FileId) => string | undefined;
   readonly pageSize: PageSize;
   readonly theme?: ExportTheme | undefined;
   /** A data URI, shown on the cover of a course. */

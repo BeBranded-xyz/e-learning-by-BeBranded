@@ -148,6 +148,16 @@ flowchart LR
 - images are `<img>` only with an inlined `data:image/(png|jpeg|gif|webp);base64` source. An image that could not be inlined becomes an attachment line linking to the lesson; any other source is dropped by the sanitizer;
 - the body goes through an allowlist sanitizer: no script, no event attribute, no `javascript:` link.
 
+### Export package
+
+`@bebranded/elearning-export` exposes `elearningExport(options)`, the `DocumentExporter` port of elearning-core that the server receives. It:
+
+1. refuses a document over `EXPORT_LIMITS` (20,000 blocks), then reads every image through the host's `FileStorage.read` (at most 200 images and 25 MB in all) and keeps only real PNG, JPEG, GIF and WebP pictures, recognized from their bytes, never from a declared type;
+2. renders Word with `docx`, or the HTML of `renderExportHtml` through a `PdfRenderer`;
+3. bounds the work: a 30 s deadline (`export_timeout`, 502), 2 renders at once and 8 waiting, then `export_busy` (429).
+
+PDF adapters receive the host's own browser library through a small structural interface, so the package bundles no browser and depends on none: `playwrightPdf` (playwright-core), `puppeteerPdf` (puppeteer-core with @sparticuz/chromium, or @cloudflare/puppeteer) and `gotenbergPdf` (HTTP). Playwright opens a context with JavaScript disabled, offline, and every route aborted; Puppeteer disables JavaScript and aborts every request except inlined `data:` pictures. Headers carry the title and footers the export date and page numbers. Word: Title and Heading styles (navigation pane, and a table of contents field in course exports), Word numbering with one instance per numbered list, repeated table header rows, callouts as one shaded cell with a colored border, the module's own Quote and Code styles; Word cannot embed WebP, so those images become a link to the lesson.
+
 ### Block mapping
 
 | Block | PDF (HTML + print CSS) | Word |
