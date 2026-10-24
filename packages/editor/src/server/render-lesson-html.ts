@@ -3,6 +3,7 @@ import sanitizeHtml from "sanitize-html";
 import type { LessonDocument } from "@bebranded/elearning-core";
 
 import { renderBlocks } from "../render/render-blocks.js";
+import type { RenderOptions } from "../render/render-media.js";
 
 const DATA_ATTRIBUTES = ["data-text-color", "data-background-color", "data-text-alignment"];
 
@@ -40,11 +41,18 @@ const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
     "input",
     "details",
     "summary",
+    "figure",
+    "figcaption",
+    "img",
   ],
   allowedAttributes: {
     "*": DATA_ATTRIBUTES,
     a: ["href", "target", "rel"],
     div: ["class", "role", "data-variant", ...DATA_ATTRIBUTES],
+    figure: ["class"],
+    figcaption: ["class"],
+    p: ["class"],
+    img: ["src", "alt", "loading", "width"],
     ul: ["class"],
     ol: ["class", "start"],
     li: ["data-checked", ...DATA_ATTRIBUTES],
@@ -55,13 +63,17 @@ const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
     td: ["colspan", "rowspan"],
   },
   allowedClasses: {
-    div: ["el-callout", "el-callout-content", "el-block-children", "el-table-wrapper"],
+    div: ["el-callout", "el-callout-content", "el-block-children", "el-table-wrapper", "el-file"],
+    figure: ["el-figure"],
+    figcaption: ["el-media-caption"],
+    p: ["el-media-caption"],
     ul: ["el-list", "el-checklist"],
     ol: ["el-list"],
     details: ["el-toggle"],
   },
   allowedSchemes: ["https", "http", "mailto"],
-  allowedSchemesAppliedToAttributes: ["href"],
+  allowedSchemesAppliedToAttributes: ["href", "src"],
+  allowedSchemesByTag: { img: ["https", "http"] },
   allowProtocolRelative: false,
   exclusiveFilter: (frame) => frame.tag === "input" && frame.attribs.type !== "checkbox",
 };
@@ -69,8 +81,9 @@ const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
 /**
  * Renders a validated lesson document to safe HTML for learner pages (spec
  * 02, "Reading a text lesson"). Pure string rendering: no DOM, no editor
- * code, and it runs on Node and edge runtimes.
+ * code, and it runs on Node and edge runtimes. Images and files need
+ * `fileUrl`, which maps an uploaded file to its signed URL.
  */
-export function renderLessonHtml(document: LessonDocument): string {
-  return sanitizeHtml(renderBlocks(document), SANITIZE_OPTIONS);
+export function renderLessonHtml(document: LessonDocument, options: RenderOptions = {}): string {
+  return sanitizeHtml(renderBlocks(document, options), SANITIZE_OPTIONS);
 }

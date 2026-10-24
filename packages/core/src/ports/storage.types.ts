@@ -15,6 +15,7 @@ import type {
   AssignmentStorageReads,
   AssignmentStorageWrites,
 } from "./assignment-storage.types.js";
+import type { FileStorageReads, FileStorageWrites } from "./file-storage.types.js";
 import type { QuizStorageReads, QuizStorageWrites } from "./quiz-storage.types.js";
 import type { VideoStorageReads, VideoStorageWrites } from "./video-storage.types.js";
 
@@ -109,7 +110,8 @@ export type StorageReads = {
   listEnrollments(scope: TenantScope, learnerId: LearnerId): Promise<Enrollment[]>;
 } & VideoStorageReads &
   QuizStorageReads &
-  AssignmentStorageReads;
+  AssignmentStorageReads &
+  FileStorageReads;
 
 export type StorageWrites = {
   /** Locks the learner's enrollment row until the transaction ends. */
@@ -149,7 +151,8 @@ export type StorageWrites = {
   deleteAccessRule(scope: TenantScope, id: AccessRuleId): Promise<boolean>;
 } & VideoStorageWrites &
   QuizStorageWrites &
-  AssignmentStorageWrites;
+  AssignmentStorageWrites &
+  FileStorageWrites;
 
 export type StorageTransaction = StorageReads & StorageWrites;
 

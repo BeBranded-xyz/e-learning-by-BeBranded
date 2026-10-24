@@ -97,3 +97,32 @@ export const validDocument: unknown[] = [
     children: [],
   },
 ];
+
+export const FILE_ID = "6f1c2a4e-1b7d-4c3a-9f2e-0a1b2c3d4e5f";
+export const OTHER_FILE_ID = "0d9e8f7a-6b5c-4d3e-8f1a-2b3c4d5e6f70";
+
+export function imageBlock(id: string, url: string, props: Record<string, unknown> = {}) {
+  return {
+    id,
+    type: "image",
+    props: {
+      textAlignment: "left",
+      backgroundColor: "default",
+      name: "diagram.png",
+      url,
+      caption: "",
+      showPreview: true,
+      ...props,
+    },
+    children: [],
+  };
+}
+
+export function fileBlock(id: string, url: string, props: Record<string, unknown> = {}) {
+  return {
+    id,
+    type: "file",
+    props: { backgroundColor: "default", name: "handbook.pdf", url, caption: "", ...props },
+    children: [],
+  };
+}

@@ -152,6 +152,25 @@ export interface EventOutbox {
   type: string;
 }
 
+export interface Files {
+  created_at: Generated<Timestamp>;
+  id: Generated<string>;
+  mime_type: string;
+  size_bytes: Int8;
+  /**
+   * Key returned by the host's FileStorage.createUpload.
+   */
+  storage_key: string;
+  /**
+   * Tenant of the admin who uploaded the file; null for the shared catalog.
+   */
+  tenant_id: string | null;
+  /**
+   * learner_id of the admin who uploaded the file.
+   */
+  uploaded_by: string;
+}
+
 export interface LessonProgress {
   completed_at: Timestamp | null;
   course_id: string;
@@ -344,6 +363,7 @@ export interface DB {
   courses: Courses;
   enrollments: Enrollments;
   event_outbox: EventOutbox;
+  files: Files;
   lesson_progress: LessonProgress;
   lessons: Lessons;
   quiz_attempts: QuizAttempts;

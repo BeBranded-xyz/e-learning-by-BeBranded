@@ -24,6 +24,7 @@ const tables = [
   "quizzes",
   "quiz_attempts",
   "course_assignments",
+  "files",
 ];
 
 beforeAll(async () => {

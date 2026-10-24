@@ -46,14 +46,11 @@ describe("validateLessonDocument", () => {
     expect(issueCodes(document)).toEqual(["invalid_content"]);
   });
 
-  it.each(["image", "video", "file", "audio", "html", "embed", "script"])(
-    "rejects the %s block type",
-    (type) => {
-      const document = [{ id: "x", type, props: {}, content: [], children: [] }];
+  it.each(["video", "audio", "html", "embed", "script"])("rejects the %s block type", (type) => {
+    const document = [{ id: "x", type, props: {}, content: [], children: [] }];
 
-      expect(issueCodes(document)).toContain("invalid_content");
-    },
-  );
+    expect(issueCodes(document)).toContain("invalid_content");
+  });
 
   it.each([
     [

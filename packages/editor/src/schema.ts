@@ -19,8 +19,8 @@ import {
  *
  * The server-side validator (`validateLessonDocument` in elearning-core) is
  * the source of truth for what a lesson may contain: it rejects headings
- * below level 3 and the media blocks (image, file, audio, video) until file
- * uploads exist. The authoring menu (phase 4) hides what it rejects.
+ * below level 3, audio and video blocks, and images or files that were not
+ * uploaded through the module. The admin editor's menu hides what it rejects.
  * `BlockNoteSchema.create({ blockSpecs })` with a subset of the default specs
  * does not type-check under `exactOptionalPropertyTypes`; `extend` does.
  */
