@@ -63,7 +63,7 @@ import "@bebranded/elearning-react/styles.css";
 
 export default function Page({ params }) {
   return (
-    <ElearningProvider apiBase="/api/elearning" theme={hostTheme} locale="en">
+    <ElearningProvider apiBase="/api/elearning" design={design} ui={hostKit} locale="en">
       <CoursePage slug={params.courseSlug} lessonHref={(lesson) => `/training/${params.courseSlug}/${lesson.id}`} />
     </ElearningProvider>
   );

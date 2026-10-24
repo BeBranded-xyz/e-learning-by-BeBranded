@@ -21,7 +21,7 @@ function linkLine(
       : [
           new ExternalHyperlink({
             link: url,
-            children: [new TextRun({ text, underline: {}, color: "1D4ED8" })],
+            children: [new TextRun({ text, underline: {}, color: context.linkColor })],
           }),
         ];
   return new Paragraph({ ...indentOf(context), children: [new TextRun(`${label}: `), ...target] });

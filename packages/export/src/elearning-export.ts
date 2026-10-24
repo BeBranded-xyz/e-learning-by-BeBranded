@@ -5,8 +5,9 @@ import type {
   ExportFormat,
   ExportedFile,
 } from "@bebranded/elearning-core";
+import { designToExportTheme } from "@bebranded/elearning-core/design";
+import type { DesignExportTheme, ElearningDesign } from "@bebranded/elearning-core/design";
 import { renderExportHtml } from "@bebranded/elearning-editor/server";
-import type { ExportTheme } from "@bebranded/elearning-editor/server";
 
 import { inlineImages } from "./assets/inline-images.js";
 import type { ImageLoader } from "./assets/inline-images.js";
@@ -20,9 +21,8 @@ export type ElearningExportOptions = {
   readonly pdf?: PdfRenderer | undefined;
   /** "auto" picks Letter for US and Canadian English, A4 otherwise. */
   readonly pageSize?: "A4" | "Letter" | "auto";
-  readonly theme?: ExportTheme | undefined;
-  /** A PNG, JPEG, GIF or WebP data URI for course covers. */
-  readonly logo?: string | undefined;
+  /** The host's design file (spec 11): colors, fonts and the brand's logo for course covers. */
+  readonly design?: ElearningDesign | undefined;
   /** Rendering deadline of one export (spec 10: 30 s by default). */
   readonly timeoutMs?: number;
   /** Renders running at once; more wait in a short queue, then are refused. */
@@ -49,7 +49,10 @@ function withTimeout<T>(work: Promise<T>, timeoutMs: number): Promise<T> {
   });
 }
 
-type Settings = ElearningExportOptions & { readonly timeoutMs: number };
+type Settings = ElearningExportOptions & {
+  readonly timeoutMs: number;
+  readonly theme: DesignExportTheme | undefined;
+};
 type Request = { readonly format: ExportFormat; readonly loadImage: ImageLoader };
 
 async function renderPdf(
@@ -65,7 +68,7 @@ async function renderPdf(
     imageSrc: (id) => images.get(id)?.dataUri,
     pageSize,
     theme: settings.theme,
-    logo: settings.logo,
+    logo: settings.theme?.logo ?? undefined,
     labels: {
       tableOfContents: labels.tableOfContents,
       video: labels.video,
@@ -92,6 +95,7 @@ async function render(
     const bytes = await renderDocx(document, {
       images,
       pageSize: pageSizeFor(document.locale, settings.pageSize),
+      theme: settings.theme,
     });
     return { bytes, extension: "docx", contentType: DOCX_TYPE };
   }
@@ -111,7 +115,11 @@ async function render(
  * rendering; the PDF browser runs no script and loads nothing.
  */
 export function elearningExport(options: ElearningExportOptions = {}): DocumentExporter {
-  const settings: Settings = { ...options, timeoutMs: options.timeoutMs ?? 30_000 };
+  const settings: Settings = {
+    ...options,
+    timeoutMs: options.timeoutMs ?? 30_000,
+    theme: options.design === undefined ? undefined : designToExportTheme(options.design),
+  };
   const limiter = new Limiter(options.maxConcurrent ?? 2, options.maxQueued ?? 8);
   const formats: ExportFormat[] = options.pdf === undefined ? ["docx"] : ["pdf", "docx"];
   return {

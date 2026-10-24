@@ -19,10 +19,14 @@ import type { InlinedImage } from "../assets/inline-images.js";
 import { formatExportDate, labelsFor } from "../labels.js";
 import { docxBlocks } from "./docx-blocks.js";
 import { NumberingRegistry } from "./docx-numbering.js";
+import { docxStyles, resolveDocxTheme } from "./docx-theme.js";
+import type { DocxTheme, DocxThemeInput } from "./docx-theme.js";
 
 export type DocxOptions = {
   readonly images: ReadonlyMap<FileId, InlinedImage>;
   readonly pageSize: "A4" | "Letter";
+  /** Fonts and colors from the design file; the module's defaults otherwise. */
+  readonly theme?: DocxThemeInput | undefined;
 };
 
 /** Page sizes in twentieths of a point; usable width in pixels at 96 dpi after 2 cm margins. */
@@ -32,26 +36,7 @@ const PAGES = {
 } as const;
 const MARGIN = 1134;
 
-const STYLES = {
-  paragraphStyles: [
-    {
-      id: "Quote",
-      name: "Quote",
-      basedOn: "Normal",
-      run: { italics: true, color: "374151" },
-      paragraph: { indent: { left: 567 } },
-    },
-    {
-      id: "Code",
-      name: "Code",
-      basedOn: "Normal",
-      run: { font: "Consolas", size: 18 },
-      paragraph: { shading: { fill: "F3F4F6" }, spacing: { after: 0 } },
-    },
-  ],
-};
-
-function front(document: ExportDocument, exportedOn: string): FileChild[] {
+function front(document: ExportDocument, exportedOn: string, theme: DocxTheme): FileChild[] {
   const title = new Paragraph({
     heading: HeadingLevel.TITLE,
     children: [new TextRun(document.title)],
@@ -59,9 +44,13 @@ function front(document: ExportDocument, exportedOn: string): FileChild[] {
   const subtitle =
     document.subtitle === null
       ? []
-      : [new Paragraph({ children: [new TextRun({ text: document.subtitle, color: "4B5563" })] })];
+      : [
+          new Paragraph({
+            children: [new TextRun({ text: document.subtitle, color: theme.muted })],
+          }),
+        ];
   const date = new Paragraph({
-    children: [new TextRun({ text: exportedOn, color: "4B5563", size: 18 })],
+    children: [new TextRun({ text: exportedOn, color: theme.muted, size: 18 })],
   });
   if (!document.isCourse) return [title, ...subtitle];
   const toc = new TableOfContents(labelsFor(document.locale).tableOfContents, {
@@ -74,7 +63,7 @@ function front(document: ExportDocument, exportedOn: string): FileChild[] {
 function section(
   entry: ExportSection,
   document: ExportDocument,
-  options: DocxOptions,
+  options: DocxOptions & { readonly linkColor: string },
   numbering: NumberingRegistry,
 ): FileChild[] {
   const labels = labelsFor(document.locale);
@@ -86,6 +75,7 @@ function section(
     lessonUrl: entry.url,
     labels,
     contentWidth: PAGES[options.pageSize].contentWidth,
+    linkColor: options.linkColor,
   };
   const heading = document.isCourse
     ? [
@@ -99,14 +89,14 @@ function section(
   return [...heading, ...docxBlocks(entry.blocks, context)];
 }
 
-function pageFooter(exportedOn: string, pageLabel: string): Footer {
+function pageFooter(exportedOn: string, pageLabel: string, muted: string): Footer {
   return new Footer({
     children: [
       new Paragraph({
         alignment: AlignmentType.CENTER,
         children: [
-          new TextRun({ text: `${exportedOn} · ${pageLabel} `, size: 16, color: "6B7280" }),
-          new TextRun({ children: [PageNumber.CURRENT], size: 16, color: "6B7280" }),
+          new TextRun({ text: `${exportedOn} · ${pageLabel} `, size: 16, color: muted }),
+          new TextRun({ children: [PageNumber.CURRENT], size: 16, color: muted }),
         ],
       }),
     ],
@@ -124,17 +114,20 @@ export async function renderDocx(
   options: DocxOptions,
 ): Promise<Uint8Array> {
   const numbering = new NumberingRegistry();
+  const theme = resolveDocxTheme(options.theme);
   const labels = labelsFor(document.locale);
   const exportedOn = labels.exportedOn(formatExportDate(document.exportedAt, document.locale));
   const children = [
-    ...front(document, exportedOn),
-    ...document.sections.flatMap((entry) => section(entry, document, options, numbering)),
+    ...front(document, exportedOn, theme),
+    ...document.sections.flatMap((entry) =>
+      section(entry, document, { ...options, linkColor: theme.primary }, numbering),
+    ),
   ];
   const page = PAGES[options.pageSize];
   const file = new Document({
     title: document.title,
     creator: "BeBranded e-learning",
-    styles: STYLES,
+    styles: docxStyles(theme),
     numbering: numbering.config(),
     features: { updateFields: document.isCourse },
     sections: [
@@ -149,12 +142,12 @@ export async function renderDocx(
           default: new Header({
             children: [
               new Paragraph({
-                children: [new TextRun({ text: document.title, size: 16, color: "6B7280" })],
+                children: [new TextRun({ text: document.title, size: 16, color: theme.muted })],
               }),
             ],
           }),
         },
-        footers: { default: pageFooter(exportedOn, labels.page) },
+        footers: { default: pageFooter(exportedOn, labels.page, theme.muted) },
         children,
       },
     ],
