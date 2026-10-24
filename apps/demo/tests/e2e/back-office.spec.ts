@@ -134,10 +134,16 @@ test.describe("back-office", () => {
     await page.getByRole("link", { name: title }).click();
     await page.getByRole("link", { name: "Welcome" }).click();
     await expect(page.getByText("Hello from the editor")).toBeVisible();
-    await expect(page.locator(".el-figure img")).toHaveJSProperty("complete", true);
-    expect(
-      await page.locator(".el-figure img").evaluate((img: HTMLImageElement) => img.naturalWidth),
-    ).toBe(1);
+    // The picture loads lazily, so below the fold (mobile) it loads only once scrolled to.
+    // The lesson may re-render meanwhile: every poll finds the picture again.
+    await expect
+      .poll(() =>
+        page.locator(".el-figure img").evaluate((img: HTMLImageElement) => {
+          img.scrollIntoView();
+          return img.naturalWidth;
+        }),
+      )
+      .toBe(1);
     await page.getByRole("button", { name: "Mark as done" }).click();
     await expect(page.getByRole("status").filter({ hasText: "Lesson done" })).toBeVisible();
 
