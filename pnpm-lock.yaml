@@ -327,6 +327,9 @@ importers:
       '@bebranded/elearning-db':
         specifier: workspace:^
         version: link:../db
+      '@bebranded/elearning-export':
+        specifier: workspace:^
+        version: link:../export
       '@bebranded/elearning-video':
         specifier: workspace:^
         version: link:../video

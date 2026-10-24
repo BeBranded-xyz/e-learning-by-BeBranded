@@ -60,6 +60,7 @@ export async function insertCourse(db: Kysely<DB>, course: Course): Promise<void
       published_at: course.publishedAt,
       completion_rule: JSON.stringify(course.completionRule),
       enrollment_mode: course.enrollmentMode,
+      allow_learner_export: course.allowLearnerExport,
       locale: course.locale,
       metadata: JSON.stringify(course.metadata),
     })
@@ -84,6 +85,7 @@ export async function updateCourse(
       published_at: patch.publishedAt,
       completion_rule: patch.completionRule && JSON.stringify(patch.completionRule),
       enrollment_mode: patch.enrollmentMode,
+      allow_learner_export: patch.allowLearnerExport,
       locale: patch.locale,
       metadata: patch.metadata && JSON.stringify(patch.metadata),
     })

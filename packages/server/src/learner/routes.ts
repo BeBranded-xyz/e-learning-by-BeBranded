@@ -2,6 +2,7 @@ import type { RequestContext } from "../context.js";
 import type { Route } from "../http/router.js";
 import { getCourse, listCatalog } from "./catalog.js";
 import { enroll } from "./enroll.js";
+import { exportCourse, exportLesson } from "./export.js";
 import { completeLesson, getLesson, startLesson } from "./lessons.js";
 import { myProgress } from "./my-progress.js";
 import { openQuizAttempt } from "./quiz-open.js";
@@ -15,6 +16,16 @@ export const learnerRoutes: readonly Route<RequestContext>[] = [
     method: "GET",
     pattern: "/v1/courses/:slug",
     handle: (context, { slug }) => getCourse(context, slug),
+  },
+  {
+    method: "GET",
+    pattern: "/v1/courses/:id/export",
+    handle: (context, { id }) => exportCourse(context, id),
+  },
+  {
+    method: "GET",
+    pattern: "/v1/lessons/:id/export",
+    handle: (context, { id }) => exportLesson(context, id),
   },
   {
     method: "POST",

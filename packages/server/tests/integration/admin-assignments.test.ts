@@ -37,6 +37,7 @@ async function aCourseWith(
   const course = aCourse(tenant, {
     slug,
     enrollmentMode: "assignment_only",
+    allowLearnerExport: false,
     status: status === "published" ? "published" : "draft",
   });
   await seed(t.database, [

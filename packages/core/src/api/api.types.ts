@@ -1,3 +1,4 @@
+import type { ExportFormat } from "../ports/exporter.types.js";
 import type { JsonValue } from "../ports/storage.types.js";
 import type { LessonProgressStatus } from "../progress/progress.js";
 import type { ApiLessonQuiz } from "./quiz-api.types.js";
@@ -60,6 +61,8 @@ export type ApiProgress = {
 export type ApiCourse = ApiCourseSummary & {
   readonly chapters: readonly ApiChapter[];
   readonly progress: ApiProgress;
+  /** The formats this requester may export the course and its lessons to; empty when export is off. */
+  readonly export_formats: readonly ExportFormat[];
 };
 
 export type ApiLesson = {

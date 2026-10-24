@@ -1,4 +1,5 @@
 import type {
+  ExportFormat,
   ApiChapter,
   ApiCourse,
   ApiCourseSummary,
@@ -81,11 +82,15 @@ function presentChapter({ chapter, lessons }: ChapterView): ApiChapter {
   };
 }
 
-export function presentCourseView(view: CourseView): ApiCourse {
+export function presentCourseView(
+  view: CourseView,
+  exportFormats: readonly ExportFormat[] = [],
+): ApiCourse {
   return {
     ...presentCourseSummary(view.course, view.enrollment),
     chapters: view.chapters.map(presentChapter),
     progress: presentProgress(view.progress),
+    export_formats: exportFormats,
   };
 }
 

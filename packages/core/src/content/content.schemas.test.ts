@@ -22,6 +22,7 @@ function validCourse(): Record<string, unknown> {
     publishedAt: new Date("2026-01-01T00:00:00Z"),
     completionRule: { type: "all_required_lessons" },
     enrollmentMode: "self",
+    allowLearnerExport: false,
     locale: "en",
     metadata: {},
   };

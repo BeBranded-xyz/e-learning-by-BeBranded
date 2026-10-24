@@ -210,6 +210,8 @@ All routes are relative to the mount point (e.g. `/api/elearning`) and versioned
 | POST | `/v1/lessons/:id/quiz/attempts` | Open an attempt (201), or resume the open one (200): `{ id, attempt_number, started_at, expires_at, survey }`, where `survey` is SurveyJS JSON without answers ([07](07-quizzes.md#security-correct-answers-never-reach-the-client)) |
 | POST | `/v1/lessons/:id/quiz/attempts/:attemptId/submit` | `{ answers }` in SurveyJS shape. Answers `{ outcome, score, passed, points_earned, points_possible, status, best_score, attempts_remaining, next_attempt_at, corrections }`; a passing attempt completes the lesson. A retried submission gets the stored result |
 | GET | `/v1/me/progress` | Learner dashboard ("My training") |
+| GET | `/v1/lessons/:id/export?format=pdf\|docx` | The lesson as a PDF or Word attachment ([10](10-editor-extensions.md#export)); learners only when the course has `allow_learner_export`, admins always, drafts included |
+| GET | `/v1/courses/:id/export?format=pdf\|docx` | The course: cover, contents, then every lesson the requester can open (the whole tree for admins) |
 
 Content the learner cannot see answers **404, exactly like content that does not exist**, so ids reveal nothing. An assignment-only course stays invisible until the learner is assigned.
 
@@ -252,13 +254,14 @@ Every input is validated with Zod. Every error uses one envelope, `{ "error": { 
 
 | Status | Codes |
 |--------|-------|
-| 400 | `validation_failed`, `invalid_json`, `invalid_content`, `invalid_settings` |
+| 400 | `validation_failed`, `invalid_json`, `invalid_content`, `invalid_settings`, `export_format_unavailable`, `export_too_large` |
 | 401 | `unauthenticated`, `invalid_signature` (video webhook) |
-| 403 | `forbidden` (admin route without `isAdmin`), `origin_not_allowed` (CSRF check) |
+| 403 | `forbidden` (admin route without `isAdmin`), `origin_not_allowed` (CSRF check), `export_not_allowed` |
 | 404 | `not_found` |
 | 405 | `method_not_allowed` |
-| 409 | `completion_not_manual` (a video or quiz lesson cannot be marked as done), `slug_taken`, `not_a_video_lesson`, `video_not_ready`, `video_asset_in_use`, `not_a_quiz_lesson`, `quiz_not_ready`, `attempts_exhausted`, `quiz_changed` (the quiz was edited while the attempt was open; the attempt is voided), `quiz_attempt_open` |
+| 409 | `export_not_configured`, `completion_not_manual` (a video or quiz lesson cannot be marked as done), `slug_taken`, `not_a_video_lesson`, `video_not_ready`, `video_asset_in_use`, `not_a_quiz_lesson`, `quiz_not_ready`, `attempts_exhausted`, `quiz_changed` (the quiz was edited while the attempt was open; the attempt is voided), `quiz_attempt_open` |
 | 413 | `payload_too_large`, `file_too_large` |
-| 429 | `cooldown` (with `Retry-After` and `details.next_attempt_at`) |
+| 429 | `cooldown` (with `Retry-After` and `details.next_attempt_at`), `export_busy` |
 | 415 | `unsupported_media_type`, `file_type_not_allowed` |
 | 500 | `internal_error` |
+| 502 | `export_timeout` |

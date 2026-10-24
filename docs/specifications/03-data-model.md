@@ -43,6 +43,7 @@ erDiagram
 | published_at | timestamptz null | |
 | completion_rule | jsonb | e.g. `{ "type": "all_required_lessons" }` |
 | enrollment_mode | enum `self` \| `assignment_only` | whether learners can enroll themselves (see [05 — Permissions](05-permissions.md#enrollment-and-assignment)) |
+| allow_learner_export | boolean | default false: learners may export the course and its lessons ([10](10-editor-extensions.md#export)) |
 | locale | text | `en`, `fr`… |
 | metadata | jsonb | free-form field for the host |
 

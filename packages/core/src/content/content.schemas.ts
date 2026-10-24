@@ -49,6 +49,8 @@ export const courseSchema = z.strictObject({
   publishedAt: z.date().nullable(),
   completionRule: completionRuleSchema,
   enrollmentMode: enrollmentModeSchema,
+  /** Learners may export the course and its lessons to PDF and Word (spec 10); off by default. */
+  allowLearnerExport: z.boolean(),
   locale: localeSchema,
   metadata: z.record(z.string(), z.unknown()),
 });

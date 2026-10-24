@@ -46,6 +46,7 @@ function course(slug: string, title: string, overrides: Partial<Course> = {}): C
     publishedAt: new Date(),
     completionRule: { type: "all_required_lessons" },
     enrollmentMode: "self",
+    allowLearnerExport: false,
     locale: "en",
     metadata: {},
     ...overrides,

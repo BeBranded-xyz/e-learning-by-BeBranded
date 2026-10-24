@@ -35,6 +35,7 @@ export function presentAdminCourse(course: Course, scope: TenantScope): ApiAdmin
     status: course.status,
     published_at: iso(course.publishedAt),
     enrollment_mode: course.enrollmentMode,
+    allow_learner_export: course.allowLearnerExport,
     completion_rule: course.completionRule,
     locale: course.locale,
     metadata: course.metadata,

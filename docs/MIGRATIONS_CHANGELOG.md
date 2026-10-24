@@ -121,3 +121,14 @@ Last updated: 2026-10-24
 - RLS: enabled, no policy (default deny, as every table)
 - Types regenerated: yes
 - PR: #31
+
+## 20261024000400_course_learner_export
+- Date: 2026-10-24
+- Type: schema
+- Tables: courses
+- Summary: `allow_learner_export` (boolean, default false): learners may export the course and its lessons to PDF and Word (spec 10, spec 09 Q12). Admins can always export.
+- Breaking: no (additive, with a default)
+- Rollback: documented in header
+- RLS: unchanged
+- Types regenerated: yes
+- PR: this PR

@@ -85,6 +85,10 @@ export interface CourseAssignments {
 
 export interface Courses {
   /**
+   * Learners may export to PDF and Word; admins always can.
+   */
+  allow_learner_export: Generated<boolean>;
+  /**
    * When the course counts as completed, e.g. {"type": "all_required_lessons"}.
    */
   completion_rule: Generated<Json>;

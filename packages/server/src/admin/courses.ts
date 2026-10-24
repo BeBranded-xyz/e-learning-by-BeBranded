@@ -33,6 +33,7 @@ export async function createCourse(context: RequestContext): Promise<Response> {
     publishedAt: null,
     completionRule: body.completion_rule,
     enrollmentMode: body.enrollment_mode,
+    allowLearnerExport: body.allow_learner_export,
     locale: body.locale,
     metadata: body.metadata,
   };
@@ -73,6 +74,7 @@ export async function updateCourse(
         status: body.status,
         publishedAt,
         enrollmentMode: body.enrollment_mode,
+        allowLearnerExport: body.allow_learner_export,
         locale: body.locale,
         completionRule: body.completion_rule,
         metadata: body.metadata,

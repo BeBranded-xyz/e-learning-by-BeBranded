@@ -21,6 +21,8 @@ export type ApiAdminCourse = {
   readonly status: CourseStatus;
   readonly published_at: string | null;
   readonly enrollment_mode: EnrollmentMode;
+  /** Learners may export to PDF and Word (spec 10); admins always can. */
+  readonly allow_learner_export: boolean;
   readonly completion_rule: CompletionRule;
   readonly locale: string;
   readonly metadata: Readonly<Record<string, unknown>>;

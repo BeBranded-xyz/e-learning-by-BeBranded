@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import type {
+  DocumentExporter,
   EventHandlers,
   FileStorage,
   IdentityResolver,
@@ -75,11 +76,29 @@ const optionsSchema = z.strictObject({
     )
     .optional(),
   fileUploads: fileUploadsSchema.prefault({}),
+  /** PDF and Word export, e.g. elearningExport() from @bebranded/elearning-export (spec 10). */
+  exporter: z
+    .custom<DocumentExporter>(
+      (value) =>
+        typeof value === "object" && value !== null && "export" in value && "formats" in value,
+      "exporter must be a DocumentExporter, e.g. elearningExport()",
+    )
+    .optional(),
+  /** The host's page of a lesson, linked from exported videos and attachments; the site root by default. */
+  exportLessonUrl: fn<(lesson: ExportLessonLink) => string>("exportLessonUrl").optional(),
+  /** Exports one tenant may run at once (spec 10, "Export security"). */
+  exportsPerTenant: z.int().min(1).max(20).default(2),
   events: z.record(z.string(), fn<(event: never) => Promise<void>>("event handler")).default({}),
   logger: z.custom<Logger>((value) => typeof value === "object" && value !== null).optional(),
   clock: fn<() => Date>("clock").optional(),
   generateId: fn<() => string>("generateId").optional(),
 });
+
+export type ExportLessonLink = {
+  readonly courseId: string;
+  readonly courseSlug: string;
+  readonly lessonId: string;
+};
 
 export type ElearningOptions = z.input<typeof optionsSchema> & { events?: EventHandlers };
 
@@ -92,6 +111,9 @@ export type ResolvedOptions = {
   readonly video: VideoProvider | null;
   readonly files: FileStorage | null;
   readonly fileUploads: { readonly mimeTypes: readonly string[]; readonly maxBytes: number };
+  readonly exporter: DocumentExporter | null;
+  readonly exportLessonUrl: ((lesson: ExportLessonLink) => string) | null;
+  readonly exportsPerTenant: number;
   readonly events: EventHandlers;
   readonly logger: Logger;
   readonly clock: () => Date;
@@ -121,6 +143,9 @@ export function resolveOptions(input: ElearningOptions): ResolvedOptions {
     video: options.video ?? null,
     files: options.files ?? null,
     fileUploads: options.fileUploads,
+    exporter: options.exporter ?? null,
+    exportLessonUrl: options.exportLessonUrl ?? null,
+    exportsPerTenant: options.exportsPerTenant,
     events: input.events ?? {},
     logger: options.logger ?? consoleLogger,
     clock: options.clock ?? (() => new Date()),
