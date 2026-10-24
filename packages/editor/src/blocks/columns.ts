@@ -1,5 +1,6 @@
 import { createBlockSpec } from "@blocknote/core";
 
+import { columnDropExtension } from "./column-drop-extension.js";
 import { COLUMN_LIMITS, resizeColumns } from "./column-widths.js";
 
 /**
@@ -26,6 +27,8 @@ export const createColumnList = createBlockSpec(
       return { dom, slot: dom };
     },
   },
+  // Dropping blocks on a block's edge makes columns (spec 10).
+  [columnDropExtension()],
 );
 
 type ColumnBlock = { readonly id: string; readonly props: { readonly width: number } };

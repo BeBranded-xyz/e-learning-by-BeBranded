@@ -48,7 +48,8 @@ not needed.
   every BlockNote upgrade reruns the column tests. Widths are stored as
   ratios and rendered in 5% steps, so the learner page and exports need no
   inline styles (strict CSP).
-- **Follow-ups**: creating columns by dragging a block onto another
-  block's edge (B-061), browser journeys on desktop and mobile (B-062), a
-  localized name for the resize handle (B-063). Spec 10 records the
-  behavior. Quiz lessons have no columns.
+- **Follow-ups**: done since: creating columns by dropping blocks on a
+  block's edge (B-061, a ProseMirror plugin on the column list: its
+  indicator stays outside ProseMirror's DOM, since a change there would
+  re-render the side menu and cancel the drag), browser journeys (B-062),
+  a localized resize handle (B-063). Quiz lessons have no columns.
