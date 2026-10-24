@@ -28,6 +28,9 @@ export default defineConfig({
           environment: "jsdom",
           include: ["packages/*/src/**/*.test.tsx"],
           setupFiles: ["packages/react/tests/setup.ts", "packages/admin/tests/setup.ts"],
+          // jsdom with BlockNote editors and axe audits of whole pages: a full parallel run
+          // took a page audit past the 5 s default (CourseAdmin, 5.4 s).
+          testTimeout: 15_000,
         },
       },
       {
