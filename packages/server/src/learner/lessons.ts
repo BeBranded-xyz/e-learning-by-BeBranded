@@ -4,6 +4,7 @@ import { renderLessonHtml } from "@bebranded/elearning-editor/server";
 import type { RequestContext } from "../context.js";
 import { json } from "../http/responses.js";
 import { presentEnrollment, presentLesson } from "../presenters/learner.presenters.js";
+import { resolveFileUrls } from "../services/files.js";
 import { loadAccessibleLesson } from "../services/lesson-access.js";
 import { recordLessonProgress } from "../services/progress.js";
 import { loadLessonQuiz } from "../services/quiz.js";
@@ -14,10 +15,17 @@ import { loadLessonVideo } from "../services/video.js";
  * rendering so a document written by an older version or by hand never
  * reaches the page unchecked.
  */
-function renderContent(context: RequestContext, lessonId: string, content: unknown): string {
+async function renderContent(
+  context: RequestContext,
+  lessonId: string,
+  content: unknown,
+): Promise<string> {
   if (content === null) return "";
   const document = validateLessonDocument(content);
-  if (document.ok) return renderLessonHtml(document.value);
+  if (document.ok) {
+    const fileUrl = await resolveFileUrls(context, document.value);
+    return renderLessonHtml(document.value, { fileUrl });
+  }
   context.logger.error("stored lesson content is invalid", {
     lessonId,
     requestId: context.requestId,
@@ -38,7 +46,7 @@ export async function getLesson(
   const status = view.chapters
     .flatMap((chapter) => chapter.lessons)
     .find((entry) => entry.lesson.id === lesson.id)?.status;
-  const html = renderContent(context, lesson.id, lesson.content);
+  const html = await renderContent(context, lesson.id, lesson.content);
   const video = lesson.type === "video" ? await loadLessonVideo(context, lesson) : null;
   const quiz = lesson.type === "quiz" ? await loadLessonQuiz(context, lesson) : null;
   return json(

@@ -135,8 +135,10 @@ interface FileStorage {
 }
 ```
 
-- The server enforces an **allowlist of MIME types** (images, PDF by default) and a **maximum size** before issuing an upload URL.
-- Files are served through short-lived signed URLs, so a private bucket works.
+- The server enforces an **allowlist of MIME types** (PNG, JPEG, GIF, WebP and PDF by default; `fileUploads.mimeTypes`) and a **maximum size** (10 MB by default; `fileUploads.maxBytes`) before issuing an upload URL. Types a browser runs as a page (SVG, HTML, XHTML) cannot be allowed.
+- The browser sends the file with an HTTP `PUT` to the upload URL, with the file's `Content-Type`. The module stores the key in `files` and the document points to the file as `elearning-file:<id>`.
+- Saving a lesson or a quiz checks that every file it points to was uploaded by the admin's tenant (400 `invalid_content`, issue `unknown_file`).
+- Files are served through short-lived signed URLs (1 hour), so a private bucket works. They are signed when a lesson or a quiz attempt is rendered; a file that cannot be signed is left out and logged as a warning.
 - Ready-made adapters are planned for S3-compatible storage (AWS S3, Cloudflare R2) and Supabase Storage.
 
 ## 5. Events: `EventSink`
@@ -224,13 +226,15 @@ Content the learner cannot see answers **404, exactly like content that does not
 | GET, PUT | `/v1/admin/lessons/:id/quiz` | The quiz editor document, its version and `learners_attempted` (the edit warning); `PUT { document }` validates it and derives the graded definition |
 | POST | `/v1/admin/videos/uploads` | `{ lesson_id, max_duration_seconds }`: a one-time direct upload URL; uploading again replaces the lesson's video |
 | POST | `/v1/admin/reorder` | `{ course_id, chapters: [{ id, lesson_ids }] }`: the full new order of one owned course. Chapters and lessons are renumbered from 0 and lessons may move between chapters of the course, in one transaction. The body must name every chapter and lesson of the course exactly once: an unknown or missing id answers 409 `tree_out_of_date` (reload and retry), a repeated id 400. Answers the course tree. A moved lesson inherits its new chapter's access rules |
+| POST | `/v1/admin/files/uploads` | `{ mime_type, size_bytes }`: `{ file: { id, url, mime_type, size_bytes, created_at }, upload: { url, method: "PUT", headers } }` for an editor image or attachment; 415 `file_type_not_allowed`, 413 `file_too_large` |
+| GET | `/v1/admin/files/:id` | The file with a signed `read_url` and `read_url_expires_at`, for the editor |
 | POST | `/v1/admin/access-rules` | Rule on an owned course, chapter or lesson |
 | DELETE | `/v1/admin/access-rules/:id` | Remove a rule |
 | POST | `/v1/admin/assignments` | `{ course_id, audience, due_at? }`: assign a course of the tenant or of the shared catalog to a `role`, a `grade_min` or a `learner` (`{ type: "learner", learner_id }`). 409 `audience_without_access` when the course rules do not let that audience in (spec 05). A learner is enrolled at once (`source: assigned`, taking over an existing enrollment and keeping its progress); a role or grade enrolls matching learners on their next visit (`source: auto`, never changing an existing enrollment). Emits `enrollment.assigned` per enrolled learner. 201, or 200 when the same audience was already assigned (the due date is updated) |
 | GET | `/v1/admin/courses/:id/assignments` | The tenant's assignments of a readable course |
 | DELETE | `/v1/admin/assignments/:id` | Remove an assignment; the enrollments it created are kept |
 
-Publishing a course, chapter or lesson emits `content.published` once. Admins only write their own tenant's content: shared-catalog and other tenants' content answers 404. Then extra quiz attempts in phase 4. Plus `POST /v1/admin/files/uploads` (editor images and attachments) and `GET /v1/admin/reports/*` (tracking per course or per learner, CSV export).
+Publishing a course, chapter or lesson emits `content.published` once. Admins only write their own tenant's content: shared-catalog and other tenants' content answers 404. Then extra quiz attempts in phase 4, and `GET /v1/admin/reports/*` (tracking per course or per learner, CSV export).
 
 **System**
 
@@ -248,7 +252,7 @@ Every input is validated with Zod. Every error uses one envelope, `{ "error": { 
 | 404 | `not_found` |
 | 405 | `method_not_allowed` |
 | 409 | `completion_not_manual` (a video or quiz lesson cannot be marked as done), `slug_taken`, `not_a_video_lesson`, `video_not_ready`, `video_asset_in_use`, `not_a_quiz_lesson`, `quiz_not_ready`, `attempts_exhausted`, `quiz_changed` (the quiz was edited while the attempt was open; the attempt is voided), `quiz_attempt_open` |
-| 413 | `payload_too_large` |
+| 413 | `payload_too_large`, `file_too_large` |
 | 429 | `cooldown` (with `Retry-After` and `details.next_attempt_at`) |
-| 415 | `unsupported_media_type` |
+| 415 | `unsupported_media_type`, `file_type_not_allowed` |
 | 500 | `internal_error` |

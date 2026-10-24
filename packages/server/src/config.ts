@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import type {
   EventHandlers,
+  FileStorage,
   IdentityResolver,
   StorageAdapter,
   VideoProvider,
@@ -14,6 +15,33 @@ export type Logger = {
 
 const fn = <T>(name: string) =>
   z.custom<T>((value) => typeof value === "function", `${name} must be a function`);
+
+/** Images and PDF by default (spec 04, section 4). */
+const DEFAULT_FILE_MIME_TYPES = [
+  "image/png",
+  "image/jpeg",
+  "image/gif",
+  "image/webp",
+  "application/pdf",
+] as const;
+
+/** Types a browser may run as a page when the file URL is opened: never accepted. */
+const ACTIVE_MIME_TYPES = new Set(["image/svg+xml", "text/html", "application/xhtml+xml"]);
+
+const mimeTypeSchema = z
+  .string()
+  .regex(/^[a-z0-9.+-]+\/[a-z0-9.+-]+$/, "a lowercase type/subtype")
+  .refine((value) => !ACTIVE_MIME_TYPES.has(value), "active content types are not allowed");
+
+const fileUploadsSchema = z.strictObject({
+  mimeTypes: z
+    .array(mimeTypeSchema)
+    .min(1)
+    .max(50)
+    .default([...DEFAULT_FILE_MIME_TYPES]),
+  /** 10 MB by default, 1 GB at most. */
+  maxBytes: z.int().min(1).max(1_073_741_824).default(10_485_760),
+});
 
 const optionsSchema = z.strictObject({
   storage: z.custom<StorageAdapter>(
@@ -39,6 +67,14 @@ const optionsSchema = z.strictObject({
       "video must be a VideoProvider, e.g. cloudflareStream()",
     )
     .optional(),
+  /** The host's storage for editor images and attachments (spec 04, section 4). */
+  files: z
+    .custom<FileStorage>(
+      (value) => typeof value === "object" && value !== null && "createUpload" in value,
+      "files must be a FileStorage",
+    )
+    .optional(),
+  fileUploads: fileUploadsSchema.prefault({}),
   events: z.record(z.string(), fn<(event: never) => Promise<void>>("event handler")).default({}),
   logger: z.custom<Logger>((value) => typeof value === "object" && value !== null).optional(),
   clock: fn<() => Date>("clock").optional(),
@@ -54,6 +90,8 @@ export type ResolvedOptions = {
   readonly sharedCatalog: boolean;
   readonly allowedOrigins: readonly string[] | undefined;
   readonly video: VideoProvider | null;
+  readonly files: FileStorage | null;
+  readonly fileUploads: { readonly mimeTypes: readonly string[]; readonly maxBytes: number };
   readonly events: EventHandlers;
   readonly logger: Logger;
   readonly clock: () => Date;
@@ -81,6 +119,8 @@ export function resolveOptions(input: ElearningOptions): ResolvedOptions {
     sharedCatalog: options.sharedCatalog,
     allowedOrigins: options.allowedOrigins,
     video: options.video ?? null,
+    files: options.files ?? null,
+    fileUploads: options.fileUploads,
     events: input.events ?? {},
     logger: options.logger ?? consoleLogger,
     clock: options.clock ?? (() => new Date()),
