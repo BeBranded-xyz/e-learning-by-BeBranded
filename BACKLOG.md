@@ -22,12 +22,11 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | B-047 | Formatted quiz prompts and options (bold, links, code) instead of plain text, rendered safely in SurveyJS | feature | P3 | maintainers | spec 07, "Authoring" | 2026-10-23 | Formatting is dropped today |
 | B-048 | Add `quiz_attempts` (answers, scores) to the data lifecycle inventory and to `deleteLearnerData` / `exportLearnerData` (B-019) | ops | P2 | maintainers | `modules/data-lifecycle` | 2026-10-23 | Attempts cascade with lesson_progress |
 | B-049 | Recommended rate limit for quiz attempt opening and submission in the `rateLimit` hook (B-028) | feature | P2 | maintainers | spec 08 | 2026-10-23 | Attempt limits and cooldowns already bound grading |
-| B-053 | Delete orphan uploaded files (no document points to them for 24 h, or their lesson was deleted) through `FileStorage.delete`, as a scheduled function the host triggers; add `files` to the data lifecycle inventory | ops | P2 | maintainers | spec 04 section 4, `modules/data-lifecycle` | 2026-10-24 | Uploads are kept today |
+| B-053 | Delete orphan uploaded files (no document points to them for 24 h, or their lesson was deleted) through `FileStorage.delete`, as a scheduled function the host triggers; add `files` to the data lifecycle inventory | ops | P2 | maintainers | spec 04 section 4, `modules/data-lifecycle` | 2026-10-24 | Uploads and locally encoded demo videos are kept today |
 | B-054 | S3-compatible (R2, S3) and Supabase Storage `FileStorage` adapters (spec 04, section 4) | feature | P3 | maintainers | spec 04 | 2026-10-24 | Hosts implement the port themselves for now |
 | B-055 | Optional `resolveLearners(ids)` host hook so reports and the back-office show names next to `learner_id` (spec 04, section 1) | feature | P2 | maintainers | spec 04 | 2026-10-24 | Reports list ids only |
 | B-056 | Paginate and aggregate reports in SQL for large tenants (reports load every enrollment or attempt of one course or quiz) | feature | P3 | maintainers | `modules/performance`, B-025 | 2026-10-24 | Fine for pilot sizes |
 | B-057 | Content tree drag and drop is pointer-only (the move buttons are the accessible path, WCAG 2.5.7); revisit with an accessible sortable pattern if authors ask, and remove the `no-static-element-interactions` suppression in `DropZone.tsx` | debt | P3 | maintainers | `modules/frontend` | 2026-10-24 | |
-| B-058 | E2E of the back-office video upload: the demo's fake video provider answers an external upload URL; add a local upload endpoint to the fake provider (form and tus) and drive the uploader in Playwright | test | P2 | maintainers | `TEST_PLAN.md` #9 | 2026-10-24 | Component tests cover both protocols |
 | B-059 | Usability sessions with content authors on the editor and back-office before the phase 5 pilot; findings become regression tests | test | P1 | maintainers | `TEST_PLAN.md` #59 | 2026-10-24 | Needs people; cannot be automated |
 | B-067 | Deploy the public demo automatically after each merge into `main` (CI job, only when `apps/demo` or a package it uses changed), with a smoke test and the previous image kept for rollback | ops | P2 | maintainers | `modules/deployments`, `modules/infra` | 2026-10-24 | Redeployed by hand with a script on the server today |
 | B-068 | Nonce the design file's `<style>` elements (the demo layout's and the provider's `nonce` prop) once the nonce-based CSP lands (B-035); shadcn's Progress also sets an inline style | security | P2 | maintainers | spec 08, spec 11 | 2026-10-24 | The demo sends no CSP yet |
@@ -100,6 +99,9 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 
 | ID | Task | Closed on | PR |
 |---|---|---|---|
+| B-082 | Course authoring workspace: sidebar, chapter/lesson structure, validation controls, access guidance and read-only saved preview | 2026-10-24 | this PR |
+| B-083 | Bounded local video uploads, encoding, signed HLS playback and browser verification | 2026-10-24 | this PR |
+| B-058 | Back-office video upload driven end to end on desktop and mobile | 2026-10-24 | this PR |
 | | Technical specifications 01–10, repository security baseline | 2026-10-22 | direct commits before branch protection |
 | | AI-Dev-Rules adoption (Claude Code and Codex) | 2026-10-22 | #1 |
 | B-081 | Local E2E preparation builds all workspace packages before Next, preventing stale dist code from invalidating browser verification; French native-editor regression exposed it | 2026-10-24 | this PR |

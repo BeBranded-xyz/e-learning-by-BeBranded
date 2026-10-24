@@ -14,13 +14,14 @@ RUN corepack enable
 COPY . .
 RUN pnpm install --frozen-lockfile
 RUN pnpm build && pnpm --filter @bebranded/elearning-demo build
-# Encode the attributed demo excerpts at build time; the runtime needs no ffmpeg.
+# Encode the attributed demo excerpts at build time; runtime ffmpeg handles author uploads.
 RUN cd apps/demo && pnpm exec tsx -e 'import("./scripts/demo-video.ts").then((m) => m.ensureDemoVideo())'
 
 FROM node:24-bookworm-slim@sha256:55fb5f5a527ea2c5c4a95f963e48ef90aa38c7b346054fdc8ee9957a2b55d205
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 # Headless Chromium and its system libraries, for PDF export (same version as the demo's playwright-core).
 RUN npx -y playwright-core@1.64.1 install --with-deps chromium \
+  && apt-get update && apt-get install -y --no-install-recommends ffmpeg \
   && rm -rf /var/lib/apt/lists/* /root/.npm
 WORKDIR /app
 COPY --from=build --chown=node:node /app /app

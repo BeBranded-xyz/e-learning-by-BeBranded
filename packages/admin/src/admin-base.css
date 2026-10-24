@@ -1,0 +1,239 @@
+/*
+ * @bebranded/elearning-admin styles. Load after @bebranded/elearning-react's
+ * styles.css, whose --el-* tokens and buttons these rules reuse. Every rule
+ * is wrapped in :where() so any host style wins.
+ */
+
+@layer elearning {
+  /* Single-column grids use minmax(0, 1fr): a wide table scrolls in its wrapper instead of widening the page. */
+  :where(.el-admin) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--el-space-4);
+  }
+  :where(
+    .el-admin-list,
+    .el-admin-chapters,
+    .el-admin-lessons,
+    .el-admin-rules ul,
+    .el-admin-assignments ul
+  ) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--el-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  :where(.el-admin-list > li, .el-admin-rules li, .el-admin-assignments li, .el-admin-drop) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--el-space-2);
+    align-items: center;
+  }
+  :where(.el-admin-chapter) {
+    padding: var(--el-space-4);
+    border: 1px solid var(--el-color-border);
+    border-radius: var(--el-radius);
+    background: var(--el-color-surface);
+  }
+  :where(.el-admin-chapter-header) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--el-space-2);
+    align-items: center;
+  }
+  /* An empty list takes no room, so the next block keeps one step of space. */
+  :where(.el-admin ul:empty, .el-admin ol:empty) {
+    display: none;
+  }
+  /*
+   * Vertical rhythm of the back-office pages: blocks sit one step apart,
+   * whatever the host's CSS reset. Headings keep their own margins.
+   */
+  :where(
+      .el-admin-course,
+      .el-admin-lesson-page,
+      .el-admin-course > section,
+      .el-admin-lesson-page > section,
+      .el-admin-report,
+      .el-admin-grants,
+      .el-admin-rules,
+      .el-admin-chapter
+    )
+    > :where(* + :not(h1, h2, h3, h4, style, .el-visually-hidden)) {
+    margin-block: var(--el-space-4) 0;
+  }
+  :where(.el-admin-chapter-header h4) {
+    margin: 0;
+  }
+  :where(.el-admin-lesson) {
+    padding: var(--el-space-2);
+    border: 1px solid var(--el-color-border);
+    border-radius: var(--el-radius);
+    background: var(--el-color-background);
+  }
+  :where(.el-admin-lesson [draggable="true"]) {
+    cursor: grab;
+  }
+  :where(.el-admin-form) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--el-space-2);
+    max-inline-size: 40rem;
+  }
+  /* Fields with their label above, and the button on their baseline. */
+  :where(.el-admin-inline-form) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--el-space-2);
+    align-items: end;
+  }
+  :where(.el-admin input, .el-admin select, .el-admin textarea) {
+    min-block-size: 2.75rem;
+    padding: var(--el-space-2) var(--el-space-3);
+    border: 1px solid var(--el-color-input);
+    border-radius: var(--el-radius);
+    background: var(--el-color-background);
+    color: var(--el-color-text);
+    font: inherit;
+  }
+  :where(.el-admin-actions, .el-admin-confirm) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--el-space-2);
+    align-items: center;
+  }
+  :where(.el-tag[data-status="published"]) {
+    color: var(--el-color-success);
+  }
+  :where(.el-visually-hidden) {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  :where(.el-admin-warning) {
+    padding: var(--el-space-2) var(--el-space-4);
+    border-inline-start: 4px solid var(--el-color-danger);
+    border-radius: 0 var(--el-radius) var(--el-radius) 0;
+    background: var(--el-color-surface);
+  }
+  :where(.el-admin-editor, .el-admin-quiz-editor) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--el-space-4);
+  }
+  :where(.el-admin-editor .bn-container, .el-admin-quiz-editor .bn-container) {
+    border: 1px solid var(--el-color-border);
+    border-radius: var(--el-radius);
+  }
+  /* Room above the first block and below the last, inside the editor's frame. */
+  :where(.el-admin-editor .bn-editor, .el-admin-quiz-editor .bn-editor) {
+    padding-block: var(--el-space-4);
+  }
+  :where(.el-admin-question) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--el-space-2);
+    margin: 0 0 var(--el-space-4);
+    padding: var(--el-space-2) var(--el-space-4) var(--el-space-4);
+    border: 1px solid var(--el-color-border);
+    border-radius: var(--el-radius);
+  }
+  :where(.el-admin-question legend) {
+    padding-inline: var(--el-space-1);
+    font-weight: 600;
+  }
+  :where(.el-admin-issues) {
+    color: var(--el-color-danger);
+  }
+  /* Question blocks inside the quiz editor (packages/editor) */
+  :where(.el-quiz-question) {
+    padding: var(--el-space-2);
+    border-inline-start: 4px solid var(--el-color-primary);
+  }
+  :where(.el-quiz-question-type) {
+    font-size: 0.875rem;
+    color: var(--el-color-muted-foreground);
+  }
+  :where(.el-quiz-choice[data-correct="true"]) {
+    font-weight: 600;
+  }
+  :where(.el-admin-stats) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr));
+    gap: var(--el-space-2);
+    margin: 0;
+  }
+  :where(.el-admin-stats > div) {
+    padding: var(--el-space-2);
+    border: 1px solid var(--el-color-border);
+    border-radius: var(--el-radius);
+    background: var(--el-color-surface);
+  }
+  :where(.el-admin-stats dt) {
+    color: var(--el-color-muted-foreground);
+    font-size: 0.875rem;
+  }
+  :where(.el-admin-stats dd) {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  /* Columns in the lesson editor (spec 10): the frame of BlockNote's layout blocks. */
+  :where(.el-admin-editor .el-columns) {
+    display: flex;
+    gap: var(--el-space-4);
+  }
+  :where(.el-admin-editor .el-column) {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: var(--el-space-1);
+    border: 1px dashed var(--el-color-border);
+    border-radius: var(--el-radius);
+  }
+  :where(.el-admin-editor .el-column-content) {
+    min-height: 2.5rem;
+  }
+  /* The handle sits in the middle of the gap between two columns. */
+  :where(.el-admin-editor .el-column-resize) {
+    --el-column-handle: 0.75rem;
+
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: calc(var(--el-space-4) / -2 - var(--el-column-handle) / 2);
+    width: var(--el-column-handle);
+    min-height: 1.5rem;
+    cursor: col-resize;
+    touch-action: none;
+    border-radius: var(--el-radius);
+  }
+  :where(
+    .el-admin-editor .el-column-resize:hover,
+    .el-admin-editor .el-column-resize:focus-visible
+  ) {
+    background: var(--el-color-primary);
+    outline: none;
+  }
+  :where(.el-admin-editor .el-column:last-child > .el-column-resize) {
+    display: none;
+  }
+
+  /* The edge where a dragged block would make columns (spec 10); placed by the editor. */
+  :where(.el-column-drop-indicator) {
+    position: fixed;
+    z-index: 10;
+    inline-size: 4px;
+    border-radius: 2px;
+    background: var(--el-color-primary, Highlight);
+    pointer-events: none;
+  }
+  :where(.el-column-drop-indicator[hidden]) {
+    display: none;
+  }
+}

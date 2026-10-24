@@ -42,7 +42,7 @@ test.describe("quiz lesson", () => {
     await expect(page.getByText("Corrections")).toBeVisible();
     await expect(page.getByText("Lifts can stop between floors.")).toBeVisible();
     await expect(page.getByRole("status").filter({ hasText: "Lesson done" })).toBeVisible();
-    await page.getByRole("link", { name: "Back to the course" }).click();
+    await page.getByRole("link", { name: "Back to the course", exact: true }).click();
     await expect(page.getByText("Course completed")).toBeVisible();
   });
 

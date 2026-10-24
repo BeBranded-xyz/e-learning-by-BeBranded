@@ -8,6 +8,7 @@ import type {
 } from "../content/content.schemas.js";
 import type { ExportFormat } from "../ports/exporter.types.js";
 import type { EnrollmentSource, JsonValue } from "../ports/storage.types.js";
+import type { SurveyJson } from "../quiz/survey.js";
 import type { ApiLessonType, ApiVideoAssetStatus } from "./api.types.js";
 
 // Admin API contract (spec 04, section 8): implemented by the server presenters,
@@ -208,4 +209,14 @@ export type ApiQuizReport = {
     readonly passed: boolean;
     readonly last_attempt_at: string;
   }[];
+};
+
+/** Saved draft preview: read-only and answer-free, with no learner progress. */
+export type ApiLessonPreview = {
+  readonly id: string;
+  readonly title: string;
+  readonly type: ApiLessonType;
+  readonly html: string;
+  readonly video: { readonly url: string; readonly captions: ApiAdminVideo["captions"] } | null;
+  readonly survey: SurveyJson | null;
 };

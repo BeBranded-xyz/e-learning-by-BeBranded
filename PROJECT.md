@@ -100,7 +100,9 @@ Last updated: 2026-10-24
   plain CSS, theme 1 is the shadcn/ui kit published as a shadcn registry by the
   demo (`/r/`).
 - **Shared components**: `@bebranded/elearning-react` (learner, phase 1) and `@bebranded/elearning-admin` (back-office, phase 4), which reuses the learner provider, tokens, buttons and loading and error states.
-- **API contract types**: `packages/core/src/api/api.types.ts` (learner) and `admin-api.types.ts` (admin), implemented by the server presenters and consumed by the React and admin clients.
+- **API contract types**: `packages/core/src/api/api.types.ts` (learner) and `admin-api.types.ts` (admin), implemented by the server presenters and consumed by the React and admin clients. The authoring workspace uses a persistent
+  navigation and saved-draft preview endpoint; the demo encodes bounded local
+  MP4/WebM uploads with ffmpeg/ffprobe.
 - **Styling approach**: packages ship plain CSS in the `elearning` cascade
   layer, with low specificity (`:where()`), no imposed framework. The demo and the shadcn kit use Tailwind v4
   and shadcn/ui.

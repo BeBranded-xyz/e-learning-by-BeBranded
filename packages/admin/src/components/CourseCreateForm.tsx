@@ -41,8 +41,8 @@ export function CourseCreateForm({ onCreated }: CourseCreateFormProps) {
     });
   };
   return (
-    <form className="el-admin-form" onSubmit={submit} aria-labelledby={`${id}-heading`}>
-      <h3 id={`${id}-heading`}>{t.t("courses.new")}</h3>
+    <form id="new-course" className="el-admin-form" onSubmit={submit} aria-labelledby={id}>
+      <h3 id={id}>{t.t("courses.new")}</h3>
       <TextField
         label={t.t("field.title")}
         required

@@ -92,13 +92,20 @@ describe("CourseAdmin", () => {
     const title = await screen.findByLabelText("Title");
     await userEvent.clear(title);
     await userEvent.type(title, "Safety 2026 ");
+    await userEvent.clear(screen.getByLabelText("Language"));
+    await userEvent.type(screen.getByLabelText("Language"), "fr");
     await userEvent.selectOptions(screen.getByLabelText("Who can enroll"), "assignment_only");
     await userEvent.click(screen.getByRole("checkbox", { name: /Learners can download/ }));
-    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+    await userEvent.click(
+      within(screen.getByRole("form", { name: "Safety basics" })).getByRole("button", {
+        name: "Save",
+      }),
+    );
 
     expect(await screen.findByText("Saved")).toBeDefined();
     expect(bodyOf(requests, `PATCH /courses/${COURSE_ID}`)).toEqual({
       title: "Safety 2026",
+      locale: "fr",
       slug: "safety-basics",
       summary: null,
       enrollment_mode: "assignment_only",

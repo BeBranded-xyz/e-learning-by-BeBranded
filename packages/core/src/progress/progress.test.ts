@@ -124,3 +124,53 @@ describe("computeProgress", () => {
     );
   });
 });
+
+it("completes at the configured percentage of accessible required lessons", () => {
+  const lessons = [
+    aLesson(),
+    aLesson(),
+    aLesson({ isRequired: false }),
+    aLesson({ accessible: false }),
+  ];
+  const statuses = new Map<LessonId, LessonProgressStatus>([
+    [lessons[0]?.id ?? lessonIdSchema.parse(testUuid()), "completed"],
+  ]);
+  expect(
+    computeProgress(lessons, statuses, { type: "percentage", threshold: 0.5 }).isComplete,
+  ).toBe(true);
+  expect(
+    computeProgress(lessons, statuses, { type: "percentage", threshold: 0.51 }).isComplete,
+  ).toBe(false);
+  expect(computeProgress([], statuses, { type: "percentage", threshold: 0.01 }).isComplete).toBe(
+    false,
+  );
+});
+
+it("lowering the threshold never revokes completion for the same accessible lessons", () => {
+  fc.assert(
+    fc.property(
+      fc.array(fc.boolean(), { minLength: 1, maxLength: 30 }),
+      fc.integer({ min: 1, max: 100 }),
+      fc.integer({ min: 1, max: 100 }),
+      (completed, first, second) => {
+        const lessons = completed.map(() => aLesson());
+        const statuses = new Map<LessonId, LessonProgressStatus>(
+          lessons.map((lesson, index) => [
+            lesson.id,
+            completed[index] ? "completed" : "not_started",
+          ]),
+        );
+        const lower = computeProgress(lessons, statuses, {
+          type: "percentage",
+          threshold: Math.min(first, second) / 100,
+        });
+        const higher = computeProgress(lessons, statuses, {
+          type: "percentage",
+          threshold: Math.max(first, second) / 100,
+        });
+        if (higher.isComplete) expect(lower.isComplete).toBe(true);
+        expect(lower.ratio).toBe(higher.ratio);
+      },
+    ),
+  );
+});

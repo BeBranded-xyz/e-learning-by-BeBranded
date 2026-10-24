@@ -1,3 +1,4 @@
+import type { CompletionRule } from "../content/content.schemas.js";
 import type { LessonId } from "../content/ids.js";
 
 export type LessonProgressStatus = "not_started" | "in_progress" | "completed";
@@ -41,16 +42,18 @@ export type CourseProgress = {
 export function computeProgress(
   lessons: readonly ProgressLesson[],
   statuses: ReadonlyMap<LessonId, LessonProgressStatus>,
+  rule: CompletionRule = { type: "all_required_lessons" },
 ): CourseProgress {
   const counted = lessons.filter((lesson) => lesson.isRequired && lesson.accessible);
   const completedRequired = counted.filter(
     (lesson) => statuses.get(lesson.id) === "completed",
   ).length;
   const totalRequired = counted.length;
+  const ratio = totalRequired === 0 ? 0 : completedRequired / totalRequired;
   return {
     completedRequired,
     totalRequired,
-    ratio: totalRequired === 0 ? 0 : completedRequired / totalRequired,
-    isComplete: totalRequired > 0 && completedRequired === totalRequired,
+    ratio,
+    isComplete: totalRequired > 0 && ratio >= (rule.type === "percentage" ? rule.threshold : 1),
   };
 }

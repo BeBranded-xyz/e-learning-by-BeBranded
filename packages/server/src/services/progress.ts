@@ -59,7 +59,8 @@ export async function refreshEnrollment(
   const statuses = new Map<LessonId, LessonProgressStatus>(
     rows.map((row) => [row.lessonId, row.status]),
   );
-  const progress = computeProgress(progressLessons, statuses);
+  const course = await tx.findCourseById(context.scope, enrollment.courseId);
+  const progress = computeProgress(progressLessons, statuses, course?.completionRule);
   const completedNow = progress.isComplete && enrollment.completedAt === null;
   const updated = {
     ...enrollment,

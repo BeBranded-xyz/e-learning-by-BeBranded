@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { TextField } from "../components/Fields.js";
 import { QueryState, useUi } from "@bebranded/elearning-react";
 import type { ApiAdminCourse } from "@bebranded/elearning-core";
 
@@ -19,25 +21,44 @@ export function CourseAdminList({ courseHref, onCreated }: CourseAdminListProps)
   const { Badge } = useUi();
   const { t } = useAdmin();
   const courses = useAdminCourses();
+  const [search, setSearch] = useState("");
   if (courses.isPending) return <QueryState kind="loading" />;
   if (courses.isError) {
     return <QueryState kind="error" error={courses.error} onRetry={() => void courses.refetch()} />;
   }
-  const list = courses.data.data;
+  const all = courses.data.data;
+  const list = all.filter((course) =>
+    `${course.title} ${course.summary ?? ""}`
+      .toLocaleLowerCase()
+      .includes(search.toLocaleLowerCase()),
+  );
   return (
     <section className="el-admin-courses" aria-labelledby="el-admin-courses-title">
       <h2 id="el-admin-courses-title">{t.t("courses.title")}</h2>
-      {list.length === 0 ? <p className="el-meta">{t.t("courses.empty")}</p> : null}
-      <ul className="el-admin-list">
+      <p className="el-meta">{t.t("workspace.help")}</p>
+      <div className="el-author-toolbar">
+        <TextField label={t.t("courses.search")} value={search} onChange={setSearch} />
+        <a className="el-author-create-card" href="#new-course">
+          + {t.t("workspace.new")}
+        </a>
+      </div>
+      {all.length === 0 ? <p className="el-meta">{t.t("courses.empty")}</p> : null}
+      {all.length > 0 && list.length === 0 ? <p role="status">{t.t("courses.noResults")}</p> : null}
+      <ul className="el-admin-list el-author-course-grid">
         {list.map((course) => (
           <li key={course.id}>
-            <a href={courseHref(course)} aria-label={t.t("courses.open", { title: course.title })}>
-              {course.title}
+            <a
+              className="el-author-course-card"
+              href={courseHref(course)}
+              aria-label={t.t("courses.open", { title: course.title })}
+            >
+              <span className="el-author-card-title">{course.title}</span>
+              <span className="el-meta">{course.summary}</span>
+              <Badge tone={statusTone(course.status)} data-status={course.status}>
+                {t.t(`status.${course.status}`)}
+              </Badge>
+              {course.editable ? null : <Badge>{t.t("courses.shared")}</Badge>}
             </a>
-            <Badge tone={statusTone(course.status)} data-status={course.status}>
-              {t.t(`status.${course.status}`)}
-            </Badge>
-            {course.editable ? null : <Badge>{t.t("courses.shared")}</Badge>}
           </li>
         ))}
       </ul>

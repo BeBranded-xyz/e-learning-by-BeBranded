@@ -5,36 +5,36 @@ test.describe("learner journey", () => {
     await signInAs("staff");
     await page.goto("/");
 
-    await expect(page.getByRole("link", { name: "Workplace safety" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Workplace safety", exact: true })).toBeVisible();
     await expect(page.getByText("You are not enrolled in any course.")).toBeVisible();
     await expectAccessible(page);
 
-    await page.getByRole("link", { name: "Workplace safety" }).click();
+    await page.getByRole("link", { name: "Workplace safety", exact: true }).click();
     await expect(page.getByRole("heading", { level: 1, name: "Workplace safety" })).toBeVisible();
     await expect(page.getByText("0 of 2 required lessons done")).toBeVisible();
     await expectAccessible(page);
 
-    await page.getByRole("link", { name: "Welcome" }).click();
+    await page.getByRole("link", { name: "Welcome", exact: true }).click();
     await expect(page.getByRole("heading", { level: 2, name: "Why safety matters" })).toBeVisible();
     await expect(page.getByRole("note")).toContainText("you can come back");
     await expectAccessible(page);
     await page.getByRole("button", { name: "Mark as done" }).click();
     await expect(page.getByRole("status").filter({ hasText: "Lesson done" })).toBeVisible();
 
-    await page.getByRole("link", { name: "Back to the course" }).click();
+    await page.getByRole("link", { name: "Back to the course", exact: true }).click();
     await expect(page.getByText("1 of 2 required lessons done")).toBeVisible();
-    await page.getByRole("link", { name: "Fire procedures" }).click();
+    await page.getByRole("link", { name: "Fire procedures", exact: true }).click();
     await expect(page.getByRole("table")).toContainText("Go to the meeting point");
     await page.getByRole("button", { name: "Mark as done" }).click();
     await expect(page.getByRole("status").filter({ hasText: "Lesson done" })).toBeVisible();
 
-    await page.getByRole("link", { name: "Back to the course" }).click();
+    await page.getByRole("link", { name: "Back to the course", exact: true }).click();
     await expect(page.getByText("Course completed")).toBeVisible();
     await page.goto("/");
     await expect(
       page
         .getByRole("region", { name: "My training" })
-        .getByRole("link", { name: "Workplace safety" }),
+        .getByRole("link", { name: "Workplace safety", exact: true }),
     ).toBeVisible();
   });
 
@@ -49,7 +49,7 @@ test.describe("learner journey", () => {
     await expect(
       page
         .getByRole("region", { name: "My training" })
-        .getByRole("link", { name: "Workplace safety" }),
+        .getByRole("link", { name: "Workplace safety", exact: true }),
     ).toBeVisible();
   });
 });
@@ -58,8 +58,8 @@ test.describe("access rules", () => {
   test("staff do not see the managers' course, managers do", async ({ page, signInAs }) => {
     await signInAs("staff");
     await page.goto("/");
-    await expect(page.getByRole("link", { name: "Workplace safety" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Leading a team" })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "Workplace safety", exact: true })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Leading a team", exact: true })).toHaveCount(0);
 
     await page.goto("/training/leading-a-team");
     // Next.js adds its own (empty) route announcer with role="alert".
@@ -69,15 +69,17 @@ test.describe("access rules", () => {
 
     await signInAs("manager");
     await page.goto("/");
-    await expect(page.getByRole("link", { name: "Leading a team" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Leading a team", exact: true })).toBeVisible();
   });
 
   test("drafts are invisible to everyone on the learner side", async ({ page, signInAs }) => {
     await signInAs("admin");
     await page.goto("/");
 
-    await expect(page.getByRole("link", { name: "Workplace safety" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Next quarter's course" })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "Workplace safety", exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Next quarter's course", exact: true }),
+    ).toHaveCount(0);
   });
 
   test("signed-out visitors are asked to sign in", async ({ page }) => {
@@ -131,5 +133,5 @@ test("the demo sign-in switches users", async ({ page }) => {
 
   await page.getByRole("combobox", { name: "Demo profile" }).selectOption("manager");
 
-  await expect(page.getByRole("link", { name: "Leading a team" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Leading a team", exact: true })).toBeVisible();
 });

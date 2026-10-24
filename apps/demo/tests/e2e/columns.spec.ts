@@ -7,7 +7,7 @@ import { expect, expectAccessible, test } from "./fixtures";
 
 /** Writes a two-column lesson in the editor, widens the left column to 60%, and publishes. */
 async function writeColumns(page: Page) {
-  await page.getByRole("link", { name: "Layout" }).click();
+  await page.getByRole("link", { name: "Layout", exact: true }).click();
   await expect(page.getByRole("heading", { level: 2, name: "Layout" })).toBeVisible();
   const editor = page.locator(".bn-editor");
   await editor.click();
@@ -27,6 +27,7 @@ async function writeColumns(page: Page) {
 
   await page.getByRole("button", { name: "Save the content" }).click();
   await expect(page.getByRole("status").filter({ hasText: "Saved" })).toBeVisible();
+  await page.getByRole("button", { name: "Settings", exact: true }).click();
   await page.getByRole("form", { name: "Layout" }).getByRole("button", { name: "Publish" }).click();
   await expect(page.getByRole("button", { name: "Back to draft" })).toBeVisible();
 }
@@ -43,13 +44,14 @@ test.describe("columns", () => {
     await addLesson(page, "Basics", "Layout", "Text");
     await writeColumns(page);
     await page.goto(courseUrl);
+    await page.getByRole("button", { name: "Settings", exact: true }).click();
     await page.getByRole("form", { name: title }).getByRole("button", { name: "Publish" }).click();
     await expect(page.getByRole("form", { name: title }).getByText("Published")).toBeVisible();
 
     await signInAs("staff");
     await page.goto("/");
     await page.getByRole("link", { name: title }).click();
-    await page.getByRole("link", { name: "Layout" }).click();
+    await page.getByRole("link", { name: "Layout", exact: true }).click();
     const columns = page.locator(".el-columns > .el-column");
     await expect(columns).toHaveCount(2);
     await expect(columns.nth(0)).toHaveText("Left side");
@@ -73,7 +75,7 @@ test.describe("columns", () => {
   test("the seeded lesson shows its columns", async ({ page, signInAs }) => {
     await signInAs("staff");
     await page.goto("/training/workplace-safety");
-    await page.getByRole("link", { name: "Fire procedures" }).click();
+    await page.getByRole("link", { name: "Fire procedures", exact: true }).click();
 
     await expect(page.locator(".el-columns > .el-column")).toHaveCount(2);
     await expect(page.getByRole("heading", { level: 3, name: "Don't" })).toBeVisible();

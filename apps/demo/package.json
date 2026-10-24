@@ -32,7 +32,6 @@
     "@bebranded/elearning-next": "workspace:*",
     "@bebranded/elearning-react": "workspace:*",
     "@bebranded/elearning-server": "workspace:*",
-    "@bebranded/elearning-video": "workspace:*",
     "@blocknote/mantine": "0.56.0",
     "@mantine/core": "9.6.2",
     "@mantine/hooks": "9.6.2",

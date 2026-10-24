@@ -13,6 +13,7 @@ import { useUi } from "@bebranded/elearning-react";
 
 export type LessonSettingsProps = {
   readonly lesson: ApiAdminLesson;
+  readonly showRequired?: boolean;
   readonly onDeleted?: (() => void) | undefined;
 };
 
@@ -46,7 +47,7 @@ function LessonActions({ lesson, onDeleted }: LessonSettingsProps) {
 }
 
 /** Title, estimated time and whether the course needs the lesson; publication and deletion. */
-export function LessonSettings({ lesson, onDeleted }: LessonSettingsProps) {
+export function LessonSettings({ lesson, onDeleted, showRequired = true }: LessonSettingsProps) {
   const { Button } = useUi();
   const { t } = useAdmin();
   const [title, setTitle] = useState(lesson.title);
@@ -58,7 +59,11 @@ export function LessonSettings({ lesson, onDeleted }: LessonSettingsProps) {
   const submit = (event: SyntheticEvent) => {
     event.preventDefault();
     const estimated = minutes.trim() === "" ? null : Number(minutes);
-    save.mutate({ title: title.trim(), estimated_minutes: estimated, is_required: required });
+    save.mutate({
+      title: title.trim(),
+      estimated_minutes: estimated,
+      ...(showRequired ? { is_required: required } : {}),
+    });
   };
   return (
     <form className="el-admin-form" onSubmit={submit} aria-label={lesson.title}>
@@ -77,7 +82,9 @@ export function LessonSettings({ lesson, onDeleted }: LessonSettingsProps) {
         value={minutes}
         onChange={setMinutes}
       />
-      <CheckboxField label={t.t("field.required")} checked={required} onChange={setRequired} />
+      {showRequired ? (
+        <CheckboxField label={t.t("field.required")} checked={required} onChange={setRequired} />
+      ) : null}
       <div className="el-admin-actions">
         <Button variant="primary" type="submit" disabled={save.isPending}>
           {save.isPending ? t.t("action.saving") : t.t("action.save")}

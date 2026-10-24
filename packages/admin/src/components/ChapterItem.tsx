@@ -4,6 +4,7 @@ import type { ApiAdminLessonSummary, ApiCourseTree } from "@bebranded/elearning-
 
 import { useCourseMutation } from "../hooks/admin-queries.js";
 import { useAdmin } from "../provider/admin-context.js";
+import { ChapterSettings } from "./ChapterSettings.js";
 import { AddLessonForm } from "./AddLessonForm.js";
 import { DeleteButton } from "./DeleteButton.js";
 import { DropZone } from "./DropZone.js";
@@ -104,21 +105,31 @@ export function ChapterItem(props: ChapterItemProps) {
   const { chapter, editable } = props;
   return (
     <li className="el-admin-chapter" aria-labelledby={`chapter-${chapter.id}`}>
-      <div className="el-admin-chapter-header">
-        <h4 id={`chapter-${chapter.id}`}>{chapter.title}</h4>
-        <Badge tone={statusTone(chapter.status)} data-status={chapter.status}>
-          {t.t(`status.${chapter.status}`)}
-        </Badge>
-        {editable ? <ChapterActions {...props} /> : null}
-      </div>
-      <ChapterLessons {...props} />
-      {editable ? (
-        <AddLessonForm
-          courseId={props.courseId}
-          chapterId={chapter.id}
-          position={chapter.lessons.length}
-        />
-      ) : null}
+      <details open>
+        <summary className="el-admin-chapter-header">
+          <h4 id={`chapter-${chapter.id}`}>{chapter.title}</h4>
+          <Badge tone={statusTone(chapter.status)} data-status={chapter.status}>
+            {t.t(`status.${chapter.status}`)}
+          </Badge>
+        </summary>
+        {editable ? (
+          <div className="el-author-stack">
+            <details className="el-author-rename">
+              <summary>{t.t("action.edit")}</summary>
+              <ChapterSettings key={chapter.id} courseId={props.courseId} chapter={chapter} />
+            </details>
+            <ChapterActions {...props} />
+          </div>
+        ) : null}
+        <ChapterLessons {...props} />
+        {editable ? (
+          <AddLessonForm
+            courseId={props.courseId}
+            chapterId={chapter.id}
+            position={chapter.lessons.length}
+          />
+        ) : null}
+      </details>
     </li>
   );
 }

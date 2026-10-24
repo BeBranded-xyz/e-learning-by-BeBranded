@@ -20,20 +20,25 @@ export type CourseSettingsProps = {
 
 type Draft = Pick<
   ApiAdminCourse,
-  "title" | "slug" | "summary" | "enrollment_mode" | "allow_learner_export"
+  "title" | "slug" | "summary" | "locale" | "enrollment_mode" | "allow_learner_export"
 >;
 
 const PATTERN = "[a-z0-9]+(-[a-z0-9]+)*";
 
-type TextKey = "title" | "slug" | "summary";
+type TextKey = "title" | "slug" | "summary" | "locale";
 
 const TEXT_FIELDS: readonly {
   key: TextKey;
-  label: "field.title" | "field.slug" | "field.summary";
+  label: "field.title" | "field.slug" | "field.summary" | "field.locale";
   input: Partial<TextFieldProps>;
 }[] = [
   { key: "title", label: "field.title", input: { required: true, maxLength: 200 } },
   { key: "slug", label: "field.slug", input: { required: true, maxLength: 100, pattern: PATTERN } },
+  {
+    key: "locale",
+    label: "field.locale",
+    input: { required: true, pattern: "[a-z]{2}(-[A-Z]{2})?", maxLength: 5 },
+  },
   { key: "summary", label: "field.summary", input: { multiline: true, maxLength: 2000 } },
 ];
 
@@ -127,6 +132,7 @@ export function CourseSettings({ course, onDeleted }: CourseSettingsProps) {
   const { t } = useAdmin();
   const [draft, setDraft] = useState<Draft>(() => ({
     title: course.title,
+    locale: course.locale,
     slug: course.slug,
     summary: course.summary,
     enrollment_mode: course.enrollment_mode,

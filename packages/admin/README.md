@@ -41,7 +41,8 @@ import "@bebranded/elearning-admin/styles.css";
   admins. The server refuses every admin route to a learner whose identity
   has `isAdmin: false` anyway (spec 04).
 - `ElearningAdminProvider` takes the props of `ElearningProvider` (`apiBase`,
-  `locale`, `design`, `ui`, `messages`, `fetcher`) plus `adminMessages` to override
+  `sessionKey`, `locale`, `design`, `ui`, `messages`, `fetcher`) plus optional
+  `videoUploadHint` and `adminMessages` to override
   back-office strings.
 - `roles` suggests the host's roles in the audience fields (spec 05).
 - `LessonAdmin` edits one lesson: settings, then the editor of its type, then
@@ -68,3 +69,28 @@ import "@bebranded/elearning-admin/styles.css";
 - Supported: React 18.2 and 19, Node 22.12 or later.
 
 See [the integration specification](../../docs/specifications/04-integration.md).
+
+## Authoring workspace
+
+Mount one `ElearningAdminProvider` around the sidebar and routed content.
+`AuthorNavigation` receives `catalogHref`, `courseHref`, `lessonHref`, and
+optional `courseId`/`lessonId` for the current outline. The host controls the
+sidebar layout; the demo uses a persistent left column and a mobile toggle.
+
+`CourseWorkspace` replaces the long course page with Structure, Settings,
+Completion, Access, Tracking and Preview sections. `LessonWorkspace` provides
+Content, Settings, Completion, Access and Preview. Existing `CourseAdmin` and
+`LessonAdmin` remain supported. Pass `section` and `onSectionChange` to put
+sections in the host router, or let the workspace manage selection locally.
+Settings drafts survive section changes on the same page.
+
+Course completion supports all required lessons or a percentage of accessible
+required lessons. Lesson completion controls expose scroll requirements, verified video
+coverage, seeking/playback settings, and quiz passing score, attempts, timing,
+randomization and corrections. Access separates visibility rules from course
+assignment and enrollment; child rules cannot broaden parent access.
+
+Preview renders **saved** draft content at desktop or mobile width through
+`GET /v1/admin/lessons/:id/preview`. Save edits and refresh to see changes.
+It uses the learner renderer, signed video playback and a read-only quiz,
+without enrollment, progress, video sessions or quiz attempts.

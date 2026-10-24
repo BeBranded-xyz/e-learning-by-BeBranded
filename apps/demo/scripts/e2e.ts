@@ -49,7 +49,11 @@ const db = await database();
 let status: number;
 try {
   await prepare(db.url);
-  const env = { ...process.env, ELEARNING_DATABASE_URL: db.url };
+  const env = {
+    ...process.env,
+    ELEARNING_DATABASE_URL: db.url,
+    DEMO_PUBLIC_URL: "http://127.0.0.1:3100",
+  };
   status = 0;
   if (process.env.E2E_SKIP_BUILD !== "1") {
     // Next resolves the published package entries in dist, not Vitest's source condition.

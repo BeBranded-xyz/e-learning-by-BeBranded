@@ -17,10 +17,16 @@ import { getAdminQuiz, saveAdminQuiz } from "./quizzes.js";
 import { getQuizReport } from "./quiz-report.js";
 import { reorderCourse } from "./reorder.js";
 import { getCourseReport, getLearnerReport } from "./reports.js";
+import { previewLesson } from "./preview.js";
 import { createVideoUpload } from "./videos.js";
 
 /** Admin API (spec 04, section 8). `handleRequest` refuses these routes to non-admins. */
 export const adminRoutes: readonly Route<RequestContext>[] = [
+  {
+    method: "GET",
+    pattern: "/v1/admin/lessons/:id/preview",
+    handle: (context, { id }) => previewLesson(context, id),
+  },
   { method: "GET", pattern: "/v1/admin/courses", handle: (context) => listAdminCourses(context) },
   { method: "POST", pattern: "/v1/admin/courses", handle: (context) => createCourse(context) },
   {

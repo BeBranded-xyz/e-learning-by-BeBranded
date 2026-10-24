@@ -6,15 +6,14 @@ test("starts as a learner with the compact brand and source toolbar", async ({ p
   await expect(
     page.getByRole("link", { name: "Learning by BeBranded", exact: true }),
   ).toBeVisible();
-  await expect(page.getByRole("link", { name: "Visit BeBranded" })).toHaveAttribute(
+  await expect(page.getByRole("link", { name: "Visit BeBranded", exact: true })).toHaveAttribute(
     "href",
     "https://www.bebranded.xyz/",
   );
-  await expect(page.getByRole("link", { name: "Source code on GitHub" })).toHaveAttribute(
-    "href",
-    /github.com\/BeBranded-xyz/,
-  );
-  await expect(page.getByRole("link", { name: "Workplace safety" })).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Source code on GitHub", exact: true }),
+  ).toHaveAttribute("href", /github.com\/BeBranded-xyz/);
+  await expect(page.getByRole("link", { name: "Workplace safety", exact: true })).toBeVisible();
   await expectAccessible(page);
   await page.screenshot({ path: test.info().outputPath("demo-toolbar.png"), fullPage: true });
 });
@@ -25,12 +24,12 @@ test("persists language across learner and admin pages and isolates role changes
 }) => {
   await signInAs("manager");
   await page.goto("/");
-  await expect(page.getByRole("link", { name: "Leading a team" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Leading a team", exact: true })).toBeVisible();
   await page.getByRole("combobox", { name: "Language" }).selectOption("fr");
   await expect(page.locator("html")).toHaveAttribute("lang", "fr");
   await expect(page.getByRole("heading", { name: "Vos formations", exact: true })).toBeVisible();
   await page.getByRole("combobox", { name: "Profil de démonstration" }).selectOption("staff");
-  await expect(page.getByRole("link", { name: "Leading a team" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Leading a team", exact: true })).toHaveCount(0);
   await expect(page.getByRole("combobox", { name: "Langue" })).toHaveValue("fr");
   await page.getByRole("combobox", { name: "Profil de démonstration" }).selectOption("admin");
   await expect(page).toHaveURL(/\/admin$/);
@@ -47,7 +46,7 @@ test("opens the native lesson editor with French menus", async ({ page, signInAs
   await page.goto("/admin");
   await page.getByRole("combobox", { name: "Language" }).selectOption("fr");
   await page
-    .getByRole("link", { name: "Modifier Bienvenue dans votre espace de formation" })
+    .getByRole("link", { name: "Modifier Bienvenue dans votre espace de formation", exact: true })
     .click();
   await page.getByRole("link", { name: "Découvrir la plateforme", exact: true }).click();
   await expect(page.getByRole("button", { name: "Enregistrer le contenu" })).toBeVisible();

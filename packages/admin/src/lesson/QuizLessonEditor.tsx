@@ -33,6 +33,7 @@ function QuizDocumentEditor({ lesson, quiz }: { lesson: ApiAdminLesson; quiz: Ap
   const { Button } = useUi();
   const { admin, upload, t } = useAdmin();
   const editor = useCreateBlockNote({
+    domAttributes: { editor: { "aria-label": t.t("quiz.title") } },
     dictionary: t.locale.split("-")[0] === "fr" ? fr : en,
     schema: quizEditorSchema,
     initialContent: initialQuizContent(quiz.document),

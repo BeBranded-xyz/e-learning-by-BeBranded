@@ -281,3 +281,40 @@ Validated toolbar screenshots: [desktop](../screenshots/demo-desktop.png) and
 at editor creation. An in-place language switch preserves the current unsaved
 document; native menus adopt the new locale when the editor next opens (live
 dictionary replacement is tracked in B-080).
+
+## Course authoring workspace
+
+The back-office provides a persistent left navigation and a course outline. The
+hierarchy is course → chapters → lessons (the parts of a chapter). Whole course
+and lesson cards are links; chapter cards disclose their lessons and editing
+controls with a keyboard-operable button. Creation actions identify what they add.
+
+A course workspace separates Structure, Settings, Completion, Access, Tracking and
+Preview. Section navigation is reflected in the host URL. Settings include course
+language and enrollment mode; access explains default deny, inheritance and the
+difference between visibility and assignment. Chapters can be renamed, ordered,
+published and given their own audience rules. Lessons have content, validation,
+access and preview views with links back to the course outline.
+
+Course completion is either all accessible required lessons or a configurable
+percentage of accessible required lessons (1–100%). Optional or inaccessible
+lessons do not enter that denominator; a course with zero counted lessons never
+completes. Recorded completion dates remain final. Text lessons can require scroll
+to end; videos expose watched percentage, seeking, playback speed and background
+pause; quizzes expose passing score, attempts, cooldown, time limit and correction
+policy. These settings use the existing server-validated schemas.
+
+GET /v1/admin/lessons/:id/preview returns sanitized saved content, optional signed
+video playback and an answer-free quiz survey, including drafts. It is admin-only,
+tenant-scoped and read-only: no enrollment, viewing heartbeat or quiz attempt is
+created. Preview clearly labels saved content and provides desktop/mobile widths.
+It reuses learner content, video and quiz rendering. Unsaved edits are explicitly
+saved before refreshing preview; preview never publishes content or simulates
+permission eligibility. Access remains configured and enforced separately.
+
+The demo supplies a bounded local video upload provider so authors can upload and
+preview real media without a provider account. Uploads require the demo admin,
+same-origin requests and a signed, expiring one-time URL, enforce a size limit,
+and are transcoded with a deadline. Media is stored with the demo's persistent
+uploaded files; provider metadata and ready status are saved through the module's
+storage boundary. The runtime image includes the encoder for this demo adapter.

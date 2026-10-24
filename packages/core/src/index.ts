@@ -1,5 +1,4 @@
-export { AppError, ErrorKind, isAppError } from "./errors.js";
-export type { ErrorDetails } from "./errors.js";
+export { AppError, ErrorKind, isAppError, type ErrorDetails } from "./errors.js";
 export { err, ok } from "./result.js";
 export type { Err, Ok, Result } from "./result.js";
 
@@ -316,3 +315,5 @@ export type {
   ApiQuizCorrection,
   ApiQuizResult,
 } from "./api/quiz-api.types.js";
+
+export type { ApiLessonPreview } from "./api/admin-api.types.js";
