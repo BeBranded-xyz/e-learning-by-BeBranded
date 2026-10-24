@@ -113,6 +113,7 @@ export const en = {
   "quiz.group": "Questions",
   "columns.group": "Layout",
   "columns.insert": "{count} columns",
+  "columns.resize": "Resize the columns",
   "report.title": "Tracking",
   "report.empty": "Nobody is enrolled yet.",
   "report.enrolled": "Enrolled",

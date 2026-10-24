@@ -1,12 +1,12 @@
 import { BlockNoteEditor } from "@blocknote/core";
 import { describe, expect, it } from "vitest";
 
-import { lessonEditorSchema, quizEditorSchema } from "../schema.js";
+import { createLessonEditorSchema, lessonEditorSchema, quizEditorSchema } from "../schema.js";
 
 type Editor = ReturnType<typeof mounted>;
 
-function mounted() {
-  const editor = BlockNoteEditor.create({ schema: lessonEditorSchema });
+function mounted(schema = lessonEditorSchema) {
+  const editor = BlockNoteEditor.create({ schema });
   const host = document.createElement("div");
   document.body.append(host);
   editor.mount(host);
@@ -111,6 +111,16 @@ describe("column blocks", () => {
         );
       }
     }).toThrow();
+  });
+
+  it("name the resize handle in the editor's language", () => {
+    const english = mounted();
+    const french = mounted(
+      createLessonEditorSchema({ columnResizeLabel: "Redimensionner les colonnes" }),
+    );
+
+    expect(handles(english)[0]?.getAttribute("aria-label")).toBe("Resize columns");
+    expect(handles(french)[0]?.getAttribute("aria-label")).toBe("Redimensionner les colonnes");
   });
 
   it("are not part of the quiz editor", () => {
