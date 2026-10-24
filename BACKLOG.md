@@ -8,7 +8,7 @@
 > If the project uses an external tracker (GitHub Issues, Linear, Notion),
 > this file lists the tracker link per item and stays the index.
 
-Last updated: 2026-10-24
+Last updated: 2026-10-25
 Tracker: this file only (GitHub Issues once outside contributors arrive)
 
 ## Now (committed for the current iteration)
@@ -99,6 +99,7 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 
 | ID | Task | Closed on | PR |
 |---|---|---|---|
+| B-084 | Optional demo-wide Dashly help/feedback widget with private runtime configuration and cross-screen browser checks | 2026-10-25 | this PR |
 | B-082 | Course authoring workspace: sidebar, chapter/lesson structure, validation controls, access guidance and read-only saved preview | 2026-10-24 | this PR |
 | B-083 | Bounded local video uploads, encoding, signed HLS playback and browser verification | 2026-10-24 | this PR |
 | B-058 | Back-office video upload driven end to end on desktop and mobile | 2026-10-24 | this PR |

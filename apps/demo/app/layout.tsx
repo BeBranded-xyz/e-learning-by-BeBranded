@@ -9,6 +9,9 @@ import "./globals.css";
 
 import { designToShadcnCss } from "@bebranded/elearning-core/design";
 
+import { DemoFeedback } from "@/components/demo-feedback";
+import { readEnv } from "@/lib/env";
+
 import { DemoMain } from "@/components/demo-main";
 import { DemoProvider } from "@/components/demo-context";
 import { demoSession } from "@/lib/demo-session";
@@ -41,6 +44,7 @@ export default async function RootLayout({ children }: { readonly children: Reac
           </DemoProvider>
         </DemoMain>
         <SiteFooter messages={messages} />
+        <DemoFeedback widgetKey={readEnv().DEMO_DASHLY_WIDGET_KEY} />
       </body>
     </html>
   );

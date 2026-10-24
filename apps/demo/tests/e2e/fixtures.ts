@@ -7,7 +7,22 @@ import type { Page } from "@playwright/test";
 type Persona = "staff" | "manager" | "admin";
 
 /** Signs in as a demo persona with a fresh learner id, so tests never share progress. */
-export const test = base.extend<{ signInAs: (persona: Persona) => Promise<void> }>({
+export const test = base.extend<{
+  signInAs: (persona: Persona) => Promise<void>;
+  feedbackStub: undefined;
+}>({
+  feedbackStub: [
+    async ({ context }, use) => {
+      await context.route("https://app.usedashly.com/widget/v1.js", (route) =>
+        route.fulfill({
+          contentType: "application/javascript",
+          body: 'document.documentElement.dataset.feedbackLoaded = "true";',
+        }),
+      );
+      await use(undefined);
+    },
+    { auto: true },
+  ],
   signInAs: async ({ context, baseURL }, use) => {
     await use(async (persona) => {
       const url = baseURL ?? "";

@@ -5,6 +5,14 @@ const envSchema = z.object({
   ELEARNING_DATABASE_URL: z
     .string()
     .regex(/^postgres(ql)?:\/\//, "must be a postgres:// connection string"),
+  // Optional public embed identifier; configured privately by the demo host.
+  DEMO_DASHLY_WIDGET_KEY: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z
+      .string()
+      .regex(/^ws_k_[A-Za-z0-9_-]+$/)
+      .optional(),
+  ),
   // Optional: where the demo is served, for the lesson links inside PDF and Word exports.
   DEMO_PUBLIC_URL: z.url({ protocol: /^https?$/ }).default("http://localhost:3000"),
 });
