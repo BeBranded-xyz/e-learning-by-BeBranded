@@ -116,3 +116,25 @@ export function MoveButtons({ disabled, onMove, labels }: MoveButtonsProps) {
     </>
   );
 }
+
+export type CheckboxFieldProps = {
+  readonly label: string;
+  readonly checked: boolean;
+  readonly onChange: (checked: boolean) => void;
+};
+
+/** A checkbox inside its label, so the whole text is the click target. */
+export function CheckboxField({ label, checked, onChange }: CheckboxFieldProps) {
+  return (
+    <label className="el-admin-check">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(event) => {
+          onChange(event.target.checked);
+        }}
+      />
+      {label}
+    </label>
+  );
+}

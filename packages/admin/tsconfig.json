@@ -3,7 +3,8 @@
   "compilerOptions": {
     "noEmit": true,
     "jsx": "react-jsx",
-    "customConditions": ["@bebranded/source"]
+    "customConditions": ["@bebranded/source"],
+    "exactOptionalPropertyTypes": false
   },
   "include": ["src", "tests"]
 }

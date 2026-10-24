@@ -32,8 +32,9 @@ export function VideoPlayer({ lesson, video }: VideoPlayerProps) {
   return (
     <figure className="el-video">
       {/* Captions come as HLS subtitle tracks in the provider's manifest, or as the tracks
-          mapped below; the rule cannot see mapped children. Missing captions are flagged to
-          admins (spec 06, "Accessibility"; BACKLOG B-041). */}
+          mapped below; the rule cannot see mapped children. The back-office warns admins about
+          a ready video without captions (spec 06, "Accessibility"; VideoLessonEditor in
+          @bebranded/elearning-admin). */}
       {/* eslint-disable-next-line jsx-a11y-x/media-has-caption -- see the comment above */}
       <video
         ref={ref}

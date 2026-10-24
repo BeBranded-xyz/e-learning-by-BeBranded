@@ -29,6 +29,7 @@ export function ElearningAdminProvider({
     () => ({
       admin: createAdminClient(apiBase, fetcher),
       t: createAdminI18n(locale, adminMessages),
+      upload: fetcher ?? ((input: string, init: RequestInit) => fetch(input, init)),
     }),
     [apiBase, fetcher, locale, adminMessages],
   );
