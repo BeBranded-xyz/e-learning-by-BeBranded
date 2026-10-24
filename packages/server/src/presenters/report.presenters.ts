@@ -1,5 +1,8 @@
 import { isOverdue } from "@bebranded/elearning-core";
 import type {
+  ApiEnrollmentReportRow,
+  ApiQuizReport,
+  ApiReportSummary,
   Course,
   CourseReportSummary,
   Enrollment,
@@ -22,7 +25,7 @@ export const ENROLLMENT_COLUMNS = [
   "overdue",
 ] as const;
 
-export function presentEnrollmentRow(enrollment: Enrollment, now: Date) {
+export function presentEnrollmentRow(enrollment: Enrollment, now: Date): ApiEnrollmentReportRow {
   return {
     learner_id: enrollment.learnerId,
     course_id: enrollment.courseId,
@@ -36,13 +39,11 @@ export function presentEnrollmentRow(enrollment: Enrollment, now: Date) {
   };
 }
 
-export type EnrollmentRow = ReturnType<typeof presentEnrollmentRow>;
-
-export function enrollmentCsvRow(row: EnrollmentRow): CsvValue[] {
+export function enrollmentCsvRow(row: ApiEnrollmentReportRow): CsvValue[] {
   return ENROLLMENT_COLUMNS.map((column) => row[column]);
 }
 
-export function presentCourseSummary(summary: CourseReportSummary) {
+export function presentCourseSummary(summary: CourseReportSummary): ApiReportSummary {
   return {
     enrolled: summary.enrolled,
     started: summary.started,
@@ -64,7 +65,7 @@ export const QUIZ_LEARNER_COLUMNS = [
   "last_attempt_at",
 ] as const;
 
-export function presentQuizReport(report: QuizReport) {
+export function presentQuizReport(report: QuizReport): Omit<ApiQuizReport, "lesson_id" | "title"> {
   return {
     learners: report.learners,
     attempts: report.attempts,

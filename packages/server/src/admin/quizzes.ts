@@ -6,7 +6,7 @@ import {
   lessonIdSchema,
   quizIdSchema,
 } from "@bebranded/elearning-core";
-import type { LessonDetail, Quiz, QuizDefinition } from "@bebranded/elearning-core";
+import type { ApiAdminQuiz, LessonDetail, Quiz, QuizDefinition } from "@bebranded/elearning-core";
 
 import type { RequestContext } from "../context.js";
 import { json } from "../http/responses.js";
@@ -18,7 +18,11 @@ import { BODY_LIMITS, parseBody } from "./parse-body.js";
 const saveQuizBody = z.strictObject({ document: z.json() });
 
 /** The quiz for the editor, with the edit warning count of spec 07. Admin only: it holds the answers. */
-async function presentAdminQuiz(context: RequestContext, lesson: LessonDetail, quiz: Quiz | null) {
+async function presentAdminQuiz(
+  context: RequestContext,
+  lesson: LessonDetail,
+  quiz: Quiz | null,
+): Promise<ApiAdminQuiz> {
   return {
     lesson_id: lesson.id,
     document: quiz?.editorDocument ?? null,

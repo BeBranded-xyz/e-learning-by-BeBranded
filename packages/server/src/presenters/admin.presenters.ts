@@ -1,5 +1,15 @@
 import type {
+  ApiAccessRule,
+  ApiAdminChapter,
+  ApiAdminCourse,
+  ApiAdminLesson,
+  ApiAdminLessonSummary,
+  ApiAdminVideo,
+  ApiAssignment,
+  ApiAudience,
+  ApiCourseTree,
   AccessRule,
+  AssignmentAudience,
   Audience,
   Chapter,
   CourseAssignment,
@@ -15,7 +25,7 @@ const iso = (date: Date | null) => (date === null ? null : date.toISOString());
 /** Shared-catalog content is visible to every tenant but editable only by its owner (null tenant). */
 const editable = (tenantId: string | null, scope: TenantScope) => tenantId === scope.tenantId;
 
-export function presentAdminCourse(course: Course, scope: TenantScope) {
+export function presentAdminCourse(course: Course, scope: TenantScope): ApiAdminCourse {
   return {
     id: course.id,
     slug: course.slug,
@@ -32,7 +42,7 @@ export function presentAdminCourse(course: Course, scope: TenantScope) {
   };
 }
 
-export function presentChapter(chapter: Chapter) {
+export function presentChapter(chapter: Chapter): ApiAdminChapter {
   return {
     id: chapter.id,
     course_id: chapter.courseId,
@@ -42,7 +52,7 @@ export function presentChapter(chapter: Chapter) {
   };
 }
 
-function presentLessonSummary(lesson: LessonSummary) {
+function presentLessonSummary(lesson: LessonSummary): ApiAdminLessonSummary {
   return {
     id: lesson.id,
     course_id: lesson.courseId,
@@ -56,7 +66,7 @@ function presentLessonSummary(lesson: LessonSummary) {
   };
 }
 
-export function presentVideoAsset(asset: VideoAsset) {
+export function presentVideoAsset(asset: VideoAsset): ApiAdminVideo {
   return {
     id: asset.id,
     provider: asset.provider,
@@ -68,7 +78,10 @@ export function presentVideoAsset(asset: VideoAsset) {
 }
 
 /** `video` is null for other lesson types, and for a video lesson nothing was uploaded to yet. */
-export function presentLessonDetail(lesson: LessonDetail, video: VideoAsset | null = null) {
+export function presentLessonDetail(
+  lesson: LessonDetail,
+  video: VideoAsset | null = null,
+): ApiAdminLesson {
   return {
     ...presentLessonSummary(lesson),
     content: lesson.content,
@@ -78,13 +91,15 @@ export function presentLessonDetail(lesson: LessonDetail, video: VideoAsset | nu
   };
 }
 
-function presentAudience(audience: Audience) {
+function presentAudience(audience: AssignmentAudience): ApiAssignment["audience"];
+function presentAudience(audience: Audience): ApiAudience;
+function presentAudience(audience: Audience): ApiAudience {
   return audience.type === "learner"
     ? { type: "learner", learner_id: audience.learnerId }
     : audience;
 }
 
-export function presentAccessRule(rule: AccessRule) {
+export function presentAccessRule(rule: AccessRule): ApiAccessRule {
   return {
     id: rule.id,
     target_type: rule.targetType,
@@ -94,7 +109,7 @@ export function presentAccessRule(rule: AccessRule) {
   };
 }
 
-export function presentAssignment(assignment: CourseAssignment) {
+export function presentAssignment(assignment: CourseAssignment): ApiAssignment {
   return {
     id: assignment.id,
     course_id: assignment.courseId,
@@ -109,7 +124,7 @@ export function presentCourseTree(
   course: Course,
   tree: { chapters: Chapter[]; lessons: LessonSummary[]; rules: AccessRule[] },
   scope: TenantScope,
-) {
+): ApiCourseTree {
   return {
     ...presentAdminCourse(course, scope),
     chapters: tree.chapters.map((chapter) => ({
