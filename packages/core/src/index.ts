@@ -6,6 +6,7 @@ export type { Err, Ok, Result } from "./result.js";
 export {
   accessRuleIdSchema,
   assignmentIdSchema,
+  attemptGrantIdSchema,
   chapterIdSchema,
   courseIdSchema,
   enrollmentIdSchema,
@@ -20,6 +21,7 @@ export {
 export type {
   AccessRuleId,
   AssignmentId,
+  AttemptGrantId,
   ChapterId,
   CourseId,
   EnrollmentId,
@@ -227,6 +229,7 @@ export type {
 export type {
   Quiz,
   QuizAttempt,
+  QuizAttemptGrant,
   QuizAttemptStatus,
   QuizStanding,
   QuizStorageReads,

@@ -3,10 +3,14 @@ import type { QuizLessonSettings } from "./quiz.schemas.js";
 /** Network slack on the time limit: a submission this late after the deadline still counts. */
 export const QUIZ_TIMING = { submissionGraceSeconds: 30 } as const;
 
-/** The attempts that count against `maxAttempts`: submitted or expired, never voided. */
+/**
+ * The attempts that count against `maxAttempts` (submitted or expired, never
+ * voided), and the extra attempts admins granted the learner (spec 07).
+ */
 export type AttemptHistory = {
   readonly closedAttempts: number;
   readonly lastClosedAt: Date | null;
+  readonly extraAttempts: number;
 };
 
 export type Eligibility =
@@ -16,10 +20,10 @@ export type Eligibility =
 
 type AttemptRules = Pick<QuizLessonSettings, "maxAttempts" | "cooldownMinutes">;
 
-/** Null for unlimited attempts. */
+/** Null for unlimited attempts. Granted attempts add to the lesson's maximum. */
 export function attemptsRemaining(history: AttemptHistory, rules: AttemptRules): number | null {
   if (rules.maxAttempts === null) return null;
-  return Math.max(0, rules.maxAttempts - history.closedAttempts);
+  return Math.max(0, rules.maxAttempts + history.extraAttempts - history.closedAttempts);
 }
 
 /** When the cooldown after the last attempt ends; null when there is none to wait for. */

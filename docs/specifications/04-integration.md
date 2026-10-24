@@ -224,6 +224,7 @@ Content the learner cannot see answers **404, exactly like content that does not
 | POST | `/v1/admin/lessons` | Create a text, video or quiz lesson; content and settings validated against the type. Video and quiz lessons start as drafts |
 | GET, PATCH, DELETE | `/v1/admin/lessons/:id` | Stored document and video for the editor; edit or publish (a video lesson only once its video is ready, a quiz lesson once its questions are saved); delete |
 | GET, PUT | `/v1/admin/lessons/:id/quiz` | The quiz editor document, its version and `learners_attempted` (the edit warning); `PUT { document }` validates it and derives the graded definition |
+| GET, POST | `/v1/admin/lessons/:id/quiz/attempt-grants` | List the tenant's grants (`?learner_id=` for one learner); `{ learner_id, extra_attempts }` grants 1 to 100 extra attempts and answers the grant with the learner's `attempts_used` and `attempts_remaining` (spec 07) |
 | POST | `/v1/admin/videos/uploads` | `{ lesson_id, max_duration_seconds }`: a one-time direct upload URL; uploading again replaces the lesson's video |
 | POST | `/v1/admin/reorder` | `{ course_id, chapters: [{ id, lesson_ids }] }`: the full new order of one owned course. Chapters and lessons are renumbered from 0 and lessons may move between chapters of the course, in one transaction. The body must name every chapter and lesson of the course exactly once: an unknown or missing id answers 409 `tree_out_of_date` (reload and retry), a repeated id 400. Answers the course tree. A moved lesson inherits its new chapter's access rules |
 | POST | `/v1/admin/files/uploads` | `{ mime_type, size_bytes }`: `{ file: { id, url, mime_type, size_bytes, created_at }, upload: { url, method: "PUT", headers } }` for an editor image or attachment; 415 `file_type_not_allowed`, 413 `file_too_large` |
@@ -234,7 +235,7 @@ Content the learner cannot see answers **404, exactly like content that does not
 | GET | `/v1/admin/courses/:id/assignments` | The tenant's assignments of a readable course |
 | DELETE | `/v1/admin/assignments/:id` | Remove an assignment; the enrollments it created are kept |
 
-Publishing a course, chapter or lesson emits `content.published` once. Admins only write their own tenant's content: shared-catalog and other tenants' content answers 404. Then extra quiz attempts in phase 4, and `GET /v1/admin/reports/*` (tracking per course or per learner, CSV export).
+Publishing a course, chapter or lesson emits `content.published` once. Admins only write their own tenant's content: shared-catalog and other tenants' content answers 404. Then `GET /v1/admin/reports/*` (tracking per course or per learner, CSV export).
 
 **System**
 

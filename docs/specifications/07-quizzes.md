@@ -71,7 +71,7 @@ Stored in the lesson's `settings` (spec 03), validated by `quizLessonSettingsSch
 ## Attempts
 
 - **Opening**: `POST /lessons/:id/quiz/attempts` opens an attempt (`started_at`, seed, quiz version) and returns its survey. While an attempt is open, opening again returns the **same** attempt, so reloading the page neither reshuffles nor costs an attempt.
-- **`maxAttempts`**: counts submitted and expired attempts. Beyond it, opening returns `409 attempts_exhausted`. Extra attempts granted by an admin come with the back-office (phase 4).
+- **`maxAttempts`**: counts submitted and expired attempts. Beyond it, opening returns `409 attempts_exhausted`. An admin can grant one learner extra attempts on top of the maximum (`POST /v1/admin/lessons/:id/quiz/attempt-grants`, 1 to 100 at a time). Grants add up, are never edited, and record who granted them and when; they do not shorten a running cooldown.
 - **`cooldownMinutes`**: minimum delay after the last closed attempt. Opening earlier returns `429 cooldown` with `Retry-After` and `details.next_attempt_at`.
 - **Time limit**: `expires_at = started_at + timeLimitMinutes`. A submission is accepted up to 30 seconds after it (network slack). Later, or when an expired attempt is found open, the attempt is closed as **expired** with a score of 0; it counts as an attempt.
 - **Submitting**: `POST /lessons/:id/quiz/attempts/:attemptId/submit`. Submitting an attempt that is already closed returns its stored result (a network retry never grades twice or costs an attempt).

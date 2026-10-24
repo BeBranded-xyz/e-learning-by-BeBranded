@@ -177,6 +177,7 @@ describe("quiz attempts", () => {
 
     expect(await standing(quiz)).toEqual({
       closedAttempts: 2,
+      extraAttempts: 0,
       lastClosedAt: new Date("2026-03-01T10:30:00Z"),
       bestScore: 0.9,
       passed: true,
@@ -193,6 +194,7 @@ describe("quiz attempts", () => {
 
     expect(await standing(quiz)).toEqual({
       closedAttempts: 0,
+      extraAttempts: 0,
       lastClosedAt: null,
       bestScore: null,
       passed: false,

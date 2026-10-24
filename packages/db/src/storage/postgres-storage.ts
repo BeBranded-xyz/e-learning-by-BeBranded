@@ -21,6 +21,7 @@ import * as files from "./files.queries.js";
 import * as lessons from "./lessons.queries.js";
 import * as outbox from "./outbox.queries.js";
 import * as progress from "./progress.queries.js";
+import * as grants from "./quiz-grants.queries.js";
 import * as quiz from "./quiz.queries.js";
 import * as video from "./video.queries.js";
 
@@ -67,6 +68,8 @@ function reads(db: Kysely<DB>): StorageReads {
     findQuizStanding: (scope, learnerId, lessonId) =>
       quiz.findQuizStanding(db, scope, { learnerId, lessonId }),
     countQuizLearners: (scope, lessonId) => quiz.countQuizLearners(db, scope, lessonId),
+    listQuizAttemptGrants: (scope, lessonId, learnerId) =>
+      grants.listQuizAttemptGrants(db, scope, lessonId, learnerId),
     listCourseAssignments: (scope, courseId) =>
       assignments.listCourseAssignments(db, scope, courseId),
     listPendingAssignments: (scope, learner) =>
@@ -109,6 +112,7 @@ function writes(db: Kysely<DB>): StorageWrites {
     lockQuizAttempt: (scope, learnerId, attemptId) =>
       quiz.lockQuizAttempt(db, scope, learnerId, attemptId),
     closeQuizAttempt: (scope, attempt) => quiz.closeQuizAttempt(db, scope, attempt),
+    insertQuizAttemptGrant: (scope, grant) => grants.insertQuizAttemptGrant(db, scope, grant),
     saveCourseAssignment: (scope, assignment) =>
       assignments.saveCourseAssignment(db, scope, assignment),
     deleteCourseAssignment: (scope, id) => assignments.deleteCourseAssignment(db, scope, id),

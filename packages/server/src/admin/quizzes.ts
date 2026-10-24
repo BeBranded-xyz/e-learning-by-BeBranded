@@ -28,7 +28,7 @@ async function presentAdminQuiz(context: RequestContext, lesson: LessonDetail, q
   };
 }
 
-async function loadQuizLesson(context: RequestContext, rawId: string | undefined) {
+export async function loadQuizLesson(context: RequestContext, rawId: string | undefined) {
   const lesson = found(
     await context.storage.findLesson(context.scope, parseId(lessonIdSchema, rawId)),
   );

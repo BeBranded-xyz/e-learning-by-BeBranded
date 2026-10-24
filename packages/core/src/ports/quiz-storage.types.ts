@@ -1,4 +1,4 @@
-import type { LearnerId, LessonId, QuizAttemptId, QuizId } from "../content/ids.js";
+import type { AttemptGrantId, LearnerId, LessonId, QuizAttemptId, QuizId } from "../content/ids.js";
 import type { AttemptHistory } from "../quiz/attempts.js";
 import type { QuestionResult } from "../quiz/grade.js";
 import type { QuizAnswers, QuizDefinition } from "../quiz/quiz.schemas.js";
@@ -41,7 +41,17 @@ export type QuizAttempt = {
   readonly passed: boolean | null;
 };
 
-/** A learner's standing on a quiz, aggregated by the storage. */
+/** Extra attempts an admin granted one learner on one quiz lesson (spec 07, "Attempts"). */
+export type QuizAttemptGrant = {
+  readonly id: AttemptGrantId;
+  readonly lessonId: LessonId;
+  readonly learnerId: LearnerId;
+  readonly extraAttempts: number;
+  readonly grantedBy: LearnerId;
+  readonly createdAt: Date;
+};
+
+/** A learner's standing on a quiz, aggregated by the storage; `extraAttempts` sums their grants. */
 export type QuizStanding = AttemptHistory & {
   readonly bestScore: number | null;
   readonly passed: boolean;
@@ -57,6 +67,12 @@ export type QuizStorageReads = {
   ): Promise<QuizStanding>;
   /** Learners of the tenant with at least one closed attempt (the edit warning of spec 07). */
   countQuizLearners(scope: TenantScope, lessonId: LessonId): Promise<number>;
+  /** The tenant's grants on a lesson, oldest first; only one learner's with `learnerId`. */
+  listQuizAttemptGrants(
+    scope: TenantScope,
+    lessonId: LessonId,
+    learnerId?: LearnerId,
+  ): Promise<QuizAttemptGrant[]>;
 };
 
 export type QuizStorageWrites = {
@@ -75,4 +91,6 @@ export type QuizStorageWrites = {
   ): Promise<QuizAttempt | null>;
   /** Writes the closing fields of an attempt (status, closed_at, answers, results, score). */
   closeQuizAttempt(scope: TenantScope, attempt: QuizAttempt): Promise<void>;
+  /** Appends a grant for the scope's tenant; grants are never edited. */
+  insertQuizAttemptGrant(scope: TenantScope, grant: QuizAttemptGrant): Promise<void>;
 };

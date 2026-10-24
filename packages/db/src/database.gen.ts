@@ -217,6 +217,22 @@ export interface Lessons {
   updated_at: Generated<Timestamp>;
 }
 
+export interface QuizAttemptGrants {
+  created_at: Generated<Timestamp>;
+  extra_attempts: number;
+  /**
+   * learner_id of the admin who granted the attempts.
+   */
+  granted_by: string;
+  id: Generated<string>;
+  learner_id: string;
+  lesson_id: string;
+  /**
+   * Tenant of the admin and the learner (the lesson may be shared).
+   */
+  tenant_id: string | null;
+}
+
 export interface QuizAttempts {
   /**
    * Raw answers as submitted; null until submitted.
@@ -366,6 +382,7 @@ export interface DB {
   files: Files;
   lesson_progress: LessonProgress;
   lessons: Lessons;
+  quiz_attempt_grants: QuizAttemptGrants;
   quiz_attempts: QuizAttempts;
   quizzes: Quizzes;
   schema_migrations: SchemaMigrations;
