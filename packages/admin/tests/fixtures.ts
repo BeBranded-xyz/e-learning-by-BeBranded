@@ -18,6 +18,7 @@ export const course: ApiAdminCourse = {
   status: "draft",
   published_at: null,
   enrollment_mode: "self",
+  allow_learner_export: false,
   completion_rule: { type: "all_required_lessons" },
   locale: "en",
   metadata: {},

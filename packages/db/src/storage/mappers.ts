@@ -48,6 +48,7 @@ export function toCourse(row: Selectable<Courses>): Course {
     publishedAt: row.published_at,
     completionRule: completionRuleSchema.parse(row.completion_rule),
     enrollmentMode: row.enrollment_mode,
+    allowLearnerExport: row.allow_learner_export,
     locale: row.locale,
     metadata: jsonObjectSchema.parse(row.metadata),
   });

@@ -39,6 +39,8 @@ Paths are relative to the host's mount point. Auth: `client` = the host's sessio
 | `openQuizAttempt` | POST `/v1/lessons/:id/quiz/attempts` | Open or resume a quiz attempt; SurveyJS JSON without answers | `@bebranded/elearning-react` | client | active | maintainers | spec 07 |
 | `submitQuizAttempt` | POST `/v1/lessons/:id/quiz/attempts/:attemptId/submit` | Server-side grading, completion, corrections | `@bebranded/elearning-react` | client | active | maintainers | spec 07 |
 | `myProgress` | GET `/v1/me/progress` | Learner's enrollments | `@bebranded/elearning-react` | client | active | maintainers | spec 04, section 8 |
+| `exportLesson` | GET `/v1/lessons/:id/export` | A lesson as PDF or Word, through the host's exporter | `@bebranded/elearning-react`, `@bebranded/elearning-admin` | client | active | maintainers | spec 10 |
+| `exportCourse` | GET `/v1/courses/:id/export` | A course as PDF or Word | `@bebranded/elearning-react`, `@bebranded/elearning-admin` | client | active | maintainers | spec 10 |
 | `listAdminCourses` | GET `/v1/admin/courses` | All courses of the tenant and the shared catalog | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8 |
 | `createCourse` | POST `/v1/admin/courses` | Create a draft course | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8 |
 | `getAdminCourse` | GET `/v1/admin/courses/:id` | Course tree with drafts and rules | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8 |

@@ -60,7 +60,7 @@ describe("elearning CLI", () => {
     expect(await runCli(["migrate"], { ELEARNING_DATABASE_URL: inject("databaseUrl") }, io)).toBe(
       0,
     );
-    expect(output.out).toMatch(/^Applied \d migration\(s\)/);
+    expect(output.out).toMatch(/^Applied \d+ migration\(s\)/);
   });
 
   it.each([[[]], [["deploy"]], [["migrate", "extra"]], [["migrate", "--unknown"]]])(

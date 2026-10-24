@@ -110,9 +110,13 @@ Multi-column editing is the hardest piece of this document: nested containers in
 | One lesson | `GET /lessons/:id/export?format=pdf\|docx` | Text lessons and notes of video and quiz lessons |
 | A whole course | `GET /courses/:id/export?format=pdf\|docx` | Cover page, generated table of contents, chapters as sections |
 
+- The host passes `exporter: elearningExport({ pdf })` to `createElearning`, and optionally `exportLessonUrl({ courseId, courseSlug, lessonId })` for the links back to its lesson pages (the site root otherwise) and `exportsPerTenant` (2 at once by default, then 429 `export_busy`). Without `exporter`, the routes answer 409 `export_not_configured` and course pages list no format.
+- The course page (`GET /v1/courses/:slug`) answers `export_formats`: the formats this requester may use, empty when export is off for them.
+- `?format=` is `pdf` or `docx` (400 otherwise; 400 `export_format_unavailable` for a format the exporter lacks). The file is an attachment, never cached.
 - **Access rules apply**: an export only contains content the requester can access. A course export skips inaccessible lessons, as the course page does.
 - **Admins** can export drafts. Learners only export published content.
-- Course-level settings let admins disable export for learners (`allowLearnerExport`, default `false`).
+- Course-level settings let admins enable export for learners (`allow_learner_export`, default `false`); otherwise learners get 403 `export_not_allowed`.
+- Images are read through the host's `FileStorage.read`; without it, exports carry no pictures.
 
 ### Pipeline
 

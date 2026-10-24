@@ -7,6 +7,7 @@ import { json } from "../http/responses.js";
 import { presentCourseSummary, presentCourseView } from "../presenters/learner.presenters.js";
 import { applyPendingAssignments } from "../services/assignments.js";
 import { isCourseVisible, loadCourseView } from "../services/course-view.js";
+import { exportFormatsFor } from "../services/export.js";
 
 /** GET /v1/courses: published courses the learner may see, with their enrollment. */
 export async function listCatalog(context: RequestContext): Promise<Response> {
@@ -49,7 +50,7 @@ export async function getCourse(
   const view = await findVisibleCourse(context, () =>
     context.storage.findCourseBySlug(context.scope, slug ?? ""),
   );
-  return json(presentCourseView(view), context.requestId);
+  return json(presentCourseView(view, exportFormatsFor(context, view.course)), context.requestId);
 }
 
 export async function findVisibleCourseById(context: RequestContext, rawId: string | undefined) {

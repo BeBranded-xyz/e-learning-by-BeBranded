@@ -32,6 +32,7 @@ const courseFields = {
     .max(2048)
     .nullable(),
   enrollment_mode: enrollmentModeSchema,
+  allow_learner_export: z.boolean(),
   locale: localeSchema,
   completion_rule: completionRuleSchema,
   metadata,
@@ -42,6 +43,7 @@ export const createCourseBody = z.strictObject({
   summary: courseFields.summary.default(null),
   cover_image_url: courseFields.cover_image_url.default(null),
   enrollment_mode: courseFields.enrollment_mode.default("self"),
+  allow_learner_export: courseFields.allow_learner_export.default(false),
   locale: courseFields.locale.default("en"),
   completion_rule: courseFields.completion_rule.default({ type: "all_required_lessons" }),
   metadata: courseFields.metadata.default({}),
