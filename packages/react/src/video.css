@@ -5,7 +5,7 @@
 
 @layer elearning {
   :where(.el-video) {
-    margin: 0 0 var(--el-space);
+    margin: 0 0 var(--el-space-4);
   }
 
   :where(.el-video-media) {
@@ -17,11 +17,11 @@
   }
 
   :where(.el-video figcaption) {
-    margin-top: calc(var(--el-space) / 2);
+    margin-top: var(--el-space-2);
   }
 
   :where(.el-video-pending) {
-    padding: var(--el-space);
+    padding: var(--el-space-4);
     border: 1px dashed var(--el-color-border);
     border-radius: var(--el-radius);
   }

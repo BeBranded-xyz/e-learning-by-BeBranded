@@ -12,11 +12,12 @@ import {
 const design = defineDesign({
   colors: { light: LIGHT, dark: DARK },
   radius: "0.625rem",
+  spacing: "0.3rem",
   fonts: { body: "Inter, sans-serif", heading: "Georgia, serif", mono: "Menlo, monospace" },
 });
 
 describe("moduleVariables", () => {
-  it("names every color --el-color-*, keeps the first names, and adds shape and type", () => {
+  it("names every color --el-color-*, keeps the first names, and adds shape, spacing and type", () => {
     const variables = moduleVariables(design, design.colors.light);
 
     expect(variables).toMatchObject({
@@ -27,11 +28,12 @@ describe("moduleVariables", () => {
       "--el-color-text": LIGHT.foreground,
       "--el-color-danger": LIGHT.destructive,
       "--el-radius": "0.625rem",
+      "--el-space-unit": "0.3rem",
       "--el-font-family": "Inter, sans-serif",
       "--el-font-heading": "Georgia, serif",
       "--el-font-mono": "Menlo, monospace",
     });
-    expect(Object.keys(variables)).toHaveLength(21 + 7);
+    expect(Object.keys(variables)).toHaveLength(21 + 8);
   });
 });
 
@@ -42,6 +44,7 @@ describe("shadcnVariables", () => {
       "--card-foreground": DARK.cardForeground,
       "--destructive": LIGHT.destructive,
       "--radius": "0.625rem",
+      "--spacing": "0.3rem",
       "--font-sans": "Inter, sans-serif",
     });
   });

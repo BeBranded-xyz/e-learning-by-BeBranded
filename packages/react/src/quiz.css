@@ -7,16 +7,18 @@
 
 @layer elearning {
   :where(.el-quiz-intro, .el-quiz-result, .el-quiz-form) {
-    margin: var(--el-space) 0;
-    padding: var(--el-space);
+    margin: var(--el-space-4) 0;
+    padding: var(--el-space-4);
     border: 1px solid var(--el-color-border);
     border-radius: var(--el-radius);
     background: var(--el-color-surface);
   }
 
+  /* Statements, not a list to scan: no bullets, aligned with the button below. */
   :where(.el-quiz-rules) {
-    margin: 0 0 var(--el-space);
-    padding-inline-start: calc(var(--el-space) * 1.25);
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
   :where(.el-quiz-passed, .el-quiz-result[data-passed="true"] .el-quiz-score) {
@@ -34,18 +36,18 @@
   }
 
   :where(.el-quiz-timer) {
-    margin: 0 0 var(--el-space);
+    margin: 0 0 var(--el-space-4);
     font-variant-numeric: tabular-nums;
     font-weight: 600;
   }
 
   :where(.el-quiz-corrections ol) {
-    padding-inline-start: calc(var(--el-space) * 1.25);
+    padding-inline-start: var(--el-space-5);
   }
 
   :where(.el-quiz-correction) {
-    margin-bottom: var(--el-space);
-    padding-inline-start: calc(var(--el-space) / 2);
+    margin-bottom: var(--el-space-4);
+    padding-inline-start: var(--el-space-2);
     border-inline-start: 3px solid var(--el-color-danger);
   }
 

@@ -8,7 +8,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: calc(var(--el-space) / 2);
+    gap: var(--el-space-2);
   }
   /* The error message takes its own line under the buttons. */
   :where(.el-export > [role="alert"]) {

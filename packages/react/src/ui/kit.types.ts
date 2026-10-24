@@ -66,6 +66,9 @@ export type UiTextFieldProps = FieldCommon & {
   readonly min?: number | undefined;
   readonly max?: number | undefined;
   readonly placeholder?: string | undefined;
+  /** The id of a `<datalist>` whose options the field suggests. */
+  readonly list?: string | undefined;
+  readonly inputMode?: "text" | "numeric" | undefined;
 };
 
 export type UiTextAreaProps = FieldCommon & {

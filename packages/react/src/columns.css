@@ -8,7 +8,7 @@
   :where(.el-columns) {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--el-space);
+    gap: var(--el-space-4);
   }
   :where(.el-column) {
     flex: 1 1 0;

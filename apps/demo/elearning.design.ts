@@ -1,8 +1,8 @@
 import { defineDesign } from "@bebranded/elearning-core/design";
 
 /**
- * The demo's design file (spec 11): the only place its colors, fonts and
- * radius are decided. The shell (Tailwind and shadcn/ui), the module, the
+ * The demo's design file (spec 11): the only place its colors, fonts,
+ * radius and spacing are decided. The shell (Tailwind and shadcn/ui), the module, the
  * back-office and the PDF and Word exports all read it. The palette is
  * shadcn/ui's "neutral", with muted text darkened to pass WCAG AA on muted
  * surfaces, and success and warning tokens added.
@@ -58,6 +58,8 @@ export const design = defineDesign({
     },
   },
   radius: "0.625rem",
+  // Tailwind's unit: the shell's `p-4` and the module's `--el-space-4` are both 1rem.
+  spacing: "0.25rem",
   fonts: {
     body: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
     mono: "ui-monospace, SFMono-Regular, Menlo, monospace",

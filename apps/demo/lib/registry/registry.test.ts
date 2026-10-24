@@ -9,7 +9,7 @@ const registry = registryFromDesign(design);
 const item = (name: string) => registry.items.find((entry) => entry.name === name);
 
 describe("the shadcn registry", () => {
-  it("publishes the design file's colors, light and dark, and its shape and fonts", () => {
+  it("publishes the design file's colors, light and dark, and its shape, spacing and fonts", () => {
     const vars = item("elearning-theme")?.cssVars;
     if (vars === undefined) throw new Error("no theme item");
     const light = shadcnVariables(design, design.colors.light);
@@ -20,6 +20,7 @@ describe("the shadcn registry", () => {
     expect(vars.dark?.background).toBe(dark["--background"]);
     expect(vars.theme).toEqual({
       radius: design.radius,
+      spacing: design.spacing,
       "font-sans": design.fonts.body,
       "font-heading": design.fonts.heading,
       "font-mono": design.fonts.mono,

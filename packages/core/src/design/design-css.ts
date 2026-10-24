@@ -8,7 +8,7 @@ const kebab = (token: string) => token.replace(/[A-Z]/g, (letter) => `-${letter.
 
 type Variables = Readonly<Record<string, string>>;
 
-/** The module's variables: every color as `--el-color-*`, plus shape and type. */
+/** The module's variables: every color as `--el-color-*`, plus shape, spacing and type. */
 export function moduleVariables(design: ElearningDesign, colors: DesignColors): Variables {
   const entries = COLOR_TOKENS.map(
     (token) => [`--el-color-${kebab(token)}`, colors[token]] as const,
@@ -20,6 +20,8 @@ export function moduleVariables(design: ElearningDesign, colors: DesignColors): 
     "--el-color-text": colors.foreground,
     "--el-color-danger": colors.destructive,
     "--el-radius": design.radius,
+    // The module's stylesheet derives its spacing steps from the unit.
+    "--el-space-unit": design.spacing,
     "--el-font-family": design.fonts.body,
     "--el-font-heading": design.fonts.heading,
     "--el-font-mono": design.fonts.mono,
@@ -32,6 +34,8 @@ export function shadcnVariables(design: ElearningDesign, colors: DesignColors): 
   return {
     ...Object.fromEntries(entries),
     "--radius": design.radius,
+    // Tailwind v4 computes every spacing utility from it (`p-4` is 4 units).
+    "--spacing": design.spacing,
     "--font-sans": design.fonts.body,
     "--font-heading": design.fonts.heading,
     "--font-mono": design.fonts.mono,

@@ -49,7 +49,7 @@ type RegistryItem = {
   };
 };
 
-const SHARED = ["radius", "font-sans", "font-heading", "font-mono"];
+const SHARED = ["radius", "spacing", "font-sans", "font-heading", "font-mono"];
 
 const pick = (vars: Record<string, string>, keep: (name: string) => boolean) =>
   Object.fromEntries(Object.entries(vars).filter(([name]) => keep(name)));
@@ -62,7 +62,7 @@ function themeItem(design: ElearningDesign): RegistryItem {
     name: "elearning-theme",
     type: "registry:theme",
     title: "e-learning by BeBranded theme",
-    description: "The design file's colors (light and dark), radius and fonts.",
+    description: "The design file's colors (light and dark), radius, spacing and fonts.",
     cssVars: {
       theme: pick(light, (name) => SHARED.includes(name)),
       light: pick(light, colors),

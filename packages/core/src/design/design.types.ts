@@ -36,6 +36,8 @@ export type ElearningDesign = {
   };
   readonly colors: { readonly light: DesignColors; readonly dark: DesignColors };
   readonly radius: string;
+  /** The spacing unit: every gap, margin and padding is a step of it (`--el-space-1` to `--el-space-8`). */
+  readonly spacing: string;
   readonly fonts: { readonly body: string; readonly heading: string; readonly mono: string };
   /** `media` follows the system, `class` a `.dark` ancestor, `off` stays light. */
   readonly darkMode: DarkMode;
@@ -46,6 +48,7 @@ export type DesignInput = {
   readonly brand?: { readonly name?: string; readonly logo?: string };
   readonly colors: { readonly light: DesignColors; readonly dark?: Partial<DesignColors> };
   readonly radius?: string;
+  readonly spacing?: string;
   readonly fonts?: Partial<ElearningDesign["fonts"]>;
   readonly darkMode?: DarkMode;
 };
