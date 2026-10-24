@@ -46,6 +46,7 @@ export async function createVideoUpload(context: RequestContext): Promise<Respon
   const previous = await context.storage.findVideoAsset(context.scope, lesson.id);
   const upload = await provider.createDirectUpload({
     maxDurationSeconds: body.max_duration_seconds,
+    sizeBytes: body.size_bytes,
   });
   const asset: VideoAsset = {
     id: videoAssetIdSchema.parse(previous?.id ?? context.newId()),
@@ -61,7 +62,11 @@ export async function createVideoUpload(context: RequestContext): Promise<Respon
   if (previous?.providerAssetId !== upload.assetId)
     await deleteReplaced(context, provider, previous);
   return json(
-    { upload_url: upload.uploadUrl, video: presentVideoAsset(asset) },
+    {
+      upload_url: upload.uploadUrl,
+      upload_protocol: upload.protocol,
+      video: presentVideoAsset(asset),
+    },
     context.requestId,
     201,
   );

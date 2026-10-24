@@ -7,6 +7,7 @@ import type { CloudflareStreamConfig, CloudflareStreamOptions } from "./config.j
 import { importSigningKey, signPlaybackToken } from "./signing.js";
 import { directUploadSchema, streamVideoSchema, toSnapshot } from "./video.schemas.js";
 import { verifyStreamWebhook } from "./webhook.js";
+import { BASIC_UPLOAD_MAX_BYTES, createTusUpload } from "./tus.js";
 
 const PROVIDER_NAME = "cloudflare-stream";
 
@@ -34,14 +35,16 @@ export function cloudflareStream(options: CloudflareStreamOptions): VideoProvide
   return {
     name: PROVIDER_NAME,
 
-    async createDirectUpload({ maxDurationSeconds }) {
+    async createDirectUpload({ maxDurationSeconds, sizeBytes }) {
+      if (sizeBytes !== undefined && sizeBytes > BASIC_UPLOAD_MAX_BYTES)
+        return createTusUpload(config, { sizeBytes, maxDurationSeconds });
       const result = await streamApi(config, {
         method: "POST",
         path: "/direct_upload",
         body: { maxDurationSeconds: Math.ceil(maxDurationSeconds), requireSignedURLs: true },
       });
       const upload = directUploadSchema.parse(result);
-      return { uploadUrl: upload.uploadURL, assetId: upload.uid };
+      return { uploadUrl: upload.uploadURL, assetId: upload.uid, protocol: "form" };
     },
 
     async getAsset(assetId) {

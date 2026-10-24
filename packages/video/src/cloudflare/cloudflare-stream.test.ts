@@ -38,7 +38,11 @@ describe("cloudflareStream", () => {
 
     const upload = await provider.createDirectUpload({ maxDurationSeconds: 599.5 });
 
-    expect(upload).toEqual({ uploadUrl: directUploadResult.uploadURL, assetId: VIDEO_UID });
+    expect(upload).toEqual({
+      uploadUrl: directUploadResult.uploadURL,
+      assetId: VIDEO_UID,
+      protocol: "form",
+    });
     expect(JSON.parse(stub.calls[0]?.init.body as string)).toEqual({
       maxDurationSeconds: 600,
       requireSignedURLs: true,

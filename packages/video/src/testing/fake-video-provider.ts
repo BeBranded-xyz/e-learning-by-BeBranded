@@ -1,5 +1,9 @@
 import { AppError, videoAssetStatusSchema } from "@bebranded/elearning-core";
-import type { VideoAssetSnapshot, VideoProvider } from "@bebranded/elearning-core";
+import type {
+  VideoAssetSnapshot,
+  VideoProvider,
+  VideoUploadProtocol,
+} from "@bebranded/elearning-core";
 
 export type FakeVideoProviderOptions = {
   /** Where the fake plays a video from, e.g. a synthetic HLS file served by the demo app. */
@@ -29,6 +33,10 @@ function parseWebhookBody(body: unknown) {
   };
 }
 
+/** Like Cloudflare Stream: files over 200 MB go through tus. */
+const uploadProtocol = (sizeBytes: number | undefined): VideoUploadProtocol =>
+  sizeBytes !== undefined && sizeBytes > 200 * 1024 * 1024 ? "tus" : "form";
+
 /**
  * In-memory `VideoProvider` for tests and the demo app: no network, no
  * account. Never use it in production: its playback URLs are not signed.
@@ -53,10 +61,11 @@ export function fakeVideoProvider(options: FakeVideoProviderOptions): FakeVideoP
     setAsset: (assetId, snapshot) => {
       assets.set(assetId, snapshot);
     },
-    createDirectUpload: () => {
+    createDirectUpload: ({ sizeBytes }) => {
       const assetId = crypto.randomUUID().replaceAll("-", "");
       assets.set(assetId, { status: "uploading", durationSeconds: null, thumbnailUrl: null });
-      return Promise.resolve({ uploadUrl: `https://upload.example.com/${assetId}`, assetId });
+      const uploadUrl = `https://upload.example.com/${assetId}`;
+      return Promise.resolve({ uploadUrl, assetId, protocol: uploadProtocol(sizeBytes) });
     },
     // A throw inside the executor becomes a rejection, like a real provider call.
     getAsset: (assetId) =>

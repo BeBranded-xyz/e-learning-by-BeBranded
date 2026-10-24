@@ -204,9 +204,11 @@ export type {
 } from "./ports/storage.types.js";
 
 export type {
+  DirectUpload,
   PlaybackSource,
   VideoAssetSnapshot,
   VideoProvider,
+  VideoUploadProtocol,
   VideoWebhookEvent,
 } from "./ports/video-provider.types.js";
 export type {
