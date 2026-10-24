@@ -6,7 +6,7 @@
 > decision changes. **This repository is public**: never put secrets, client
 > names, internal identifiers, or internal URLs here.
 
-Last updated: 2026-10-24
+Last updated: 2026-10-25
 
 ---
 
@@ -69,6 +69,7 @@ Last updated: 2026-10-24
 | Export | headless Chromium (PDF) through host-provided adapters, `docx` (Word) | `@bebranded/elearning-export`, spec 10, clean-room |
 | Monitoring / errors | host-injected logger and `onMetric` hook | |
 | Background jobs | event outbox, delivery triggered by the host | |
+| Demo feedback | Optional Dashly embed, runtime `DEMO_DASHLY_WIDGET_KEY` | Demo only; workspace identifier kept in private hosting configuration |
 | Feature flags | none | |
 | Release tooling | Changesets, npm trusted publishing with provenance | |
 | Monorepo | pnpm workspaces + Turborepo | |

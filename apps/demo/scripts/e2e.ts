@@ -52,6 +52,7 @@ try {
   const env = {
     ...process.env,
     ELEARNING_DATABASE_URL: db.url,
+    DEMO_DASHLY_WIDGET_KEY: "ws_k_example",
     DEMO_PUBLIC_URL: "http://127.0.0.1:3100",
   };
   status = 0;

@@ -128,3 +128,13 @@ WebM uploads (50 MiB, 15 minutes), encoded locally with ffmpeg/ffprobe. These
 binaries are required for development uploads and included in the container.
 The demo media adapter is intended for one server process; production hosts
 supply their own video provider and persistent media lifecycle.
+
+### Demo feedback
+
+Set the optional runtime variable `DEMO_DASHLY_WIDGET_KEY` in the demo host's
+private configuration to enable the Dashly help/feedback launcher on every
+screen, including the back-office and sign-in. Leave it unset or blank to
+disable it. The supplied embed script loads asynchronously after hydration;
+a blocked vendor script does not block the demo. The public workspace identifier
+is not committed to this repository. This integration is absent from published
+packages. Browser tests use a fake identifier and intercept vendor requests.

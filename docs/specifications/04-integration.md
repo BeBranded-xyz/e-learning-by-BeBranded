@@ -318,3 +318,16 @@ same-origin requests and a signed, expiring one-time URL, enforce a size limit,
 and are transcoded with a deadline. Media is stored with the demo's persistent
 uploaded files; provider metadata and ready status are saved through the module's
 storage boundary. The runtime image includes the encoder for this demo adapter.
+
+## Demo feedback widget
+
+The demo root layout optionally loads the supplied Dashly widget script from
+`https://app.usedashly.com/widget/v1.js` asynchronously after hydration. One
+script instance is mounted per document across learner, administration and
+sign-in screens. The vendor widget provides the feedback/help launcher.
+`DEMO_DASHLY_WIDGET_KEY` configures its public embed identifier at runtime;
+it is omitted when unset or blank and malformed identifiers fail validation.
+The real workspace identifier stays in private hosting configuration, never
+in this public repository. Published packages do not include this integration.
+An unavailable vendor script must not block the demo. Browser tests intercept
+the widget with a synthetic identifier and never submit external tickets.
