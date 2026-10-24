@@ -11,6 +11,7 @@ export const quizIdSchema = z.uuid().brand<"QuizId">();
 export const quizAttemptIdSchema = z.uuid().brand<"QuizAttemptId">();
 export const assignmentIdSchema = z.uuid().brand<"AssignmentId">();
 export const fileIdSchema = z.uuid().brand<"FileId">();
+export const attemptGrantIdSchema = z.uuid().brand<"AttemptGrantId">();
 
 export type CourseId = z.infer<typeof courseIdSchema>;
 export type ChapterId = z.infer<typeof chapterIdSchema>;
@@ -22,6 +23,7 @@ export type QuizId = z.infer<typeof quizIdSchema>;
 export type QuizAttemptId = z.infer<typeof quizAttemptIdSchema>;
 export type AssignmentId = z.infer<typeof assignmentIdSchema>;
 export type FileId = z.infer<typeof fileIdSchema>;
+export type AttemptGrantId = z.infer<typeof attemptGrantIdSchema>;
 
 /** Opaque identifiers coming from the host product. */
 export const learnerIdSchema = z.string().trim().min(1).max(255).brand<"LearnerId">();

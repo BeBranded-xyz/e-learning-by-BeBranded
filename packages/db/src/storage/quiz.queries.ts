@@ -15,6 +15,7 @@ import type { DB } from "../database.gen.js";
 import { lessonProgressOf } from "./learner-lesson.js";
 import type { LearnerLesson } from "./learner-lesson.js";
 import { insertedAny, jsonColumn } from "./patch.js";
+import { sumExtraAttempts } from "./quiz-grants.queries.js";
 import { toQuiz, toQuizAttempt } from "./quiz.mappers.js";
 import { ownedBy, readableContent } from "./tenant-filters.js";
 
@@ -105,6 +106,7 @@ export async function findQuizStanding(
     .executeTakeFirst();
   return {
     closedAttempts: Number(summary.closed),
+    extraAttempts: await sumExtraAttempts(db, scope, key),
     lastClosedAt: summary.last_closed_at,
     bestScore: summary.best_score === null ? null : Number(summary.best_score),
     passed: summary.passed,

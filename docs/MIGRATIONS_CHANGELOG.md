@@ -109,4 +109,15 @@ Last updated: 2026-10-24
 - Rollback: documented in header
 - RLS: enabled, no policy (default deny, as every table)
 - Types regenerated: yes
+- PR: #29
+
+## 20261024000300_quiz_attempt_grants
+- Date: 2026-10-24
+- Type: schema
+- Tables: quiz_attempt_grants
+- Summary: extra quiz attempts an admin grants one learner on one quiz lesson (spec 07), summed into the learner's standing. Append-only; rows cascade with their lesson.
+- Breaking: no
+- Rollback: documented in header
+- RLS: enabled, no policy (default deny, as every table)
+- Types regenerated: yes
 - PR: this PR

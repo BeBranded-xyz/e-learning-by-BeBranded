@@ -141,6 +141,8 @@ The quiz options (passing score, attempts, cooldown, time limit, shuffling, corr
 
 **`quiz_attempts`**: `id`, `lesson_progress_id` FK (so attempts are deleted with the learner's progress), `quiz_id` FK, `tenant_id` (the learner's), `attempt_number`, `status` (`open` \| `submitted` \| `expired` \| `voided`), `quiz_version` (the definition hash the attempt was opened with), `shuffle_seed` (unsigned 32-bit) with `shuffle_questions` and `shuffle_options` (the lesson's options when the attempt opened), `started_at`, `expires_at` (null without a time limit), `closed_at` (null while open), `answers` jsonb (raw, as submitted), `question_results` jsonb (points per question, for reporting), `score` numeric (0 to 1), `passed` bool. A partial unique index allows one `open` attempt per learner and lesson. Submitted and expired attempts carry a score; voided ones (the quiz changed while they were open) do not, and do not count.
 
+**`quiz_attempt_grants`**: `id`, `tenant_id` (the admin's), `lesson_id` FK (cascade), `learner_id`, `extra_attempts` (1 to 100), `granted_by`, `created_at`. Extra attempts granted by an admin to one learner on one quiz lesson (spec 07); they add to `maxAttempts`. Append-only.
+
 ### Technical tables
 
 - **`schema_migrations`**: applied migrations (name, checksum, date).

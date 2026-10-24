@@ -20,7 +20,7 @@ import type { RenderOptions } from "@bebranded/elearning-editor/server";
 
 import type { RequestContext } from "../context.js";
 
-function quizSettings(lesson: Pick<LessonDetail, "settings">): QuizLessonSettings {
+export function quizSettings(lesson: Pick<LessonDetail, "settings">): QuizLessonSettings {
   const parsed = quizLessonSettingsSchema.safeParse(lesson.settings);
   return parsed.success ? parsed.data : quizLessonSettingsSchema.parse({});
 }

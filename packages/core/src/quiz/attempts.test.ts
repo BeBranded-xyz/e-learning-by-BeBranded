@@ -10,7 +10,7 @@ import {
 
 const NOW = new Date("2026-10-23T10:00:00.000Z");
 const minutesAgo = (minutes: number) => new Date(NOW.getTime() - minutes * 60_000);
-const none = { closedAttempts: 0, lastClosedAt: null };
+const none = { closedAttempts: 0, lastClosedAt: null, extraAttempts: 0 };
 
 describe("attemptEligibility", () => {
   it("opens a first attempt", () => {
@@ -20,7 +20,7 @@ describe("attemptEligibility", () => {
   });
 
   it("refuses once the attempts are used up", () => {
-    const history = { closedAttempts: 3, lastClosedAt: minutesAgo(120) };
+    const history = { closedAttempts: 3, lastClosedAt: minutesAgo(120), extraAttempts: 0 };
 
     expect(attemptEligibility(history, { maxAttempts: 3, cooldownMinutes: 0 }, NOW)).toEqual({
       ok: false,
@@ -28,8 +28,31 @@ describe("attemptEligibility", () => {
     });
   });
 
+  it("opens again once an admin granted extra attempts", () => {
+    const history = { closedAttempts: 3, lastClosedAt: minutesAgo(120), extraAttempts: 2 };
+    const rules = { maxAttempts: 3, cooldownMinutes: 0 };
+
+    expect(attemptEligibility(history, rules, NOW)).toEqual({ ok: true });
+    expect(attemptsRemaining(history, rules)).toBe(2);
+  });
+
+  it("refuses once the granted attempts are used up too", () => {
+    const history = { closedAttempts: 5, lastClosedAt: minutesAgo(120), extraAttempts: 2 };
+
+    expect(attemptEligibility(history, { maxAttempts: 3, cooldownMinutes: 0 }, NOW)).toEqual({
+      ok: false,
+      code: "attempts_exhausted",
+    });
+  });
+
+  it("ignores granted attempts when attempts are unlimited", () => {
+    const history = { closedAttempts: 9, lastClosedAt: null, extraAttempts: 4 };
+
+    expect(attemptsRemaining(history, { maxAttempts: null, cooldownMinutes: 0 })).toBeNull();
+  });
+
   it("allows unlimited attempts", () => {
-    const history = { closedAttempts: 500, lastClosedAt: minutesAgo(1) };
+    const history = { closedAttempts: 500, lastClosedAt: minutesAgo(1), extraAttempts: 0 };
 
     expect(attemptEligibility(history, { maxAttempts: null, cooldownMinutes: 0 }, NOW).ok).toBe(
       true,
@@ -40,14 +63,22 @@ describe("attemptEligibility", () => {
     const rules = { maxAttempts: null, cooldownMinutes: 30 };
 
     expect(
-      attemptEligibility({ closedAttempts: 1, lastClosedAt: minutesAgo(10) }, rules, NOW),
+      attemptEligibility(
+        { closedAttempts: 1, lastClosedAt: minutesAgo(10), extraAttempts: 0 },
+        rules,
+        NOW,
+      ),
     ).toEqual({
       ok: false,
       code: "cooldown",
       nextAttemptAt: new Date("2026-10-23T10:20:00.000Z"),
     });
     expect(
-      attemptEligibility({ closedAttempts: 1, lastClosedAt: minutesAgo(30) }, rules, NOW).ok,
+      attemptEligibility(
+        { closedAttempts: 1, lastClosedAt: minutesAgo(30), extraAttempts: 0 },
+        rules,
+        NOW,
+      ).ok,
     ).toBe(true);
   });
 });
@@ -56,13 +87,13 @@ describe("attemptsRemaining and cooldownEndsAt", () => {
   it("count down and never go below 0", () => {
     expect(
       attemptsRemaining(
-        { closedAttempts: 1, lastClosedAt: null },
+        { closedAttempts: 1, lastClosedAt: null, extraAttempts: 0 },
         { maxAttempts: 3, cooldownMinutes: 0 },
       ),
     ).toBe(2);
     expect(
       attemptsRemaining(
-        { closedAttempts: 5, lastClosedAt: null },
+        { closedAttempts: 5, lastClosedAt: null, extraAttempts: 0 },
         { maxAttempts: 3, cooldownMinutes: 0 },
       ),
     ).toBe(0);
@@ -73,7 +104,7 @@ describe("attemptsRemaining and cooldownEndsAt", () => {
     expect(cooldownEndsAt(none, { maxAttempts: null, cooldownMinutes: 30 })).toBeNull();
     expect(
       cooldownEndsAt(
-        { closedAttempts: 1, lastClosedAt: NOW },
+        { closedAttempts: 1, lastClosedAt: NOW, extraAttempts: 0 },
         { maxAttempts: null, cooldownMinutes: 0 },
       ),
     ).toBeNull();

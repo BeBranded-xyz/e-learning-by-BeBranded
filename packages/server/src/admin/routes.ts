@@ -12,6 +12,7 @@ import {
 } from "./courses.js";
 import { createFileUpload, getAdminFile } from "./files.js";
 import { createLesson, deleteLesson, getAdminLesson, updateLesson } from "./lessons.js";
+import { createAttemptGrant, listAttemptGrants } from "./quiz-grants.js";
 import { getAdminQuiz, saveAdminQuiz } from "./quizzes.js";
 import { reorderCourse } from "./reorder.js";
 import { createVideoUpload } from "./videos.js";
@@ -71,6 +72,16 @@ export const adminRoutes: readonly Route<RequestContext>[] = [
     method: "PUT",
     pattern: "/v1/admin/lessons/:id/quiz",
     handle: (context, { id }) => saveAdminQuiz(context, id),
+  },
+  {
+    method: "POST",
+    pattern: "/v1/admin/lessons/:id/quiz/attempt-grants",
+    handle: (context, { id }) => createAttemptGrant(context, id),
+  },
+  {
+    method: "GET",
+    pattern: "/v1/admin/lessons/:id/quiz/attempt-grants",
+    handle: (context, { id }) => listAttemptGrants(context, id),
   },
   { method: "POST", pattern: "/v1/admin/reorder", handle: (context) => reorderCourse(context) },
   {
