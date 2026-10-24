@@ -6,6 +6,7 @@ import type { ApiQuizAttempt } from "@bebranded/elearning-core";
 import type { SurveyModel } from "survey-core";
 
 import { useElearning } from "../provider/context.js";
+import { useUi } from "../ui/kit.js";
 import type { SurveyRuntime } from "../quiz/survey-runtime.js";
 import { formatSeconds, useCountdown } from "../quiz/useCountdown.js";
 import { useSurveyRuntime } from "../quiz/useSurveyRuntime.js";
@@ -82,19 +83,20 @@ function SurveyForm({ runtime, attempt, onSubmit }: QuizFormProps & { runtime: S
 /** One quiz attempt, rendered by SurveyJS once it has loaded. */
 export function QuizForm(props: QuizFormProps) {
   const { i18n } = useElearning();
+  const { Alert } = useUi();
   const state = useSurveyRuntime(true, i18n.locale);
   if (state.kind === "failed") {
     return (
-      <p className="el-state el-state-error" role="alert">
+      <Alert tone="error" role="alert">
         {i18n.t("quiz.loadFailed")}
-      </p>
+      </Alert>
     );
   }
   if (state.kind === "loading") {
     return (
-      <p className="el-state" role="status" aria-live="polite">
+      <Alert tone="info" role="status" aria-live="polite">
         {i18n.t("quiz.loading")}
-      </p>
+      </Alert>
     );
   }
   return <SurveyForm runtime={state.runtime} {...props} />;

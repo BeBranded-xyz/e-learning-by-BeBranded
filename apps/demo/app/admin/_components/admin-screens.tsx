@@ -10,17 +10,18 @@ import {
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { design } from "../../../elearning.design";
+
 // The back-office components take link builders and callbacks, so these
 // screens are Client Components; the admin pages around them check the
 // persona on the server first.
 
-const theme = { colors: { primary: "#4338ca" }, radius: "10px" };
 /** The demo's host roles, suggested in the audience fields (spec 05, `listRoles`). */
 const ROLES = ["staff", "manager", "training_admin"];
 
 function Provider({ children }: { readonly children: ReactNode }) {
   return (
-    <ElearningAdminProvider apiBase="/api/elearning" locale="en" theme={theme}>
+    <ElearningAdminProvider apiBase="/api/elearning" locale="en" design={design}>
       {children}
     </ElearningAdminProvider>
   );

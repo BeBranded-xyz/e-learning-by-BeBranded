@@ -5,6 +5,7 @@ import { useId } from "react";
 import type { ApiCourseSummary } from "@bebranded/elearning-core";
 
 import { CourseCard } from "./CourseCard.js";
+import { useUi } from "../ui/kit.js";
 
 export type CourseListProps = {
   readonly title: string;
@@ -16,11 +17,12 @@ export type CourseListProps = {
 /** A titled list of course cards, used by the catalog and by "My training". */
 export function CourseList({ title, emptyMessage, courses, courseHref }: CourseListProps) {
   const titleId = useId();
+  const { Alert } = useUi();
   return (
     <section className="el-course-list" aria-labelledby={titleId}>
       <h2 id={titleId}>{title}</h2>
       {courses.length === 0 ? (
-        <p className="el-state">{emptyMessage}</p>
+        <Alert tone="info">{emptyMessage}</Alert>
       ) : (
         <ul className="el-grid">
           {courses.map((course) => (

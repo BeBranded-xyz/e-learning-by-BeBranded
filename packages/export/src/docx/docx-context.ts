@@ -16,6 +16,8 @@ export type DocxContext = {
   readonly labels: { readonly video: string; readonly attachment: string };
   /** Usable page width in pixels, for scaling images. */
   readonly contentWidth: number;
+  /** Hyperlink color, six hex digits (the design's primary color). */
+  readonly linkColor: string;
 };
 
 export const nestedIn = (context: DocxContext): DocxContext => ({

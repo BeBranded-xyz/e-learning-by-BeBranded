@@ -3,6 +3,7 @@
 import type { ApiLessonQuiz } from "@bebranded/elearning-core";
 
 import { useElearning } from "../provider/context.js";
+import { useUi } from "../ui/kit.js";
 
 export type QuizIntroProps = {
   readonly quiz: ApiLessonQuiz;
@@ -32,6 +33,7 @@ function useRules(quiz: ApiLessonQuiz): string[] {
 /** The quiz before an attempt: its rules, the learner's standing, and the way in. */
 export function QuizIntro({ quiz, onStart, starting, notice }: QuizIntroProps) {
   const { i18n } = useElearning();
+  const { Button } = useUi();
   const rules = useRules(quiz);
   const exhausted = quiz.attempts_remaining === 0;
   const waiting = quiz.next_attempt_at !== null;
@@ -57,14 +59,9 @@ export function QuizIntro({ quiz, onStart, starting, notice }: QuizIntroProps) {
         {notice ?? blocked}
       </p>
       {blocked === null ? (
-        <button
-          type="button"
-          className="el-button el-button-primary"
-          onClick={onStart}
-          disabled={starting}
-        >
+        <Button variant="primary" onClick={onStart} disabled={starting}>
           {i18n.t(quiz.open_attempt === null ? "quiz.start" : "quiz.resume")}
-        </button>
+        </Button>
       ) : null}
     </section>
   );

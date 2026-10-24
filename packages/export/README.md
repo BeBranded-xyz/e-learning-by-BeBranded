@@ -15,9 +15,11 @@ infrastructure and install its library yourself:
 import { elearningExport, playwrightPdf } from "@bebranded/elearning-export";
 import { chromium } from "playwright-core"; // Node servers
 
+import design from "./elearning.design"; // your design file (spec 11)
+
 export const exporter = elearningExport({
   pdf: playwrightPdf({ launch: () => chromium.launch() }),
-  theme: { primaryColor: "#4338ca", fontFamily: "Inter, sans-serif" },
+  design, // colors, fonts and the brand's logo of PDF and Word files
 });
 ```
 

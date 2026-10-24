@@ -1,6 +1,7 @@
 "use client";
 
 import type { ApiReportSummary } from "@bebranded/elearning-core";
+import { useUi } from "@bebranded/elearning-react";
 
 import { useAdmin } from "../provider/admin-context.js";
 
@@ -42,9 +43,10 @@ export function ReportSummary({ summary }: { readonly summary: ApiReportSummary 
 /** The CSV of a report, downloaded by the browser with the host's cookies. */
 export function CsvLink({ path }: { readonly path: string }) {
   const { admin, t } = useAdmin();
+  const { LinkButton } = useUi();
   return (
-    <a className="el-button" href={admin.reportCsvUrl(path)} download>
+    <LinkButton href={admin.reportCsvUrl(path)} download>
       {t.t("action.download")}
-    </a>
+    </LinkButton>
   );
 }

@@ -150,7 +150,7 @@ flowchart LR
 
 `renderExportHtml` (`@bebranded/elearning-editor/server`) turns an `ExportDocument` into one self-contained HTML document:
 
-- the head is fixed: charset, title, and print CSS (`@page` A4 or Letter, page breaks before chapters, header rows in `thead` so they repeat). The theme's primary color must be a `#rrggbb` value and its font family a plain list of names; anything else falls back to the defaults, so a theme value cannot inject CSS;
+- the head is fixed: charset, title, and print CSS (`@page` A4 or Letter, page breaks before chapters, header rows in `thead` so they repeat). Theme colors must be `#rrggbb` values (the design file's colors are converted) and fonts plain lists of names; anything else falls back to the defaults, so a theme value cannot inject CSS;
 - a lesson starts with its title and course; a course with a cover page (optional logo), a table of contents linking to each section, then chapters (`h2`) and lessons (`h3`) with content headings shifted below them;
 - images are `<img>` only with an inlined `data:image/(png|jpeg|gif|webp);base64` source. An image that could not be inlined becomes an attachment line linking to the lesson; any other source is dropped by the sanitizer;
 - the body goes through an allowlist sanitizer: no script, no event attribute, no `javascript:` link.
@@ -185,7 +185,7 @@ PDF adapters receive the host's own browser library through a small structural i
 
 ### Document styling
 
-- Exports use the host theme (primary color, font family) and an optional logo, so a document matches the host product's branding.
+- Exports read the host's design file (`elearningExport({ design })`, spec 11): PDFs take its text, muted, border, surface and status colors, its body and heading fonts and its logo; Word files its fonts, text, muted and link colors. A document matches the host product's branding.
 - Page format A4 or US Letter, set by the host or from the requester's locale.
 - Header with course and lesson title, footer with page numbers and export date.
 

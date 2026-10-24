@@ -42,4 +42,21 @@ export type { QueryStateProps } from "./components/QueryState.js";
 export { ElearningApiError, toApiError } from "./api/api-error.js";
 export type { Fetcher } from "./api/client.js";
 export type { MessageKey, Messages } from "./i18n/messages.js";
-export type { ElearningTheme } from "./theme/theme.js";
+export { defaultKit, useUi } from "./ui/kit.js";
+export type {
+  BadgeTone,
+  ButtonSize,
+  ButtonVariant,
+  UiAlertProps,
+  UiBadgeProps,
+  UiButtonProps,
+  UiCardProps,
+  UiCheckboxProps,
+  UiKit,
+  UiLinkButtonProps,
+  UiProgressProps,
+  UiSelectProps,
+  UiTableProps,
+  UiTextAreaProps,
+  UiTextFieldProps,
+} from "./ui/kit.types.js";

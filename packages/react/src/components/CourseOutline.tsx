@@ -3,6 +3,7 @@
 import type { ApiCourse, ApiCourseLesson } from "@bebranded/elearning-core";
 
 import { useElearning } from "../provider/context.js";
+import { useUi } from "../ui/kit.js";
 import { ExportActions } from "./ExportActions.js";
 import { LessonStatus } from "./LessonStatus.js";
 import { ProgressBar } from "./ProgressBar.js";
@@ -17,11 +18,12 @@ export type CourseOutlineProps = {
 
 function LessonItem({ lesson, href }: { readonly lesson: ApiCourseLesson; readonly href: string }) {
   const { i18n } = useElearning();
+  const { Badge } = useUi();
   return (
     <li className="el-outline-lesson">
       <a href={href}>{lesson.title}</a>
       <LessonStatus status={lesson.status} />
-      {lesson.is_required ? null : <span className="el-tag">{i18n.t("lesson.optional")}</span>}
+      {lesson.is_required ? null : <Badge>{i18n.t("lesson.optional")}</Badge>}
       {lesson.estimated_minutes === null ? null : (
         <span className="el-meta">
           {i18n.t("lesson.minutes", { minutes: lesson.estimated_minutes })}
@@ -39,6 +41,7 @@ export function CourseOutline({
   enrolling = false,
 }: CourseOutlineProps) {
   const { i18n } = useElearning();
+  const { Button } = useUi();
   const { progress } = course;
   const canEnroll =
     course.enrollment === null && course.enrollment_mode === "self" && onEnroll !== undefined;
@@ -57,14 +60,9 @@ export function CourseOutline({
               })}
         </p>
         {canEnroll ? (
-          <button
-            type="button"
-            className="el-button el-button-primary"
-            onClick={onEnroll}
-            disabled={enrolling}
-          >
+          <Button variant="primary" onClick={onEnroll} disabled={enrolling}>
             {i18n.t("course.enroll")}
-          </button>
+          </Button>
         ) : null}
         <ExportActions kind="course" id={course.id} formats={course.export_formats} />
       </header>

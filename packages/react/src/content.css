@@ -44,7 +44,7 @@
 }
 :where(.el-checklist li[data-checked] span) {
   text-decoration: line-through;
-  color: var(--el-color-muted);
+  color: var(--el-color-muted-foreground);
 }
 :where(.el-toggle summary) {
   cursor: pointer;
@@ -79,7 +79,7 @@
 }
 :where(.el-media-caption) {
   margin-block-start: calc(var(--el-space) / 2);
-  color: var(--el-color-muted);
+  color: var(--el-color-muted-foreground);
 }
 :where(.el-file) {
   margin-block: var(--el-space);

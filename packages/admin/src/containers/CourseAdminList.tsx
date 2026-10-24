@@ -1,11 +1,12 @@
 "use client";
 
-import { QueryState } from "@bebranded/elearning-react";
+import { QueryState, useUi } from "@bebranded/elearning-react";
 import type { ApiAdminCourse } from "@bebranded/elearning-core";
 
 import { CourseCreateForm } from "../components/CourseCreateForm.js";
 import { useAdminCourses } from "../hooks/admin-queries.js";
 import { useAdmin } from "../provider/admin-context.js";
+import { statusTone } from "../components/status-tone.js";
 
 export type CourseAdminListProps = {
   /** The host's back-office page of a course. */
@@ -15,6 +16,7 @@ export type CourseAdminListProps = {
 
 /** Every course the admin can manage, plus the shared catalog read only, and a creation form. */
 export function CourseAdminList({ courseHref, onCreated }: CourseAdminListProps) {
+  const { Badge } = useUi();
   const { t } = useAdmin();
   const courses = useAdminCourses();
   if (courses.isPending) return <QueryState kind="loading" />;
@@ -32,10 +34,10 @@ export function CourseAdminList({ courseHref, onCreated }: CourseAdminListProps)
             <a href={courseHref(course)} aria-label={t.t("courses.open", { title: course.title })}>
               {course.title}
             </a>
-            <span className="el-tag" data-status={course.status}>
+            <Badge tone={statusTone(course.status)} data-status={course.status}>
               {t.t(`status.${course.status}`)}
-            </span>
-            {course.editable ? null : <span className="el-tag">{t.t("courses.shared")}</span>}
+            </Badge>
+            {course.editable ? null : <Badge>{t.t("courses.shared")}</Badge>}
           </li>
         ))}
       </ul>

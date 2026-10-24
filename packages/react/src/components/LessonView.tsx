@@ -3,6 +3,7 @@
 import type { ApiLesson } from "@bebranded/elearning-core";
 
 import { useElearning } from "../provider/context.js";
+import { useUi } from "../ui/kit.js";
 import { ExportActions } from "./ExportActions.js";
 import { LessonContent } from "./LessonContent.js";
 import { Quiz } from "./Quiz.js";
@@ -17,6 +18,7 @@ export type LessonViewProps = {
 /** A lesson with its body and, for text lessons, the "Mark as done" action. */
 export function LessonView({ lesson, onMarkDone, marking = false }: LessonViewProps) {
   const { i18n } = useElearning();
+  const { Button } = useUi();
   const done = lesson.status === "completed";
   return (
     <article className="el-lesson">
@@ -33,14 +35,9 @@ export function LessonView({ lesson, onMarkDone, marking = false }: LessonViewPr
           {done ? i18n.t("lesson.done") : null}
         </p>
         {lesson.type === "text" && !done && onMarkDone !== undefined ? (
-          <button
-            type="button"
-            className="el-button el-button-primary"
-            onClick={onMarkDone}
-            disabled={marking}
-          >
+          <Button variant="primary" onClick={onMarkDone} disabled={marking}>
             {i18n.t("lesson.markDone")}
-          </button>
+          </Button>
         ) : null}
         {lesson.type === "text" ? null : <p className="el-meta">{i18n.t("lesson.notManual")}</p>}
       </footer>

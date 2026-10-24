@@ -4,17 +4,35 @@
  */
 
 :where(.el-root) {
+  /* Defaults when the host passes no design file (spec 11); the design's names. */
+  --el-color-background: #ffffff;
+  --el-color-foreground: #111827;
+  --el-color-card: #f7f7f9;
+  --el-color-card-foreground: #111827;
   --el-color-primary: #4338ca;
   --el-color-primary-foreground: #ffffff;
-  --el-color-background: #ffffff;
-  --el-color-surface: #f7f7f9;
-  --el-color-text: #111827;
-  --el-color-muted: #4b5563;
+  --el-color-secondary: #f3f4f6;
+  --el-color-secondary-foreground: #111827;
+  --el-color-muted: #f3f4f6;
+  --el-color-muted-foreground: #4b5563;
+  --el-color-accent: #eef2ff;
+  --el-color-accent-foreground: #312e81;
+  --el-color-destructive: #b91c1c;
+  --el-color-destructive-foreground: #ffffff;
   --el-color-success: #15803d;
-  --el-color-danger: #b91c1c;
+  --el-color-success-foreground: #ffffff;
+  --el-color-warning: #a16207;
+  --el-color-warning-foreground: #ffffff;
   --el-color-border: #d1d5db;
+  --el-color-input: #d1d5db;
+  --el-color-ring: #4338ca;
+  --el-color-surface: var(--el-color-card);
+  --el-color-text: var(--el-color-foreground);
+  --el-color-danger: var(--el-color-destructive);
   --el-radius: 8px;
   --el-font-family: inherit;
+  --el-font-heading: inherit;
+  --el-font-mono: ui-monospace, monospace;
   --el-space: 1rem;
 
   color: var(--el-color-text);
@@ -24,16 +42,31 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :where(.el-root:not([data-theme="light"])) {
+  :where(.el-root:not(.light, .light *)) {
+    --el-color-background: #111827;
+    --el-color-foreground: #f9fafb;
+    --el-color-card: #1f2937;
+    --el-color-card-foreground: #f9fafb;
     --el-color-primary: #a5b4fc;
     --el-color-primary-foreground: #111827;
-    --el-color-background: #111827;
-    --el-color-surface: #1f2937;
-    --el-color-text: #f9fafb;
-    --el-color-muted: #d1d5db;
+    --el-color-secondary: #374151;
+    --el-color-secondary-foreground: #f9fafb;
+    --el-color-muted: #1f2937;
+    --el-color-muted-foreground: #d1d5db;
+    --el-color-accent: #312e81;
+    --el-color-accent-foreground: #eef2ff;
+    --el-color-destructive: #fca5a5;
+    --el-color-destructive-foreground: #111827;
     --el-color-success: #86efac;
-    --el-color-danger: #fca5a5;
+    --el-color-success-foreground: #111827;
+    --el-color-warning: #fcd34d;
+    --el-color-warning-foreground: #111827;
     --el-color-border: #4b5563;
+    --el-color-input: #4b5563;
+    --el-color-ring: #a5b4fc;
+    --el-color-surface: var(--el-color-card);
+    --el-color-text: var(--el-color-foreground);
+    --el-color-danger: var(--el-color-destructive);
   }
 }
 
@@ -60,44 +93,13 @@
   color: var(--el-color-primary);
 }
 :where(.el-meta, .el-card-due, .el-state) {
-  color: var(--el-color-muted);
+  color: var(--el-color-muted-foreground);
 }
 
-/* Buttons and focus: visible focus everywhere, 24px minimum targets (WCAG 2.2) */
-:where(.el-button) {
-  min-height: 2.75rem;
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--el-color-border);
-  border-radius: var(--el-radius);
-  background: var(--el-color-background);
-  color: var(--el-color-text);
-  font: inherit;
-  cursor: pointer;
-}
-:where(.el-button-primary) {
-  border-color: var(--el-color-primary);
-  background: var(--el-color-primary);
-  color: var(--el-color-primary-foreground);
-}
-:where(.el-button:disabled) {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+/* Visible focus everywhere (WCAG 2.4.7) */
 :where(.el-root :focus-visible) {
-  outline: 3px solid var(--el-color-primary);
+  outline: 3px solid var(--el-color-ring);
   outline-offset: 2px;
-}
-
-/* Progress */
-:where(.el-progress) {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-:where(.el-progress-bar) {
-  flex: 1;
-  height: 0.5rem;
-  accent-color: var(--el-color-primary);
 }
 
 /* Course outline */
@@ -110,14 +112,4 @@
   gap: 0.5rem 1rem;
   align-items: baseline;
   padding: 0.25rem 0;
-}
-:where(.el-status, .el-tag) {
-  font-size: 0.875rem;
-  color: var(--el-color-muted);
-}
-:where(.el-status[data-status="completed"]) {
-  color: var(--el-color-success);
-}
-:where(.el-state-error) {
-  color: var(--el-color-danger);
 }

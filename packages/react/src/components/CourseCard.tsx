@@ -3,15 +3,17 @@
 import type { ApiCourseSummary } from "@bebranded/elearning-core";
 
 import { useElearning } from "../provider/context.js";
+import { useUi } from "../ui/kit.js";
 import { ProgressBar } from "./ProgressBar.js";
 
 export type CourseCardProps = { readonly course: ApiCourseSummary; readonly href: string };
 
 export function CourseCard({ course, href }: CourseCardProps) {
   const { i18n } = useElearning();
+  const { Card } = useUi();
   const { enrollment } = course;
   return (
-    <article className="el-card">
+    <Card as="article">
       <h3 className="el-card-title">
         <a href={href}>{course.title}</a>
       </h3>
@@ -29,6 +31,6 @@ export function CourseCard({ course, href }: CourseCardProps) {
           )}
         </>
       )}
-    </article>
+    </Card>
   );
 }

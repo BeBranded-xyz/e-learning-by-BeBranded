@@ -7,6 +7,7 @@ import { useAdmin } from "../provider/admin-context.js";
 import { useAudienceLabel } from "./AudienceFields.js";
 import { ErrorAlert } from "./ErrorAlert.js";
 import { RuleForm } from "./RuleForm.js";
+import { useUi } from "@bebranded/elearning-react";
 
 export type AccessRulesEditorProps = {
   readonly courseId: string;
@@ -20,6 +21,7 @@ export type AccessRulesEditorProps = {
 
 /** Audience rules of one course, chapter or lesson (spec 05): deny always wins. */
 export function AccessRulesEditor(props: AccessRulesEditorProps) {
+  const { Button } = useUi();
   const { t } = useAdmin();
   const label = useAudienceLabel();
   const add = useCourseMutation(props.courseId, (admin, body: Readonly<Record<string, unknown>>) =>
@@ -39,16 +41,14 @@ export function AccessRulesEditor(props: AccessRulesEditorProps) {
           <li key={rule.id} data-effect={rule.effect}>
             <span>{describe(rule)}</span>
             {props.editable ? (
-              <button
-                type="button"
-                className="el-button"
+              <Button
                 aria-label={t.t("rules.remove", { rule: describe(rule) })}
                 onClick={() => {
                   remove.mutate(rule.id);
                 }}
               >
                 {t.t("action.delete")}
-              </button>
+              </Button>
             ) : null}
           </li>
         ))}

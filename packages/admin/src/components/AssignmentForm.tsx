@@ -7,6 +7,7 @@ import { useAdmin } from "../provider/admin-context.js";
 import { AudienceFields, audienceBody } from "./AudienceFields.js";
 import type { AudienceDraft } from "./AudienceFields.js";
 import { TextField } from "./Fields.js";
+import { useUi } from "@bebranded/elearning-react";
 
 /** A date input's day as the end of that day in UTC, so "due on the 31st" includes the 31st. */
 function dueAtOf(day: string): string | null {
@@ -25,6 +26,7 @@ export type AssignmentFormProps = {
 const AUDIENCES = ["role", "grade_min", "learner"] as const;
 
 export function AssignmentForm({ roles, pending, onSubmit }: AssignmentFormProps) {
+  const { Button } = useUi();
   const { t } = useAdmin();
   const [draft, setDraft] = useState<AudienceDraft>({ type: "role", value: "" });
   const [due, setDue] = useState("");
@@ -40,9 +42,9 @@ export function AssignmentForm({ roles, pending, onSubmit }: AssignmentFormProps
     <form className="el-admin-inline-form" onSubmit={submit} aria-label={t.t("assign.add")}>
       <AudienceFields draft={draft} onChange={setDraft} types={AUDIENCES} roles={roles} />
       <TextField label={t.t("field.dueAt")} type="date" value={due} onChange={setDue} />
-      <button type="submit" className="el-button" disabled={audience === null || pending}>
+      <Button type="submit" disabled={audience === null || pending}>
         {t.t("assign.add")}
-      </button>
+      </Button>
     </form>
   );
 }

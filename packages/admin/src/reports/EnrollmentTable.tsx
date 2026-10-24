@@ -1,6 +1,7 @@
 "use client";
 
 import type { ApiEnrollmentReportRow } from "@bebranded/elearning-core";
+import { useUi } from "@bebranded/elearning-react";
 import type { ReactNode } from "react";
 
 import { useAdmin } from "../provider/admin-context.js";
@@ -27,39 +28,29 @@ export function EnrollmentTable<R extends ApiEnrollmentReportRow>({
   first,
 }: EnrollmentTableProps<R>) {
   const { t } = useAdmin();
+  const { Badge, Table } = useUi();
   const date = (iso: string | null) => (iso === null ? "–" : t.formatDate(iso));
   return (
-    <div className="el-table-wrapper">
-      <table className="el-admin-table">
-        <caption>{caption}</caption>
-        <thead>
-          <tr>
-            <th scope="col">{first.header}</th>
-            {COLUMNS.map((column) => (
-              <th key={column} scope="col">
-                {t.t(column)}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={`${row.learner_id}-${row.course_id}`} data-overdue={row.overdue}>
-              <th scope="row">{first.cell(row)}</th>
-              <td>{t.t(`source.${row.source}`)}</td>
-              <td>
-                {date(row.due_at)}
-                {row.overdue ? (
-                  <span className="el-tag el-admin-late"> {t.t("report.late")}</span>
-                ) : null}
-              </td>
-              <td>{date(row.started_at)}</td>
-              <td>{date(row.completed_at)}</td>
-              <td>{t.formatPercent(row.progress)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Table
+      caption={caption}
+      columns={[
+        { key: "first", header: first.header },
+        ...COLUMNS.map((column) => ({ key: column, header: t.t(column) })),
+      ]}
+      rows={rows.map((row) => ({
+        key: `${row.learner_id}-${row.course_id}`,
+        cells: [
+          first.cell(row),
+          t.t(`source.${row.source}`),
+          <>
+            {date(row.due_at)}
+            {row.overdue ? <Badge tone="destructive"> {t.t("report.late")}</Badge> : null}
+          </>,
+          date(row.started_at),
+          date(row.completed_at),
+          t.formatPercent(row.progress),
+        ],
+      }))}
+    />
   );
 }

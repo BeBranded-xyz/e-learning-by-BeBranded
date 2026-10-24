@@ -7,9 +7,11 @@ import { useCourseMutation } from "../hooks/admin-queries.js";
 import { useAdmin } from "../provider/admin-context.js";
 import { ErrorAlert } from "./ErrorAlert.js";
 import { TextField } from "./Fields.js";
+import { useUi } from "@bebranded/elearning-react";
 
 /** Adds a draft chapter at the end of the course. */
 export function AddChapterForm({ courseId, position }: { courseId: string; position: number }) {
+  const { Button } = useUi();
   const { t } = useAdmin();
   const [title, setTitle] = useState("");
   const create = useCourseMutation(courseId, (admin, body: Readonly<Record<string, unknown>>) =>
@@ -35,9 +37,9 @@ export function AddChapterForm({ courseId, position }: { courseId: string; posit
         value={title}
         onChange={setTitle}
       />
-      <button type="submit" className="el-button" disabled={create.isPending}>
+      <Button type="submit" disabled={create.isPending}>
         {t.t("tree.addChapter")}
-      </button>
+      </Button>
       <ErrorAlert error={create.error} />
     </form>
   );

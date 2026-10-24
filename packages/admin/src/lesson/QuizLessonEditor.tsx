@@ -4,7 +4,7 @@ import type { PartialBlock } from "@blocknote/core";
 import { BlockNoteView } from "@blocknote/mantine";
 import { SuggestionMenuController, useCreateBlockNote } from "@blocknote/react";
 import type { ApiAdminLesson, ApiAdminQuiz } from "@bebranded/elearning-core";
-import { QueryState } from "@bebranded/elearning-react";
+import { QueryState, useUi } from "@bebranded/elearning-react";
 import { quizEditorSchema } from "@bebranded/elearning-editor";
 import type { QuizEditorSchema } from "@bebranded/elearning-editor";
 import { useState } from "react";
@@ -24,6 +24,7 @@ type QuizBlock = PartialBlock<
 >;
 
 function QuizDocumentEditor({ lesson, quiz }: { lesson: ApiAdminLesson; quiz: ApiAdminQuiz }) {
+  const { Button } = useUi();
   const { admin, upload, t } = useAdmin();
   const document = quiz.document;
   const editor = useCreateBlockNote({
@@ -56,16 +57,15 @@ function QuizDocumentEditor({ lesson, quiz }: { lesson: ApiAdminLesson; quiz: Ap
         onChange={(blockId, props) => editor.updateBlock(blockId, { props })}
       />
       <div className="el-admin-actions">
-        <button
-          type="button"
-          className="el-button el-button-primary"
+        <Button
+          variant="primary"
           disabled={save.isPending}
           onClick={() => {
             save.mutate(undefined);
           }}
         >
           {save.isPending ? t.t("action.saving") : t.t("quiz.save")}
-        </button>
+        </Button>
         {save.isSuccess ? (
           <p role="status">{t.t("quiz.saved", { count: save.data.question_count })}</p>
         ) : null}

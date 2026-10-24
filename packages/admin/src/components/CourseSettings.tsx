@@ -10,6 +10,8 @@ import { DeleteButton } from "./DeleteButton.js";
 import { ErrorAlert } from "./ErrorAlert.js";
 import { CheckboxField, SelectField, TextField } from "./Fields.js";
 import type { TextFieldProps } from "./Fields.js";
+import { useUi } from "@bebranded/elearning-react";
+import { statusTone } from "./status-tone.js";
 
 export type CourseSettingsProps = {
   readonly course: ApiAdminCourse;
@@ -86,6 +88,7 @@ function CourseFields(props: {
 }
 
 function CourseActions(props: { course: ApiAdminCourse; onDeleted?: (() => void) | undefined }) {
+  const { Button } = useUi();
   const { t } = useAdmin();
   const { course } = props;
   const publish = useCourseMutation(course.id, (admin, status: "draft" | "published") =>
@@ -95,16 +98,14 @@ function CourseActions(props: { course: ApiAdminCourse; onDeleted?: (() => void)
   const published = course.status === "published";
   return (
     <>
-      <button
-        type="button"
-        className="el-button"
+      <Button
         disabled={publish.isPending}
         onClick={() => {
           publish.mutate(published ? "draft" : "published");
         }}
       >
         {published ? t.t("action.unpublish") : t.t("action.publish")}
-      </button>
+      </Button>
       <DeleteButton
         title={course.title}
         disabled={remove.isPending}
@@ -122,6 +123,7 @@ function CourseActions(props: { course: ApiAdminCourse; onDeleted?: (() => void)
  * publication, and its deletion.
  */
 export function CourseSettings({ course, onDeleted }: CourseSettingsProps) {
+  const { Badge, Button } = useUi();
   const { t } = useAdmin();
   const [draft, setDraft] = useState<Draft>(() => ({
     title: course.title,
@@ -143,15 +145,15 @@ export function CourseSettings({ course, onDeleted }: CourseSettingsProps) {
       <CourseFields draft={draft} disabled={!course.editable} onChange={setDraft} />
       <p className="el-meta">
         {t.t("field.status")}:{" "}
-        <span className="el-tag" data-status={course.status}>
+        <Badge tone={statusTone(course.status)} data-status={course.status}>
           {t.t(`status.${course.status}`)}
-        </span>
+        </Badge>
       </p>
       {course.editable ? (
         <div className="el-admin-actions">
-          <button type="submit" className="el-button el-button-primary" disabled={save.isPending}>
+          <Button variant="primary" type="submit" disabled={save.isPending}>
             {save.isPending ? t.t("action.saving") : t.t("action.save")}
-          </button>
+          </Button>
           <CourseActions course={course} onDeleted={onDeleted} />
         </div>
       ) : null}

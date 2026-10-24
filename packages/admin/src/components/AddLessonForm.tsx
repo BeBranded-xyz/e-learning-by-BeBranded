@@ -7,6 +7,7 @@ import { useCourseMutation } from "../hooks/admin-queries.js";
 import { useAdmin } from "../provider/admin-context.js";
 import { ErrorAlert } from "./ErrorAlert.js";
 import { SelectField, TextField } from "./Fields.js";
+import { useUi } from "@bebranded/elearning-react";
 
 type LessonType = "text" | "video" | "quiz";
 
@@ -18,6 +19,7 @@ export type AddLessonFormProps = {
 
 /** Adds a draft lesson at the end of a chapter. */
 export function AddLessonForm({ courseId, chapterId, position }: AddLessonFormProps) {
+  const { Button } = useUi();
   const { t } = useAdmin();
   const [title, setTitle] = useState("");
   const [type, setType] = useState<LessonType>("text");
@@ -53,9 +55,9 @@ export function AddLessonForm({ courseId, chapterId, position }: AddLessonFormPr
         }))}
         onChange={setType}
       />
-      <button type="submit" className="el-button" disabled={create.isPending}>
+      <Button type="submit" disabled={create.isPending}>
         {t.t("tree.addLesson")}
-      </button>
+      </Button>
       <ErrorAlert error={create.error} />
     </form>
   );

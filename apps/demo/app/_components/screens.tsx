@@ -9,14 +9,14 @@ import {
 } from "@bebranded/elearning-react";
 import type { ReactNode } from "react";
 
+import { design } from "../../elearning.design";
+
 // The React components take link builders (functions), so the screens are
 // Client Components; the pages around them stay Server Components.
 
-const theme = { colors: { primary: "#4338ca" }, radius: "10px" };
-
 function Provider({ children }: { readonly children: ReactNode }) {
   return (
-    <ElearningProvider apiBase="/api/elearning" locale="en" theme={theme}>
+    <ElearningProvider apiBase="/api/elearning" locale="en" design={design}>
       {children}
     </ElearningProvider>
   );

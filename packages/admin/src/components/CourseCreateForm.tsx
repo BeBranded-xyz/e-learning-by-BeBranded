@@ -9,6 +9,7 @@ import { slugify } from "../lib/slug.js";
 import { useAdmin } from "../provider/admin-context.js";
 import { ErrorAlert } from "./ErrorAlert.js";
 import { TextField } from "./Fields.js";
+import { useUi } from "@bebranded/elearning-react";
 
 export type CourseCreateFormProps = {
   readonly onCreated?: ((course: ApiAdminCourse) => void) | undefined;
@@ -19,6 +20,7 @@ export type CourseCreateFormProps = {
  * sees a new course until it gets an access rule (spec 05).
  */
 export function CourseCreateForm({ onCreated }: CourseCreateFormProps) {
+  const { Button } = useUi();
   const { t } = useAdmin();
   const id = useId();
   const [title, setTitle] = useState("");
@@ -56,9 +58,9 @@ export function CourseCreateForm({ onCreated }: CourseCreateFormProps) {
         value={effectiveSlug}
         onChange={setSlug}
       />
-      <button type="submit" className="el-button el-button-primary" disabled={create.isPending}>
+      <Button variant="primary" type="submit" disabled={create.isPending}>
         {t.t("action.create")}
-      </button>
+      </Button>
       <ErrorAlert error={create.error} />
     </form>
   );

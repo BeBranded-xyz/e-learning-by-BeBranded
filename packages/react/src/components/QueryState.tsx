@@ -2,6 +2,7 @@
 
 import { ElearningApiError } from "../api/api-error.js";
 import { useElearning } from "../provider/context.js";
+import { useUi } from "../ui/kit.js";
 
 export type QueryStateProps =
   | { readonly kind: "loading" }
@@ -16,22 +17,21 @@ function errorMessageKey(error: unknown) {
 /** Loading and error states shared by every container. */
 export function QueryState(props: QueryStateProps) {
   const { i18n } = useElearning();
+  const { Alert, Button } = useUi();
   if (props.kind === "loading") {
     return (
-      <p className="el-state" role="status" aria-live="polite">
+      <Alert tone="info" role="status" aria-live="polite">
         {i18n.t("state.loading")}
-      </p>
+      </Alert>
     );
   }
   const key = errorMessageKey(props.error);
   return (
-    <div className="el-state el-state-error" role="alert">
+    <Alert tone="error" role="alert">
       <p>{i18n.t(key)}</p>
       {key === "state.error" ? (
-        <button type="button" className="el-button" onClick={props.onRetry}>
-          {i18n.t("state.retry")}
-        </button>
+        <Button onClick={props.onRetry}>{i18n.t("state.retry")}</Button>
       ) : null}
-    </div>
+    </Alert>
   );
 }
