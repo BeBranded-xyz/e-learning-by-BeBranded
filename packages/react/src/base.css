@@ -1,0 +1,123 @@
+/*
+ * Theme tokens, layout, buttons, progress and the course outline of
+ * @bebranded/elearning-react, imported by styles.css. Zero specificity.
+ */
+
+:where(.el-root) {
+  --el-color-primary: #4338ca;
+  --el-color-primary-foreground: #ffffff;
+  --el-color-background: #ffffff;
+  --el-color-surface: #f7f7f9;
+  --el-color-text: #111827;
+  --el-color-muted: #4b5563;
+  --el-color-success: #15803d;
+  --el-color-danger: #b91c1c;
+  --el-color-border: #d1d5db;
+  --el-radius: 8px;
+  --el-font-family: inherit;
+  --el-space: 1rem;
+
+  color: var(--el-color-text);
+  background: var(--el-color-background);
+  font-family: var(--el-font-family);
+  line-height: 1.5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :where(.el-root:not([data-theme="light"])) {
+    --el-color-primary: #a5b4fc;
+    --el-color-primary-foreground: #111827;
+    --el-color-background: #111827;
+    --el-color-surface: #1f2937;
+    --el-color-text: #f9fafb;
+    --el-color-muted: #d1d5db;
+    --el-color-success: #86efac;
+    --el-color-danger: #fca5a5;
+    --el-color-border: #4b5563;
+  }
+}
+
+/* Layout and cards */
+:where(.el-grid) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  gap: var(--el-space);
+  padding: 0;
+  list-style: none;
+}
+:where(.el-card) {
+  height: 100%;
+  padding: var(--el-space);
+  border: 1px solid var(--el-color-border);
+  border-radius: var(--el-radius);
+  background: var(--el-color-surface);
+}
+:where(.el-card-title) {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
+}
+:where(.el-root a) {
+  color: var(--el-color-primary);
+}
+:where(.el-meta, .el-card-due, .el-state) {
+  color: var(--el-color-muted);
+}
+
+/* Buttons and focus: visible focus everywhere, 24px minimum targets (WCAG 2.2) */
+:where(.el-button) {
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--el-color-border);
+  border-radius: var(--el-radius);
+  background: var(--el-color-background);
+  color: var(--el-color-text);
+  font: inherit;
+  cursor: pointer;
+}
+:where(.el-button-primary) {
+  border-color: var(--el-color-primary);
+  background: var(--el-color-primary);
+  color: var(--el-color-primary-foreground);
+}
+:where(.el-button:disabled) {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+:where(.el-root :focus-visible) {
+  outline: 3px solid var(--el-color-primary);
+  outline-offset: 2px;
+}
+
+/* Progress */
+:where(.el-progress) {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+:where(.el-progress-bar) {
+  flex: 1;
+  height: 0.5rem;
+  accent-color: var(--el-color-primary);
+}
+
+/* Course outline */
+:where(.el-outline-lessons) {
+  padding-left: 1.25rem;
+}
+:where(.el-outline-lesson) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: baseline;
+  padding: 0.25rem 0;
+}
+:where(.el-status, .el-tag) {
+  font-size: 0.875rem;
+  color: var(--el-color-muted);
+}
+:where(.el-status[data-status="completed"]) {
+  color: var(--el-color-success);
+}
+:where(.el-state-error) {
+  color: var(--el-color-danger);
+}

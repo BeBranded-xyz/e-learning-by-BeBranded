@@ -1,0 +1,26 @@
+/*
+ * The video player of @bebranded/elearning-react, imported by styles.css.
+ * Zero specificity like styles.css.
+ */
+
+:where(.el-video) {
+  margin: 0 0 var(--el-space);
+}
+
+:where(.el-video-media) {
+  display: block;
+  width: 100%;
+  max-height: 70vh;
+  border-radius: var(--el-radius);
+  background: #000;
+}
+
+:where(.el-video figcaption) {
+  margin-top: calc(var(--el-space) / 2);
+}
+
+:where(.el-video-pending) {
+  padding: var(--el-space);
+  border: 1px dashed var(--el-color-border);
+  border-radius: var(--el-radius);
+}
