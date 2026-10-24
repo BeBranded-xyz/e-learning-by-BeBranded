@@ -61,6 +61,15 @@
 
 **Deliverable**: multi-column lessons, and lessons and courses exportable to PDF and Word. See [10 — Editor extensions](10-editor-extensions.md).
 
+### Phase 4c: design system
+
+- [ ] One design file (`defineDesign`): colors in light and dark, fonts, radius, brand; contrast checks
+- [ ] `UiKit` in the React package, default kit, every learner and back-office component drawn through it, kit contract tests
+- [ ] Exports themed by the design file
+- [ ] Theme 1: shadcn/ui kit and theme, published as a shadcn registry; the demo rebuilt with shadcn/ui
+
+**Deliverable**: a host restyles everything from one file and plugs its own components. See [11 — Design system](11-design-system.md).
+
 ### Phase 5: first host product in production
 
 - Integration in the pilot product, integration time measured

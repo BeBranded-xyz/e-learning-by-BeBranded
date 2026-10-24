@@ -160,32 +160,11 @@ The module emits business events. The host subscribes to them to trigger its own
 
 ## 6. Branding and theming
 
-Every component reads **CSS custom properties** prefixed with `--el-`. The host sets them globally or through the `theme` prop of `<ElearningProvider>`.
+One design file (`elearning.design.ts`, validated by `defineDesign`) declares colors in light and dark, fonts, radius and brand, and drives the learner UI, the back-office and the exports. The module draws its buttons, cards, fields, badges, alerts, progress bars and tables through a swappable UI kit; shadcn/ui is the first kit. See [11 — Design system](11-design-system.md).
 
-```ts
-const hostTheme = {
-  colors: {
-    primary: "#5B3DF5",
-    primaryForeground: "#FFFFFF",
-    background: "#FFFFFF",
-    surface: "#F7F7F9",
-    text: "#111111",
-    muted: "#6B7280",
-    success: "#16A34A",
-    danger: "#DC2626",
-    border: "#E5E7EB",
-  },
-  radius: "8px",
-  fontFamily: "inherit",
-  darkMode: "media", // "media" | "class" | "off"
-};
-```
-
-- **No imposed CSS dependency.** Styles ship as plain CSS with low specificity (`:where()`), so the host can override them.
-- The BlockNote editor and the rendered lesson content are themed with the same tokens.
+- **No imposed CSS dependency.** The packages ship plain CSS with low specificity (`:where()`), driven by `--el-*` variables, so the host can override them.
+- The BlockNote editor and the rendered lesson content are themed with the same variables.
 - **Headless** mode: every component also exposes a hook (`useCourse`, `useLessonPlayer`, `useQuiz`…), so the host can rebuild the UI with its own design system.
-- Override slots (`components={{ LessonHeader: MyHeader }}`) let the host replace a part without rewriting everything.
-- An optional Tailwind preset maps the `--el-*` tokens to the host's tokens.
 
 ## 7. i18n
 
