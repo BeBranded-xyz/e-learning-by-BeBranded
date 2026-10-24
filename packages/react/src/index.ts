@@ -60,3 +60,4 @@ export type {
   UiTextAreaProps,
   UiTextFieldProps,
 } from "./ui/kit.types.js";
+export { LessonPreviewContent } from "./components/LessonPreviewContent.js";

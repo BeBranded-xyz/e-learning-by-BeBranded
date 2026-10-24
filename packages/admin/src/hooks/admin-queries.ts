@@ -66,6 +66,7 @@ export function useAdminLesson(lessonId: string) {
   const { admin } = useAdmin();
   return useQuery({
     queryKey: adminKeys.lesson(lessonId),
+    enabled: lessonId !== "",
     queryFn: () => admin.getLesson(lessonId),
     // A video being uploaded or processed is followed until the webhook marks it ready.
     refetchInterval: (query) => {

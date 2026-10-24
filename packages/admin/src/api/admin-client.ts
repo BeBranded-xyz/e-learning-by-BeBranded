@@ -15,6 +15,7 @@ import type {
   ApiLearnerReport,
   ApiQuizReport,
   ApiVideoUpload,
+  ApiLessonPreview,
 } from "@bebranded/elearning-core";
 import { toApiError } from "@bebranded/elearning-react";
 import type { Fetcher } from "@bebranded/elearning-react";
@@ -74,6 +75,8 @@ function contentEndpoints({ request, remove }: Transport) {
 
 function mediaEndpoints({ request }: Transport) {
   return {
+    previewLesson: (lessonId: string) =>
+      request<ApiLessonPreview>("GET", `/lessons/${id(lessonId)}/preview`),
     getQuiz: (lessonId: string) => request<ApiAdminQuiz>("GET", `/lessons/${id(lessonId)}/quiz`),
     saveQuiz: (lessonId: string, document: unknown) =>
       request<ApiAdminQuiz>("PUT", `/lessons/${id(lessonId)}/quiz`, { document }),

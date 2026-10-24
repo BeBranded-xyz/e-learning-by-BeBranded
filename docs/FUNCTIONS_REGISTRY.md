@@ -51,6 +51,7 @@ Paths are relative to the host's mount point. Auth: `client` = the host's sessio
 | `deleteChapter` | DELETE `/v1/admin/chapters/:id` | Delete a chapter and its lessons | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8 |
 | `createLesson` | POST `/v1/admin/lessons` | Create a text lesson (validated content) | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8 |
 | `getAdminLesson` | GET `/v1/admin/lessons/:id` | Lesson with its stored document | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8 |
+| `previewLesson` | GET `/v1/admin/lessons/:id/preview` | Saved draft HTML, signed video and answer-free read-only quiz; no learner state writes | `LessonWorkspace`, `CourseWorkspace` | client, `isAdmin` | active | maintainers | spec 04, Course authoring workspace |
 | `updateLesson` | PATCH `/v1/admin/lessons/:id` | Edit or publish a lesson | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8 |
 | `deleteLesson` | DELETE `/v1/admin/lessons/:id` | Delete a lesson | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 04, section 8 |
 | `getAdminQuiz`, `saveAdminQuiz` | GET, PUT `/v1/admin/lessons/:id/quiz` | Quiz editor document; validation and graded definition on save | `@bebranded/elearning-admin` (phase 4), host scripts | client, `isAdmin` | active | maintainers | spec 07 |
@@ -86,3 +87,12 @@ Paths are relative to the host's mount point. Auth: `client` = the host's sessio
 | Name | Marked on | Remove by | Verified no callers | PR |
 |---|---|---|---|---|
 | | | | | |
+
+## Demo media routes
+
+These paths belong to the demo host, outside the module mount point.
+
+| Name | Method + path | Purpose | Called by | Auth | Status | Owner | Docs |
+|---|---|---|---|---|---|---|---|
+| `uploadDemoMedia` | POST `/demo-media/:id/upload` | Bounded MP4/WebM upload and local HLS encoding | Video editor | Demo admin, same origin, expiring one-use HMAC ticket | active | maintainers | spec 06, Demo uploads |
+| `readDemoMedia` | GET `/demo-media/:id/:file` | Private HLS playlist and allowlisted segments | Learner and draft preview players | Expiring HMAC playback URL | active | maintainers | spec 06, Demo uploads |

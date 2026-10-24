@@ -1,0 +1,193 @@
+@layer elearning {
+  :where(
+    .el-author-workspace,
+    .el-author-stack,
+    .el-author-panel,
+    .el-author-preview,
+    .el-lesson-preview-content
+  ) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--el-space-4);
+    min-inline-size: 0;
+  }
+  .el-author-panel[hidden] {
+    display: none;
+  }
+  :where(.el-author-heading, .el-author-toolbar) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--el-space-4);
+  }
+  :where(.el-author-heading h2, .el-author-heading p) {
+    margin: 0;
+  }
+  :where(.el-author-sections) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--el-space-1);
+    padding-block-end: var(--el-space-3);
+    border-block-end: 1px solid var(--el-color-border);
+  }
+  :where(.el-author-panel) {
+    padding: var(--el-space-4);
+    border: 1px solid var(--el-color-border);
+    border-radius: var(--el-radius);
+    background: var(--el-color-background);
+  }
+  :where(.el-author-course-grid) {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+    gap: var(--el-space-4);
+  }
+  :where(.el-author-course-grid > li) {
+    display: block;
+  }
+  :where(.el-author-course-card, .el-author-create-card) {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: space-between;
+    gap: var(--el-space-3);
+    padding: var(--el-space-5);
+    border: 1px solid var(--el-color-border);
+    border-radius: var(--el-radius);
+    color: var(--el-color-text);
+    background: var(--el-color-surface);
+    text-decoration: none;
+    block-size: 100%;
+    inline-size: 100%;
+    transition: border-color 120ms ease;
+  }
+  :where(.el-author-course-card:hover, .el-author-create-card:hover) {
+    border-color: var(--el-color-primary);
+  }
+  :where(
+    .el-author-course-card:focus-visible,
+    .el-author-create-card:focus-visible,
+    .el-author-navigation a:focus-visible,
+    .el-author-disclosure summary:focus-visible
+  ) {
+    outline: 2px solid var(--el-color-primary);
+    outline-offset: 2px;
+  }
+  :where(.el-author-card-title) {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+  :where(.el-author-navigation) {
+    display: grid;
+    gap: var(--el-space-5);
+    font-size: 0.875rem;
+  }
+  :where(.el-author-navigation ul) {
+    display: grid;
+    gap: var(--el-space-1);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  :where(.el-author-navigation a) {
+    display: block;
+    padding: var(--el-space-2) var(--el-space-3);
+    color: var(--el-color-text);
+    text-decoration: none;
+    border-radius: var(--el-radius);
+    overflow-wrap: anywhere;
+  }
+  :where(.el-author-navigation a:hover, .el-author-navigation a[aria-current="page"]) {
+    background: var(--el-color-background);
+    color: var(--el-color-primary);
+  }
+  :where(.el-author-navigation small) {
+    display: block;
+    color: var(--el-color-muted-foreground);
+  }
+  :where(.el-author-navigation summary) {
+    cursor: pointer;
+    padding: var(--el-space-2);
+    color: var(--el-color-muted-foreground);
+  }
+  :where(.el-author-nav-new) {
+    border: 1px solid var(--el-color-border);
+  }
+  :where(.el-author-nav-course) {
+    font-weight: 600;
+  }
+  :where(.el-author-nav-outline) {
+    display: grid;
+    gap: var(--el-space-2);
+  }
+  :where(.el-author-nav-outline details ul) {
+    padding-inline-start: var(--el-space-2);
+  }
+  :where(.el-admin-chapter details > summary) {
+    cursor: pointer;
+    padding-block: var(--el-space-2);
+  }
+  :where(.el-admin-chapter summary::after) {
+    content: "⌄";
+    margin-inline-start: auto;
+  }
+  :where(.el-admin-chapter details > .el-author-stack) {
+    margin-block: var(--el-space-3);
+  }
+  :where(.el-admin-lesson) {
+    position: relative;
+  }
+  :where(.el-author-lesson-link) {
+    flex: 1;
+    font-weight: 500;
+  }
+  :where(.el-author-lesson-link::after) {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--el-radius);
+  }
+  :where(.el-admin-lesson button) {
+    position: relative;
+    z-index: 1;
+  }
+  :where(.el-author-preview-frame) {
+    inline-size: 100%;
+    max-inline-size: 60rem;
+    margin-inline: auto;
+    padding: var(--el-space-6);
+    border: 1px solid var(--el-color-border);
+    border-radius: var(--el-radius);
+    background: var(--el-color-background);
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+  :where(.el-author-preview-frame[data-width="mobile"]) {
+    max-inline-size: 24rem;
+    padding: var(--el-space-4);
+  }
+  :where(.el-author-disclosure) {
+    padding: var(--el-space-4);
+    border: 1px solid var(--el-color-border);
+    border-radius: var(--el-radius);
+  }
+  :where(.el-author-disclosure > summary) {
+    cursor: pointer;
+    font-weight: 600;
+  }
+  :where(.el-author-disclosure > .el-admin-rules) {
+    margin-block-start: var(--el-space-4);
+  }
+  :where(#new-course, #new-chapter) {
+    scroll-margin-block-start: var(--el-space-6);
+  }
+  :where(#new-course) {
+    padding: var(--el-space-5);
+    border: 1px dashed var(--el-color-border);
+    border-radius: var(--el-radius);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :where(.el-author-course-card, .el-author-create-card) {
+      transition: none;
+    }
+  }
+}

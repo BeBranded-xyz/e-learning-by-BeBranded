@@ -29,7 +29,12 @@ export function AddChapterForm({ courseId, position }: { courseId: string; posit
     );
   };
   return (
-    <form className="el-admin-inline-form" onSubmit={submit} aria-label={t.t("tree.addChapter")}>
+    <form
+      id="new-chapter"
+      className="el-admin-inline-form"
+      onSubmit={submit}
+      aria-label={t.t("tree.addChapter")}
+    >
       <TextField
         label={t.t("tree.chapterTitle")}
         required

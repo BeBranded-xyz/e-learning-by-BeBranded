@@ -122,3 +122,23 @@ A shadcn host runs `npx shadcn add https://e-learning.bebranded.xyz/r/elearning.
 - React and admin: component tests run with the default kit and with a recording kit, proving every primitive goes through the kit; the kit contract suite on the default kit.
 - Demo: the kit contract suite on the shadcn kit (fields in one box, `list` and `inputMode` forwarded); end-to-end journeys unchanged, plus axe on every page in light and dark; the registry build matches the design file.
 - Exports: the layout checks of spec 10 with a custom design (colors and fonts reach the PDF; colors reach the Word XML).
+
+## Authoring navigation and preview
+
+The demo back-office uses a persistent left sidebar with a course outline and
+course links. Its list scrolls independently on desktop and collapses behind a
+labeled menu button on mobile. The main workspace groups structure, settings,
+completion, access, tracking and preview into focused sections. Course cards
+and lesson rows have full clickable areas; nested move controls remain separate
+keyboard targets. Chapter summaries expand their lesson lists.
+
+The package stylesheet entry imports `admin-base.css` before `workspace.css`
+so workspace layout overrides follow the existing primitive styles. Every
+color, spacing and border uses the shared design tokens. Hidden editor panels
+stay mounted to retain drafts and remain absent from keyboard navigation.
+Saved-content preview uses the learner renderer in a desktop or mobile frame,
+with an explicit refresh action and no learner-state writes.
+
+Verified layouts: [desktop](../screenshots/authoring-desktop.png) and
+[mobile](../screenshots/authoring-mobile.png). Browser upload tests use a
+synthetic video fixture; the normal demo seed uses attributed video excerpts.

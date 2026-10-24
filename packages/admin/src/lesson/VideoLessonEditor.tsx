@@ -35,7 +35,7 @@ function VideoStatus({ video }: { readonly video: ApiAdminLesson["video"] }) {
  * an upload straight to the provider (tus for files over 200 MB).
  */
 export function VideoLessonEditor({ lesson }: { readonly lesson: ApiAdminLesson }) {
-  const { admin, upload, t } = useAdmin();
+  const { admin, upload, t, videoUploadHint } = useAdmin();
   const id = useId();
   const queryClient = useQueryClient();
   const [progress, setProgress] = useState(0);
@@ -48,6 +48,7 @@ export function VideoLessonEditor({ lesson }: { readonly lesson: ApiAdminLesson 
     <section className="el-admin-video" aria-labelledby={`${id}-title`}>
       <h3 id={`${id}-title`}>{t.t("video.title")}</h3>
       <VideoStatus video={lesson.video} />
+      {videoUploadHint ? <p className="el-meta">{videoUploadHint}</p> : null}
       <label htmlFor={`${id}-file`}>{t.t("video.choose")}</label>
       <input
         id={`${id}-file`}

@@ -30,7 +30,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && node -e \"require('node:fs').copyFileSync('src/admin.css','dist/admin.css')\"",
+    "build": "tsc -p tsconfig.build.json && node -e \"for (const file of ['admin.css','admin-base.css','workspace.css']) require('node:fs').copyFileSync('src/'+file,'dist/'+file)\"",
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {

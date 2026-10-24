@@ -166,3 +166,11 @@ The quiz options (passing score, attempts, cooldown, time limit, shuffling, corr
 - A quiz attempt keeps the `quiz_version` it used, so editing a quiz later does not change a historical score.
 - `content_schema_version` lets future releases migrate stored BlockNote documents when the block schema changes (migration script shipped in `elearning-db`).
 - Full content versioning (revision history) is out of scope for v1.
+
+### Percentage completion
+
+`completion_rule` also accepts `{ "type": "percentage", "threshold": 0.8 }`.
+The threshold is 0.01–1 and uses the same accessible required lesson denominator
+as the default rule. Zero counted lessons never complete. The progress ratio
+remains the actual completed fraction; the completion flag can become true below
+100%. Stored completion dates are never removed by later rule edits.

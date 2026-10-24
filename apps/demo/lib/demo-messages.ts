@@ -1,5 +1,6 @@
 export const en = {
   title: "Learning by BeBranded",
+  videoUploadHint: "Demo uploads: MP4 or WebM, up to 50 MB and 15 minutes.",
   description: "Explore courses, videos and quizzes in the BeBranded learning demo.",
   navigation: "Main navigation",
   training: "Training",
@@ -28,6 +29,7 @@ export type DemoLocale = "en" | "fr";
 
 export const fr: DemoMessages = {
   title: "Learning by BeBranded",
+  videoUploadHint: "Envoi dans la démo : MP4 ou WebM, jusqu’à 50 Mo et 15 minutes.",
   description: "Découvrez les formations, vidéos et quiz de la démo BeBranded.",
   navigation: "Navigation principale",
   training: "Formations",

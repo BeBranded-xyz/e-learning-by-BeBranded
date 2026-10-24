@@ -20,7 +20,7 @@ function secret(): Buffer {
   return holder.demoFilesSecret;
 }
 
-function demoFilesDir(): string {
+export function demoFilesDir(): string {
   return path.join(os.tmpdir(), "elearning-demo-files");
 }
 
@@ -45,7 +45,12 @@ export function verify(
   return given.length === expected.length && timingSafeEqual(given, expected);
 }
 
-function signedUrl(action: "put" | "get", key: string, ttlSeconds: number, extra = ""): string {
+export function signedUrl(
+  action: "put" | "get",
+  key: string,
+  ttlSeconds: number,
+  extra = "",
+): string {
   const expires = Date.now() + ttlSeconds * 1000;
   const query = new URLSearchParams({
     exp: String(expires),

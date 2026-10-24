@@ -30,7 +30,9 @@ export function LessonItem({ lesson, href, editable, busy, ...actions }: LessonI
         onDragStart={actions.onDragStart}
         onDrop={actions.onDropBefore}
       >
-        <a href={href}>{lesson.title}</a>
+        <a className="el-author-lesson-link" href={href}>
+          {lesson.title}
+        </a>
         <Badge>{t.t(`type.${lesson.type}`)}</Badge>
         <Badge tone={statusTone(lesson.status)} data-status={lesson.status}>
           {t.t(`status.${lesson.status}`)}

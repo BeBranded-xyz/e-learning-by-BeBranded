@@ -7,6 +7,7 @@ import type { AdminI18n } from "../i18n/admin-translator.js";
 
 export type AdminContextValue = {
   readonly admin: AdminClient;
+  readonly videoUploadHint?: string | undefined;
   readonly t: AdminI18n;
   /** Sends files to the host's storage and the video provider (no cookies, no secrets). */
   readonly upload: Fetcher;

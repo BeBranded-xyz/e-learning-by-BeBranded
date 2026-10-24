@@ -41,6 +41,7 @@ export function TextLessonEditor({ lesson }: { readonly lesson: ApiAdminLesson }
     [t],
   );
   const editor = useCreateBlockNote({
+    domAttributes: { editor: { "aria-label": t.t("lesson.content") } },
     dictionary: t.locale.split("-")[0] === "fr" ? fr : en,
     schema,
     initialContent: initialContent(lesson.content),

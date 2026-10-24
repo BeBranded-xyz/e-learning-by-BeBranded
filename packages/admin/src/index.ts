@@ -29,3 +29,12 @@ export { adminKeys } from "./hooks/admin-queries.js";
 export { createAdminClient } from "./api/admin-client.js";
 export type { AdminClient } from "./api/admin-client.js";
 export type { AdminMessageKey, AdminMessages } from "./i18n/admin-messages.js";
+
+export { CourseWorkspace } from "./workspace/CourseWorkspace.js";
+export type { CourseWorkspaceProps } from "./workspace/CourseWorkspace.js";
+export { LessonWorkspace } from "./workspace/LessonWorkspace.js";
+export type { LessonWorkspaceProps } from "./workspace/LessonWorkspace.js";
+export { AuthorNavigation } from "./workspace/AuthorNavigation.js";
+export type { AuthorNavigationProps } from "./workspace/AuthorNavigation.js";
+export { COURSE_SECTIONS, LESSON_SECTIONS } from "./workspace/WorkspaceNavigation.js";
+export type { CourseSection, LessonSection } from "./workspace/WorkspaceNavigation.js";

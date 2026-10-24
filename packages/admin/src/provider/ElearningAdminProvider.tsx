@@ -10,6 +10,7 @@ import { createAdminI18n } from "../i18n/admin-translator.js";
 import { AdminContext } from "./admin-context.js";
 
 export type ElearningAdminProviderProps = ElearningProviderProps & {
+  readonly videoUploadHint?: string;
   readonly adminMessages?: Partial<AdminMessages>;
 };
 
@@ -21,17 +22,19 @@ export type ElearningAdminProviderProps = ElearningProviderProps & {
  */
 export function ElearningAdminProvider({
   adminMessages,
+  videoUploadHint,
   children,
   ...provider
 }: ElearningAdminProviderProps) {
   const { apiBase, fetcher, locale = "en" } = provider;
   const value = useMemo(
     () => ({
+      videoUploadHint,
       admin: createAdminClient(apiBase, fetcher),
       t: createAdminI18n(locale, adminMessages),
       upload: fetcher ?? ((input: string, init: RequestInit) => fetch(input, init)),
     }),
-    [apiBase, fetcher, locale, adminMessages],
+    [apiBase, fetcher, locale, adminMessages, videoUploadHint],
   );
   return (
     <ElearningProvider {...provider}>

@@ -9,6 +9,7 @@ import "./globals.css";
 
 import { designToShadcnCss } from "@bebranded/elearning-core/design";
 
+import { DemoMain } from "@/components/demo-main";
 import { DemoProvider } from "@/components/demo-context";
 import { demoSession } from "@/lib/demo-session";
 import { demoMessages } from "@/lib/demo-messages";
@@ -34,11 +35,11 @@ export default async function RootLayout({ children }: { readonly children: Reac
       </head>
       <body className="flex min-h-dvh flex-col">
         <SiteHeader {...session} messages={messages} />
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
+        <DemoMain>
           <DemoProvider locale={session.locale} sessionKey={session.sessionKey}>
             {children}
           </DemoProvider>
-        </main>
+        </DemoMain>
         <SiteFooter messages={messages} />
       </body>
     </html>

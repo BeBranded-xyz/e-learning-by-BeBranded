@@ -111,3 +111,20 @@ in `.demo-video-test/`, so CI does not download external media.
 
 The seed creates missing courses and does not replace existing authored content.
 Existing demo installations should review their earlier sample courses when updating.
+
+### Course authoring workspace
+
+The demo back-office has a persistent left sidebar, clickable course and lesson
+cards, and separate sections for structure, content, completion, access,
+tracking and preview. Create chapters, add text/video/quiz lessons, edit their
+content and publish through Settings. Access rules control visibility;
+assignments enroll an allowed audience. Course completion can require all
+required lessons or a chosen percentage. Video and quiz settings expose their
+own completion thresholds.
+
+Preview displays saved drafts with the learner renderer at desktop or mobile
+width, without recording progress or attempts. The demo accepts actual MP4 or
+WebM uploads (50 MiB, 15 minutes), encoded locally with ffmpeg/ffprobe. These
+binaries are required for development uploads and included in the container.
+The demo media adapter is intended for one server process; production hosts
+supply their own video provider and persistent media lifecycle.

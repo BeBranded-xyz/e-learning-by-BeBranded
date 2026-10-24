@@ -42,7 +42,7 @@ test.describe("video lesson", () => {
       timeout: 40_000,
     });
     await expect(page.getByText(/\d+% watched/)).toHaveText(/^(9[5-9]|100)% watched/);
-    await page.getByRole("link", { name: "Back to the course" }).click();
+    await page.getByRole("link", { name: "Back to the course", exact: true }).click();
     await expect(page.getByText("Course completed")).toBeVisible();
   });
 

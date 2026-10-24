@@ -27,6 +27,7 @@ export const localeSchema = z
 
 export const completionRuleSchema = z.discriminatedUnion("type", [
   z.strictObject({ type: z.literal("all_required_lessons") }),
+  z.strictObject({ type: z.literal("percentage"), threshold: z.number().min(0.01).max(1) }),
 ]);
 export type CompletionRule = z.infer<typeof completionRuleSchema>;
 

@@ -82,3 +82,20 @@ Interval merging and steps 3 to 9 are pure functions in `elearning-core` (`merge
 - Captions are strongly recommended. The back-office warns when a published video has none.
 - The player is fully keyboard-operable, with labelled controls.
 - A text transcript can be shown below the video when provided.
+
+## Demo uploads
+
+The demo accepts MP4/WebM files up to 50 MiB and 15 minutes. Its local provider
+retains the seeded video compatibility and transcodes actual uploads to HLS
+with ffmpeg/ffprobe, installed in the runtime container. No provider account
+is required. Published hosts continue to supply their own VideoProvider.
+
+Upload requires a demo administrator, matching origin and a signed, expiring,
+one-use ticket bound to file size and duration. At most two encoders run at
+once. The server checks size, MIME, container signature and probed duration;
+processing has deadlines and disables network input protocols. Processing
+status is reflected in storage and an asset snapshot. Playback URLs expire,
+are private/no-store, and serve only the playlist and fixed segment names.
+Files follow the demo temporary-file retention policy (B-053); replacement
+does not remove previous media. Multi-instance hosting needs shared storage
+and a provider/job system rather than this single-process demo adapter.

@@ -42,7 +42,7 @@ test.describe("columns by dragging", () => {
     await signInAs("admin");
     await createVisibleCourse(page, `Drag ${randomUUID().slice(0, 8)}`);
     await addLesson(page, "Basics", "Layout", "Text");
-    await page.getByRole("link", { name: "Layout" }).click();
+    await page.getByRole("link", { name: "Layout", exact: true }).click();
     const editor = page.locator(".bn-editor");
     await editor.click();
     for (const text of ["First", "Second", "Third"]) {

@@ -118,7 +118,10 @@ export async function loadCourseView(
     course,
     chapters: buildChapterViews(chapters, lessons.filter(visible), statuses),
     progressLessons,
-    progress: computeProgress(progressLessons, statuses),
+    progress: {
+      ...computeProgress(progressLessons, statuses, course.completionRule),
+      ...(enrollment?.completedAt ? { isComplete: true } : {}),
+    },
     enrollment,
   };
 }
