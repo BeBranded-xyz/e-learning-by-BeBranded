@@ -77,6 +77,29 @@ export const fireLesson = [
   },
   check("I know my meeting point"),
   callout("warning", "Never use the elevators during a fire alarm."),
+  {
+    id: id(),
+    type: "columnList",
+    props: {},
+    children: [
+      {
+        id: id(),
+        type: "column",
+        props: { width: 0.6 },
+        children: [
+          heading(3, "Do"),
+          bullet("Close the doors behind you"),
+          bullet("Help visitors out"),
+        ],
+      },
+      {
+        id: id(),
+        type: "column",
+        props: { width: 0.4 },
+        children: [heading(3, "Don't"), bullet("Go back for your belongings")],
+      },
+    ],
+  },
 ];
 
 export const readingLesson = [

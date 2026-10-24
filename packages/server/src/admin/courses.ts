@@ -5,6 +5,7 @@ import type { RequestContext } from "../context.js";
 import { json, noContent } from "../http/responses.js";
 import { presentAdminCourse, presentCourseTree } from "../presenters/admin.presenters.js";
 import { loadCourseTree } from "../services/course-tree.js";
+import { exportFormatsFor } from "../services/export.js";
 import { emitIfPublished } from "../services/publishing.js";
 import { createCourseBody, updateCourseBody } from "./admin.schemas.js";
 import { found, parseId } from "./ids.js";
@@ -50,7 +51,10 @@ export async function getAdminCourse(
     await context.storage.findCourseById(context.scope, parseId(courseIdSchema, rawId)),
   );
   const tree = await loadCourseTree(context.storage, context.scope, course);
-  return json(presentCourseTree(course, tree, context.scope), context.requestId);
+  return json(
+    presentCourseTree(course, tree, context.scope, exportFormatsFor(context, course)),
+    context.requestId,
+  );
 }
 
 /** PATCH /v1/admin/courses/:id. Publishing sets published_at once and emits content.published. */

@@ -62,6 +62,19 @@ describe("export configuration and limits", () => {
       expect(response.status).toBe(409);
       expect((await readJson(response)).error).toMatchObject({ code: "export_not_configured" });
       expect(course.export_formats).toEqual([]);
+      const lesson = await readJson(
+        await app.request("GET", `/v1/lessons/${text.id}`, { as: "admin" }),
+      );
+      expect(lesson.export_formats).toEqual([]);
+    });
+  });
+
+  it("lists only the formats the exporter has", async () => {
+    await withApp({ exporter: recordingExporter(["docx"]).exporter }, async (app) => {
+      const lesson = await readJson(
+        await app.request("GET", `/v1/lessons/${text.id}`, { as: "staff" }),
+      );
+      expect(lesson.export_formats).toEqual(["docx"]);
     });
   });
 

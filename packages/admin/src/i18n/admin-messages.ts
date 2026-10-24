@@ -9,6 +9,7 @@ export const en = {
   "field.slug": "URL slug",
   "field.summary": "Summary",
   "field.enrollmentMode": "Who can enroll",
+  "field.allowLearnerExport": "Learners can download this course as PDF or Word",
   "field.locale": "Language",
   "field.status": "Status",
   "field.lessonType": "Lesson type",

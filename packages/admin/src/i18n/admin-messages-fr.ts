@@ -11,6 +11,7 @@ export const fr: AdminMessages = {
   "field.slug": "Identifiant d'URL",
   "field.summary": "Résumé",
   "field.enrollmentMode": "Qui peut s'inscrire",
+  "field.allowLearnerExport": "Les apprenants peuvent télécharger cette formation en PDF ou Word",
   "field.locale": "Langue",
   "field.status": "Statut",
   "field.lessonType": "Type de leçon",

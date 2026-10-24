@@ -1,4 +1,5 @@
 import type {
+  ExportFormat,
   ApiCollection,
   ApiCourse,
   ApiCourseSummary,
@@ -11,6 +12,7 @@ import type {
 } from "@bebranded/elearning-core";
 
 import { toApiError } from "./api-error.js";
+import { downloadExport } from "./download.js";
 
 /** Linear on any input (a `/\/+$/` regex is polynomial on long runs of slashes). */
 function trimTrailingSlashes(value: string): string {
@@ -61,7 +63,8 @@ export function createApiClient(
   apiBase: string,
   fetcher: Fetcher = (input, init) => fetch(input, init),
 ) {
-  const request = requester(trimTrailingSlashes(apiBase), fetcher);
+  const base = trimTrailingSlashes(apiBase);
+  const request = requester(base, fetcher);
   const id = (value: string) => encodeURIComponent(value);
   return {
     listCourses: (signal?: AbortSignal) =>
@@ -87,6 +90,13 @@ export function createApiClient(
         "POST",
         `/lessons/${id(lessonId)}/quiz/attempts/${id(attemptId)}/submit`,
         { body: { answers } },
+      ),
+    /** A course or lesson as a PDF or Word file (spec 10). */
+    exportFile: (kind: "course" | "lesson", targetId: string, format: ExportFormat) =>
+      downloadExport(
+        fetcher,
+        `${base}/v1/${kind === "course" ? "courses" : "lessons"}/${id(targetId)}/export?format=${format}`,
+        format,
       ),
     myProgress: (signal?: AbortSignal) =>
       request<ApiCollection<ApiCourseSummary>>("GET", "/me/progress", { signal }),

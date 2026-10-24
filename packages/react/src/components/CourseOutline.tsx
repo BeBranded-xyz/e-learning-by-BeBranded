@@ -3,6 +3,7 @@
 import type { ApiCourse, ApiCourseLesson } from "@bebranded/elearning-core";
 
 import { useElearning } from "../provider/context.js";
+import { ExportActions } from "./ExportActions.js";
 import { LessonStatus } from "./LessonStatus.js";
 import { ProgressBar } from "./ProgressBar.js";
 
@@ -65,6 +66,7 @@ export function CourseOutline({
             {i18n.t("course.enroll")}
           </button>
         ) : null}
+        <ExportActions kind="course" id={course.id} formats={course.export_formats} />
       </header>
       {course.chapters.map((chapter) => (
         <section key={chapter.id} className="el-outline-chapter" aria-label={chapter.title}>

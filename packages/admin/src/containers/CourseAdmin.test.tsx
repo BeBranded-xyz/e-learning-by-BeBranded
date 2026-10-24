@@ -58,6 +58,28 @@ describe("CourseAdmin", () => {
     expect(await a11yViolations(container)).toEqual([]);
   });
 
+  it("offers the course download only when the server can export", async () => {
+    renderAdmin(<CourseAdmin courseId={COURSE_ID} lessonHref={lessonHref} />, {
+      [`GET /courses/${COURSE_ID}`]: { body: { ...tree, export_formats: ["pdf", "docx"] } },
+    });
+
+    const group = await screen.findByRole("group", { name: "Download the course" });
+    expect(
+      within(group)
+        .getAllByRole("button")
+        .map((button) => button.textContent),
+    ).toEqual(["Download PDF", "Download Word (.docx)"]);
+  });
+
+  it("hides the course download without an exporter", async () => {
+    renderAdmin(<CourseAdmin courseId={COURSE_ID} lessonHref={lessonHref} />, {
+      [`GET /courses/${COURSE_ID}`]: { body: tree },
+    });
+
+    expect(await screen.findByRole("form", { name: "Safety basics" })).toBeDefined();
+    expect(screen.queryByRole("group", { name: "Download the course" })).toBeNull();
+  });
+
   it("shows a not found message for an unknown course", async () => {
     renderAdmin(<CourseAdmin courseId="nope" lessonHref={lessonHref} />, {});
 
@@ -71,6 +93,7 @@ describe("CourseAdmin", () => {
     await userEvent.clear(title);
     await userEvent.type(title, "Safety 2026 ");
     await userEvent.selectOptions(screen.getByLabelText("Who can enroll"), "assignment_only");
+    await userEvent.click(screen.getByRole("checkbox", { name: /Learners can download/ }));
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
     expect(await screen.findByText("Saved")).toBeDefined();
@@ -79,6 +102,7 @@ describe("CourseAdmin", () => {
       slug: "safety-basics",
       summary: null,
       enrollment_mode: "assignment_only",
+      allow_learner_export: true,
     });
   });
 

@@ -1,7 +1,7 @@
 "use client";
 
 import type { ApiAdminLessonSummary } from "@bebranded/elearning-core";
-import { QueryState } from "@bebranded/elearning-react";
+import { ExportActions, QueryState } from "@bebranded/elearning-react";
 
 import { AccessRulesEditor } from "../components/AccessRulesEditor.js";
 import { AssignmentsEditor } from "../components/AssignmentsEditor.js";
@@ -40,6 +40,7 @@ export function CourseAdmin({
   return (
     <article className="el-admin-course" aria-labelledby="el-admin-course-title">
       <h2 id="el-admin-course-title">{tree.title}</h2>
+      <ExportActions kind="course" id={tree.id} formats={tree.export_formats} />
       <CourseSettings
         key={`${tree.id}-${tree.title}-${tree.slug}`}
         course={tree}

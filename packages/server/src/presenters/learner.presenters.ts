@@ -133,7 +133,12 @@ export function presentLesson(
   lesson: LessonDetail,
   html: string,
   status: LessonProgressStatus,
-  extras: { video: LessonVideo | null; quiz: LessonQuiz | null; now: Date },
+  extras: {
+    video: LessonVideo | null;
+    quiz: LessonQuiz | null;
+    now: Date;
+    exportFormats: readonly ExportFormat[];
+  },
 ): ApiLesson {
   const { video, quiz } = extras;
   return {
@@ -149,5 +154,6 @@ export function presentLesson(
     status,
     video: video === null ? null : presentLessonVideo(video),
     quiz: quiz === null ? null : presentLessonQuiz(quiz, extras.now),
+    export_formats: extras.exportFormats,
   };
 }

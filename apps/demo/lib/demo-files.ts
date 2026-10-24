@@ -95,6 +95,13 @@ export const demoFileStorage: FileStorage = {
     });
   },
   getReadUrl: (key, { ttlSeconds }) => Promise.resolve(signedUrl("get", key, ttlSeconds)),
+  // Exports inline images from their bytes (spec 10); a missing file leaves the image out.
+  read: async (key) => {
+    if (!KEY.test(key)) throw new Error("not a demo file key");
+    const stored = await readStoredFile(key);
+    if (stored === null) throw new Error("demo file not found");
+    return new Uint8Array(stored.body);
+  },
   // The demo keeps files until its temporary directory is cleaned.
   delete: () => Promise.resolve(),
 };

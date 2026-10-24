@@ -5,6 +5,8 @@ const envSchema = z.object({
   ELEARNING_DATABASE_URL: z
     .string()
     .regex(/^postgres(ql)?:\/\//, "must be a postgres:// connection string"),
+  // Optional: where the demo is served, for the lesson links inside PDF and Word exports.
+  DEMO_PUBLIC_URL: z.url({ protocol: /^https?$/ }).default("http://localhost:3000"),
 });
 
 export type DemoEnv = z.infer<typeof envSchema>;

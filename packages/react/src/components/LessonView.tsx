@@ -3,6 +3,7 @@
 import type { ApiLesson } from "@bebranded/elearning-core";
 
 import { useElearning } from "../provider/context.js";
+import { ExportActions } from "./ExportActions.js";
 import { LessonContent } from "./LessonContent.js";
 import { Quiz } from "./Quiz.js";
 import { VideoPlayer } from "./VideoPlayer.js";
@@ -23,6 +24,7 @@ export function LessonView({ lesson, onMarkDone, marking = false }: LessonViewPr
       {lesson.estimated_minutes === null ? null : (
         <p className="el-meta">{i18n.t("lesson.minutes", { minutes: lesson.estimated_minutes })}</p>
       )}
+      <ExportActions kind="lesson" id={lesson.id} formats={lesson.export_formats} />
       {lesson.video === null ? null : <VideoPlayer lesson={lesson} video={lesson.video} />}
       <LessonContent html={lesson.html} />
       {lesson.quiz === null ? null : <Quiz lesson={lesson} quiz={lesson.quiz} />}

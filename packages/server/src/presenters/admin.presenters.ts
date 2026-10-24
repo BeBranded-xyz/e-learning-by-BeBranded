@@ -1,4 +1,5 @@
 import type {
+  ExportFormat,
   ApiAccessRule,
   ApiAdminChapter,
   ApiAdminCourse,
@@ -125,6 +126,7 @@ export function presentCourseTree(
   course: Course,
   tree: { chapters: Chapter[]; lessons: LessonSummary[]; rules: AccessRule[] },
   scope: TenantScope,
+  exportFormats: readonly ExportFormat[],
 ): ApiCourseTree {
   return {
     ...presentAdminCourse(course, scope),
@@ -135,5 +137,6 @@ export function presentCourseTree(
         .map(presentLessonSummary),
     })),
     access_rules: tree.rules.map(presentAccessRule),
+    export_formats: exportFormats,
   };
 }

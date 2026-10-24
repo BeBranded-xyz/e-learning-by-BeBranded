@@ -82,6 +82,8 @@ export type ApiLesson = {
   readonly video: ApiLessonVideo | null;
   /** Quiz lessons only; null for other types. Never contains a question or an answer. */
   readonly quiz: ApiLessonQuiz | null;
+  /** The formats this requester may export the lesson to; empty when export is off (spec 10). */
+  readonly export_formats: readonly ExportFormat[];
 };
 
 export type ApiVideoAssetStatus = "uploading" | "processing" | "ready" | "error";
