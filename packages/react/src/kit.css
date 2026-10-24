@@ -4,115 +4,117 @@
  * variables. Zero specificity like styles.css. A host kit replaces them.
  */
 
-/* Buttons: 44px targets, beyond WCAG 2.2's 24px minimum */
-:where(.el-button) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  min-height: 2.75rem;
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--el-color-border);
-  border-radius: var(--el-radius);
-  background: var(--el-color-background);
-  color: var(--el-color-foreground);
-  font: inherit;
-  text-decoration: none;
-  cursor: pointer;
-}
-:where(.el-button-primary) {
-  border-color: var(--el-color-primary);
-  background: var(--el-color-primary);
-  color: var(--el-color-primary-foreground);
-}
-:where(.el-button-danger) {
-  border-color: var(--el-color-destructive);
-  color: var(--el-color-destructive);
-}
-:where(.el-button-ghost) {
-  border-color: transparent;
-  background: transparent;
-}
-:where(.el-button-sm) {
-  min-height: 2.25rem;
-  padding: 0.25rem 0.75rem;
-  font-size: 0.875rem;
-}
-:where(.el-button:disabled) {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+@layer elearning {
+  /* Buttons: 44px targets, beyond WCAG 2.2's 24px minimum */
+  :where(.el-button) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--el-color-border);
+    border-radius: var(--el-radius);
+    background: var(--el-color-background);
+    color: var(--el-color-foreground);
+    font: inherit;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  :where(.el-button-primary) {
+    border-color: var(--el-color-primary);
+    background: var(--el-color-primary);
+    color: var(--el-color-primary-foreground);
+  }
+  :where(.el-button-danger) {
+    border-color: var(--el-color-destructive);
+    color: var(--el-color-destructive);
+  }
+  :where(.el-button-ghost) {
+    border-color: transparent;
+    background: transparent;
+  }
+  :where(.el-button-sm) {
+    min-height: 2.25rem;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  :where(.el-button:disabled) {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 
-/* Badges: tone and text together, never color alone (WCAG 1.4.1) */
-:where(.el-tag) {
-  font-size: 0.875rem;
-  color: var(--el-color-muted-foreground);
-}
-:where(.el-tag[data-tone="success"]) {
-  color: var(--el-color-success);
-}
-:where(.el-tag[data-tone="warning"]) {
-  color: var(--el-color-warning);
-}
-:where(.el-tag[data-tone="destructive"]) {
-  color: var(--el-color-destructive);
-}
+  /* Badges: tone and text together, never color alone (WCAG 1.4.1) */
+  :where(.el-tag) {
+    font-size: 0.875rem;
+    color: var(--el-color-muted-foreground);
+  }
+  :where(.el-tag[data-tone="success"]) {
+    color: var(--el-color-success);
+  }
+  :where(.el-tag[data-tone="warning"]) {
+    color: var(--el-color-warning);
+  }
+  :where(.el-tag[data-tone="destructive"]) {
+    color: var(--el-color-destructive);
+  }
 
-/* Alerts */
-:where(.el-state-error) {
-  color: var(--el-color-destructive);
-}
-:where(.el-state-success) {
-  color: var(--el-color-success);
-}
-:where(.el-state-warning) {
-  color: var(--el-color-warning);
-}
+  /* Alerts */
+  :where(.el-state-error) {
+    color: var(--el-color-destructive);
+  }
+  :where(.el-state-success) {
+    color: var(--el-color-success);
+  }
+  :where(.el-state-warning) {
+    color: var(--el-color-warning);
+  }
 
-/* Progress */
-:where(.el-progress) {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-:where(.el-progress-bar) {
-  flex: 1;
-  height: 0.5rem;
-  accent-color: var(--el-color-primary);
-}
+  /* Progress */
+  :where(.el-progress) {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  :where(.el-progress-bar) {
+    flex: 1;
+    height: 0.5rem;
+    accent-color: var(--el-color-primary);
+  }
 
-/* Fields */
-:where(.el-root input:not([type="checkbox"]), .el-root select, .el-root textarea) {
-  min-height: 2.75rem;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--el-color-input);
-  border-radius: var(--el-radius);
-  background: var(--el-color-background);
-  color: var(--el-color-foreground);
-  font: inherit;
-}
-:where(.el-check) {
-  display: flex;
-  gap: calc(var(--el-space) / 2);
-  align-items: center;
-}
-:where(.el-check input) {
-  min-block-size: 1.5rem;
-  min-inline-size: 1.5rem;
-  accent-color: var(--el-color-primary);
-}
+  /* Fields */
+  :where(.el-root input:not([type="checkbox"]), .el-root select, .el-root textarea) {
+    min-height: 2.75rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--el-color-input);
+    border-radius: var(--el-radius);
+    background: var(--el-color-background);
+    color: var(--el-color-foreground);
+    font: inherit;
+  }
+  :where(.el-check) {
+    display: flex;
+    gap: calc(var(--el-space) / 2);
+    align-items: center;
+  }
+  :where(.el-check input) {
+    min-block-size: 1.5rem;
+    min-inline-size: 1.5rem;
+    accent-color: var(--el-color-primary);
+  }
 
-/* Tables */
-:where(.el-table) {
-  inline-size: 100%;
-  border-collapse: collapse;
-}
-:where(.el-table caption) {
-  text-align: start;
-  font-weight: 600;
-}
-:where(.el-table th, .el-table td) {
-  padding: 0.25rem 0.5rem;
-  border-block-end: 1px solid var(--el-color-border);
-  text-align: start;
+  /* Tables */
+  :where(.el-table) {
+    inline-size: 100%;
+    border-collapse: collapse;
+  }
+  :where(.el-table caption) {
+    text-align: start;
+    font-weight: 600;
+  }
+  :where(.el-table th, .el-table td) {
+    padding: 0.25rem 0.5rem;
+    border-block-end: 1px solid var(--el-color-border);
+    text-align: start;
+  }
 }

@@ -10,6 +10,8 @@ import {
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { elearningKit } from "@/registry/elearning/elearning-kit";
+
 import { design } from "../../../elearning.design";
 
 // The back-office components take link builders and callbacks, so these
@@ -21,7 +23,7 @@ const ROLES = ["staff", "manager", "training_admin"];
 
 function Provider({ children }: { readonly children: ReactNode }) {
   return (
-    <ElearningAdminProvider apiBase="/api/elearning" locale="en" design={design}>
+    <ElearningAdminProvider apiBase="/api/elearning" locale="en" design={design} ui={elearningKit}>
       {children}
     </ElearningAdminProvider>
   );

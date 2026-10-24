@@ -63,10 +63,10 @@
 
 ### Phase 4c: design system
 
-- [ ] One design file (`defineDesign`): colors in light and dark, fonts, radius, brand; contrast checks
-- [ ] `UiKit` in the React package, default kit, every learner and back-office component drawn through it, kit contract tests
-- [ ] Exports themed by the design file
-- [ ] Theme 1: shadcn/ui kit and theme, published as a shadcn registry; the demo rebuilt with shadcn/ui
+- [x] One design file (`defineDesign`): colors in light and dark, fonts, radius, brand; contrast checks
+- [x] `UiKit` in the React package, default kit, every learner and back-office component drawn through it, kit contract tests
+- [x] Exports themed by the design file
+- [x] Theme 1: shadcn/ui kit and theme, published as a shadcn registry; the demo rebuilt with shadcn/ui
 
 **Deliverable**: a host restyles everything from one file and plugs its own components. See [11 — Design system](11-design-system.md).
 

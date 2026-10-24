@@ -2,6 +2,11 @@
  * @bebranded/elearning-react styles. Every rule is wrapped in :where() so it
  * has zero specificity: any host style wins. Colors, radius and fonts come
  * from --el-* custom properties (spec 04, section 6).
+ *
+ * Every rule sits in the `elearning` cascade layer: any unlayered host CSS and
+ * any later layer win over it. With Tailwind, order the layers so the module
+ * comes after the reset and before utilities (spec 11):
+ *   @layer theme, base, elearning, components, utilities;
  */
 
 @import "./columns.css";
@@ -11,9 +16,11 @@
 @import "./content.css";
 @import "./video.css";
 
-@media (prefers-reduced-motion: reduce) {
-  :where(.el-root *) {
-    transition: none;
-    animation: none;
+@layer elearning {
+  @media (prefers-reduced-motion: reduce) {
+    :where(.el-root *) {
+      transition: none;
+      animation: none;
+    }
   }
 }

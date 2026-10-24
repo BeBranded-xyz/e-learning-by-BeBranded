@@ -7,7 +7,11 @@ import {
   LessonPlayer,
   MyTraining,
 } from "@bebranded/elearning-react";
+import { ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
+
+import { Button } from "@/components/ui/button";
+import { elearningKit } from "@/registry/elearning/elearning-kit";
 
 import { design } from "../../elearning.design";
 
@@ -16,9 +20,20 @@ import { design } from "../../elearning.design";
 
 function Provider({ children }: { readonly children: ReactNode }) {
   return (
-    <ElearningProvider apiBase="/api/elearning" locale="en" design={design}>
+    <ElearningProvider apiBase="/api/elearning" locale="en" design={design} ui={elearningKit}>
       {children}
     </ElearningProvider>
+  );
+}
+
+function BackLink({ href, children }: { readonly href: string; readonly children: string }) {
+  return (
+    <Button asChild variant="ghost" size="sm" className="mb-4 -ms-2">
+      <a href={href}>
+        <ArrowLeft aria-hidden="true" />
+        {children}
+      </a>
+    </Button>
   );
 }
 
@@ -36,7 +51,7 @@ export function HomeScreen() {
 export function CourseScreen({ slug }: { readonly slug: string }) {
   return (
     <Provider>
-      <a href="/">← All training</a>
+      <BackLink href="/">All training</BackLink>
       <CoursePage slug={slug} lessonHref={(lesson) => `/training/${slug}/${lesson.id}`} />
     </Provider>
   );
@@ -51,7 +66,7 @@ export function LessonScreen({
 }) {
   return (
     <Provider>
-      <a href={`/training/${slug}`}>← Back to the course</a>
+      <BackLink href={`/training/${slug}`}>Back to the course</BackLink>
       <LessonPlayer lessonId={lessonId} />
     </Provider>
   );

@@ -3,14 +3,16 @@
  * Zero specificity like styles.css.
  */
 
-:where(.el-export) {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: calc(var(--el-space) / 2);
-}
-/* The error message takes its own line under the buttons. */
-:where(.el-export > [role="alert"]) {
-  flex-basis: 100%;
-  margin: 0;
+@layer elearning {
+  :where(.el-export) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: calc(var(--el-space) / 2);
+  }
+  /* The error message takes its own line under the buttons. */
+  :where(.el-export > [role="alert"]) {
+    flex-basis: 100%;
+    margin: 0;
+  }
 }

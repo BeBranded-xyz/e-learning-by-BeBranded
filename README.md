@@ -7,6 +7,10 @@ Instead of rebuilding training features in every product, we maintain **one vers
 
 **Live demo**: https://e-learning.bebranded.xyz (fake sign-in, synthetic content).
 
+## Restyle it: one design file
+
+Every color (light and dark), font and radius comes from one file, [`apps/demo/elearning.design.ts`](apps/demo/elearning.design.ts), validated by `defineDesign`. It drives the shell, the learner pages, the back-office and the PDF and Word exports. The module draws its buttons, fields, badges and tables through a swappable UI kit; the demo uses the shadcn/ui kit, also published as a shadcn registry (`https://e-learning.bebranded.xyz/r/`). See [spec 11](docs/specifications/11-design-system.md).
+
 ## Try it locally
 
 Requires Node.js 24 (see `.node-version`), Corepack, Docker (for PostgreSQL) and ffmpeg (the seed generates the demo's synthetic video).
