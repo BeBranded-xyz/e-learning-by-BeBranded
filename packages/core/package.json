@@ -20,6 +20,11 @@
       "@bebranded/source": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./design": {
+      "@bebranded/source": "./src/design/index.ts",
+      "types": "./dist/design/index.d.ts",
+      "import": "./dist/design/index.js"
     }
   },
   "files": [
