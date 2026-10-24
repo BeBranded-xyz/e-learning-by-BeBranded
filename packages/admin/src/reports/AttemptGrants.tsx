@@ -1,6 +1,7 @@
 "use client";
 
 import type { ApiAttemptGrantResult } from "@bebranded/elearning-core";
+import { useUi } from "@bebranded/elearning-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import type { SyntheticEvent } from "react";
@@ -41,6 +42,7 @@ function GrantResult({ result }: { readonly result: ApiAttemptGrantResult | unde
 }
 
 function GrantForm({ lessonId }: { readonly lessonId: string }) {
+  const { Button } = useUi();
   const { t } = useAdmin();
   const grant = useGrant(lessonId);
   const [learnerId, setLearnerId] = useState("");
@@ -73,9 +75,9 @@ function GrantForm({ lessonId }: { readonly lessonId: string }) {
           value={extra}
           onChange={setExtra}
         />
-        <button type="submit" className="el-button" disabled={grant.isPending}>
+        <Button type="submit" disabled={grant.isPending}>
           {t.t("grants.add")}
-        </button>
+        </Button>
       </form>
       <GrantResult result={grant.data} />
       <ErrorAlert error={grant.error} />

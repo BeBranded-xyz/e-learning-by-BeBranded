@@ -1,7 +1,7 @@
 "use client";
 
 import type { ApiQuizReport } from "@bebranded/elearning-core";
-import { QueryState } from "@bebranded/elearning-react";
+import { QueryState, useUi } from "@bebranded/elearning-react";
 
 import { useQuizReport } from "../hooks/admin-queries.js";
 import { useAdmin } from "../provider/admin-context.js";
@@ -10,63 +10,51 @@ import { CsvLink, StatList } from "./ReportSummary.js";
 
 function QuestionTable({ report }: { readonly report: ApiQuizReport }) {
   const { t } = useAdmin();
+  const { Table } = useUi();
   return (
-    <table className="el-admin-table">
-      <caption>{t.t("quizReport.questions")}</caption>
-      <thead>
-        <tr>
-          <th scope="col">{t.t("quizReport.question")}</th>
-          <th scope="col">{t.t("quizReport.answered")}</th>
-          <th scope="col">{t.t("quizReport.correctRate")}</th>
-        </tr>
-      </thead>
-      <tbody>
-        {report.questions.map((question) => (
-          <tr key={question.question_id}>
-            <th scope="row">{question.prompt}</th>
-            <td>{question.answered}</td>
-            <td>{question.correct_rate === null ? "–" : t.formatPercent(question.correct_rate)}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <Table
+      caption={t.t("quizReport.questions")}
+      columns={(
+        ["quizReport.question", "quizReport.answered", "quizReport.correctRate"] as const
+      ).map((column) => ({ key: column, header: t.t(column) }))}
+      rows={report.questions.map((question) => ({
+        key: question.question_id,
+        cells: [
+          question.prompt,
+          question.answered,
+          question.correct_rate === null ? "–" : t.formatPercent(question.correct_rate),
+        ],
+      }))}
+    />
   );
 }
 
+const LEARNER_COLUMNS = [
+  "report.learner",
+  "quizReport.attempts",
+  "quizReport.bestScore",
+  "quizReport.passed",
+  "quizReport.lastAttempt",
+] as const;
+
 function LearnerTable({ report }: { readonly report: ApiQuizReport }) {
   const { t } = useAdmin();
+  const { Table } = useUi();
   return (
-    <table className="el-admin-table">
-      <caption>{t.t("quizReport.learners")}</caption>
-      <thead>
-        <tr>
-          {(
-            [
-              "report.learner",
-              "quizReport.attempts",
-              "quizReport.bestScore",
-              "quizReport.passed",
-              "quizReport.lastAttempt",
-            ] as const
-          ).map((column) => (
-            <th key={column} scope="col">
-              {t.t(column)}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {report.learners_results.map((learner) => (
-          <tr key={learner.learner_id}>
-            <th scope="row">{learner.learner_id}</th>
-            <td>{learner.attempts}</td>
-            <td>{t.formatPercent(learner.best_score)}</td>
-            <td>{learner.passed ? t.t("quizReport.yes") : t.t("quizReport.no")}</td>
-            <td>{t.formatDate(learner.last_attempt_at)}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <Table
+      caption={t.t("quizReport.learners")}
+      columns={LEARNER_COLUMNS.map((column) => ({ key: column, header: t.t(column) }))}
+      rows={report.learners_results.map((learner) => ({
+        key: learner.learner_id,
+        cells: [
+          learner.learner_id,
+          learner.attempts,
+          t.formatPercent(learner.best_score),
+          learner.passed ? t.t("quizReport.yes") : t.t("quizReport.no"),
+          t.formatDate(learner.last_attempt_at),
+        ],
+      }))}
+    />
   );
 }
 

@@ -7,6 +7,7 @@ import { useAdmin } from "../provider/admin-context.js";
 import { AudienceFields, audienceBody } from "./AudienceFields.js";
 import type { AudienceDraft } from "./AudienceFields.js";
 import { SelectField } from "./Fields.js";
+import { useUi } from "@bebranded/elearning-react";
 
 export type RuleFormProps = {
   readonly roles?: readonly string[] | undefined;
@@ -21,6 +22,7 @@ const AUDIENCES = ["everyone", "role", "grade_min", "learner"] as const;
 
 /** A new audience rule; "everyone" first, as spec 05 suggests for a new course. */
 export function RuleForm({ roles, pending, onSubmit }: RuleFormProps) {
+  const { Button } = useUi();
   const { t } = useAdmin();
   const [effect, setEffect] = useState<"allow" | "deny">("allow");
   const [draft, setDraft] = useState<AudienceDraft>({ type: "everyone", value: "" });
@@ -44,9 +46,9 @@ export function RuleForm({ roles, pending, onSubmit }: RuleFormProps) {
         onChange={setEffect}
       />
       <AudienceFields draft={draft} onChange={setDraft} types={AUDIENCES} roles={roles} />
-      <button type="submit" className="el-button" disabled={audience === null || pending}>
+      <Button type="submit" disabled={audience === null || pending}>
         {t.t("rules.add")}
-      </button>
+      </Button>
     </form>
   );
 }

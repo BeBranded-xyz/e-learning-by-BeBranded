@@ -9,6 +9,7 @@ import { ErrorAlert } from "../components/ErrorAlert.js";
 import { CheckboxField, TextField } from "../components/Fields.js";
 import { useLessonMutation } from "../hooks/admin-queries.js";
 import { useAdmin } from "../provider/admin-context.js";
+import { useUi } from "@bebranded/elearning-react";
 
 export type LessonSettingsProps = {
   readonly lesson: ApiAdminLesson;
@@ -16,6 +17,7 @@ export type LessonSettingsProps = {
 };
 
 function LessonActions({ lesson, onDeleted }: LessonSettingsProps) {
+  const { Button } = useUi();
   const { t } = useAdmin();
   const publish = useLessonMutation(lesson, (admin, status: "draft" | "published") =>
     admin.updateLesson(lesson.id, { status }),
@@ -24,16 +26,14 @@ function LessonActions({ lesson, onDeleted }: LessonSettingsProps) {
   const published = lesson.status === "published";
   return (
     <>
-      <button
-        type="button"
-        className="el-button"
+      <Button
         disabled={publish.isPending}
         onClick={() => {
           publish.mutate(published ? "draft" : "published");
         }}
       >
         {published ? t.t("action.unpublish") : t.t("action.publish")}
-      </button>
+      </Button>
       <DeleteButton
         title={lesson.title}
         onConfirm={() => {
@@ -47,6 +47,7 @@ function LessonActions({ lesson, onDeleted }: LessonSettingsProps) {
 
 /** Title, estimated time and whether the course needs the lesson; publication and deletion. */
 export function LessonSettings({ lesson, onDeleted }: LessonSettingsProps) {
+  const { Button } = useUi();
   const { t } = useAdmin();
   const [title, setTitle] = useState(lesson.title);
   const [minutes, setMinutes] = useState(lesson.estimated_minutes?.toString() ?? "");
@@ -78,9 +79,9 @@ export function LessonSettings({ lesson, onDeleted }: LessonSettingsProps) {
       />
       <CheckboxField label={t.t("field.required")} checked={required} onChange={setRequired} />
       <div className="el-admin-actions">
-        <button type="submit" className="el-button el-button-primary" disabled={save.isPending}>
+        <Button variant="primary" type="submit" disabled={save.isPending}>
           {save.isPending ? t.t("action.saving") : t.t("action.save")}
-        </button>
+        </Button>
         <LessonActions lesson={lesson} onDeleted={onDeleted} />
       </div>
       {save.isSuccess ? <p role="status">{t.t("action.saved")}</p> : null}

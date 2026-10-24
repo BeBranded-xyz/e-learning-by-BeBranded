@@ -5,6 +5,8 @@ import type { ApiAdminLessonSummary } from "@bebranded/elearning-core";
 import { useAdmin } from "../provider/admin-context.js";
 import { MoveButtons } from "./Fields.js";
 import { DropZone } from "./DropZone.js";
+import { useUi } from "@bebranded/elearning-react";
+import { statusTone } from "./status-tone.js";
 
 export type LessonItemProps = {
   readonly lesson: ApiAdminLessonSummary;
@@ -18,6 +20,7 @@ export type LessonItemProps = {
 };
 
 export function LessonItem({ lesson, href, editable, busy, ...actions }: LessonItemProps) {
+  const { Badge } = useUi();
   const { t } = useAdmin();
   return (
     <li className="el-admin-lesson">
@@ -28,10 +31,10 @@ export function LessonItem({ lesson, href, editable, busy, ...actions }: LessonI
         onDrop={actions.onDropBefore}
       >
         <a href={href}>{lesson.title}</a>
-        <span className="el-tag">{t.t(`type.${lesson.type}`)}</span>
-        <span className="el-tag" data-status={lesson.status}>
+        <Badge>{t.t(`type.${lesson.type}`)}</Badge>
+        <Badge tone={statusTone(lesson.status)} data-status={lesson.status}>
           {t.t(`status.${lesson.status}`)}
-        </span>
+        </Badge>
         {editable ? (
           <MoveButtons
             disabled={busy}

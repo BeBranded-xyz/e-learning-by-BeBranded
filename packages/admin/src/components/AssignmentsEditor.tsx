@@ -5,6 +5,7 @@ import { useAdmin } from "../provider/admin-context.js";
 import { AssignmentForm } from "./AssignmentForm.js";
 import { useAudienceLabel } from "./AudienceFields.js";
 import { ErrorAlert } from "./ErrorAlert.js";
+import { useUi } from "@bebranded/elearning-react";
 
 export type AssignmentsEditorProps = {
   readonly courseId: string;
@@ -13,6 +14,7 @@ export type AssignmentsEditorProps = {
 
 /** Assigns the course to a role, a grade or a learner, with an optional due date (spec 05). */
 export function AssignmentsEditor({ courseId, roles }: AssignmentsEditorProps) {
+  const { Button } = useUi();
   const { t } = useAdmin();
   const label = useAudienceLabel();
   const assignments = useAssignments(courseId);
@@ -36,16 +38,14 @@ export function AssignmentsEditor({ courseId, roles }: AssignmentsEditorProps) {
                 ? t.t("assign.noDue")
                 : t.t("assign.due", { date: t.formatDate(assignment.due_at) })}
             </span>
-            <button
-              type="button"
-              className="el-button"
+            <Button
               aria-label={t.t("assign.remove", { audience: label(assignment.audience) })}
               onClick={() => {
                 remove.mutate(assignment.id);
               }}
             >
               {t.t("action.delete")}
-            </button>
+            </Button>
           </li>
         ))}
       </ul>

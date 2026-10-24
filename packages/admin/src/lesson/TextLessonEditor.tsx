@@ -13,6 +13,7 @@ import { useLessonMutation } from "../hooks/admin-queries.js";
 import { useAdmin } from "../provider/admin-context.js";
 import { resolveEditorFileUrl, uploadEditorFile } from "../uploads/file-upload.js";
 import { ContentIssues } from "./ContentIssues.js";
+import { useUi } from "@bebranded/elearning-react";
 
 type LessonBlock = PartialBlock<
   LessonEditorSchema["blockSchema"],
@@ -32,6 +33,7 @@ function initialContent(content: unknown): LessonBlock[] | undefined {
  * slash menu leaves out what the validator rejects.
  */
 export function TextLessonEditor({ lesson }: { readonly lesson: ApiAdminLesson }) {
+  const { Button } = useUi();
   const { admin, upload, t } = useAdmin();
   const schema = useMemo(
     () => createLessonEditorSchema({ columnResizeLabel: t.t("columns.resize") }),
@@ -55,16 +57,15 @@ export function TextLessonEditor({ lesson }: { readonly lesson: ApiAdminLesson }
         />
       </BlockNoteView>
       <div className="el-admin-actions">
-        <button
-          type="button"
-          className="el-button el-button-primary"
+        <Button
+          variant="primary"
           disabled={save.isPending}
           onClick={() => {
             save.mutate(undefined);
           }}
         >
           {save.isPending ? t.t("action.saving") : t.t("lesson.saveContent")}
-        </button>
+        </Button>
         {save.isSuccess ? <p role="status">{t.t("action.saved")}</p> : null}
       </div>
       <ContentIssues error={save.error} />

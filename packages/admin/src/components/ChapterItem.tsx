@@ -9,6 +9,8 @@ import { DeleteButton } from "./DeleteButton.js";
 import { DropZone } from "./DropZone.js";
 import { MoveButtons } from "./Fields.js";
 import { LessonItem } from "./LessonItem.js";
+import { useUi } from "@bebranded/elearning-react";
+import { statusTone } from "./status-tone.js";
 
 type Chapter = ApiCourseTree["chapters"][number];
 
@@ -26,6 +28,7 @@ export type ChapterItemProps = {
 };
 
 function ChapterActions({ chapter, courseId, busy, onMoveChapter }: ChapterItemProps) {
+  const { Button } = useUi();
   const { t } = useAdmin();
   const update = useCourseMutation(courseId, (admin, body: Readonly<Record<string, unknown>>) =>
     admin.updateChapter(chapter.id, body),
@@ -42,16 +45,14 @@ function ChapterActions({ chapter, courseId, busy, onMoveChapter }: ChapterItemP
           down: t.t("action.moveDown", { title: chapter.title }),
         }}
       />
-      <button
-        type="button"
-        className="el-button"
+      <Button
         disabled={update.isPending}
         onClick={() => {
           update.mutate({ status: published ? "draft" : "published" });
         }}
       >
         {published ? t.t("action.unpublish") : t.t("action.publish")}
-      </button>
+      </Button>
       <DeleteButton
         title={chapter.title}
         onConfirm={() => {
@@ -98,15 +99,16 @@ function ChapterLessons(props: ChapterItemProps) {
 }
 
 export function ChapterItem(props: ChapterItemProps) {
+  const { Badge } = useUi();
   const { t } = useAdmin();
   const { chapter, editable } = props;
   return (
     <li className="el-admin-chapter" aria-labelledby={`chapter-${chapter.id}`}>
       <div className="el-admin-chapter-header">
         <h4 id={`chapter-${chapter.id}`}>{chapter.title}</h4>
-        <span className="el-tag" data-status={chapter.status}>
+        <Badge tone={statusTone(chapter.status)} data-status={chapter.status}>
           {t.t(`status.${chapter.status}`)}
-        </span>
+        </Badge>
         {editable ? <ChapterActions {...props} /> : null}
       </div>
       <ChapterLessons {...props} />

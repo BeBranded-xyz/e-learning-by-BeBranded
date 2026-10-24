@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { useUi } from "@bebranded/elearning-react";
+
 import { useAdmin } from "../provider/admin-context.js";
 
 export type DeleteButtonProps = {
@@ -14,12 +16,11 @@ export type DeleteButtonProps = {
 /** Deleting asks once, inline: no browser dialog, keyboard friendly. */
 export function DeleteButton({ title, onConfirm, disabled = false }: DeleteButtonProps) {
   const { t } = useAdmin();
+  const { Button } = useUi();
   const [confirming, setConfirming] = useState(false);
   if (!confirming) {
     return (
-      <button
-        type="button"
-        className="el-button"
+      <Button
         disabled={disabled}
         aria-label={`${t.t("action.delete")}: ${title}`}
         onClick={() => {
@@ -27,7 +28,7 @@ export function DeleteButton({ title, onConfirm, disabled = false }: DeleteButto
         }}
       >
         {t.t("action.delete")}
-      </button>
+      </Button>
     );
   }
   return (
@@ -37,25 +38,22 @@ export function DeleteButton({ title, onConfirm, disabled = false }: DeleteButto
       aria-label={t.t("action.deleteConfirm", { title })}
     >
       <span>{t.t("action.deleteConfirm", { title })}</span>
-      <button
-        type="button"
-        className="el-button el-button-danger"
+      <Button
+        variant="destructive"
         onClick={() => {
           setConfirming(false);
           onConfirm();
         }}
       >
         {t.t("action.delete")}
-      </button>
-      <button
-        type="button"
-        className="el-button"
+      </Button>
+      <Button
         onClick={() => {
           setConfirming(false);
         }}
       >
         {t.t("action.cancel")}
-      </button>
+      </Button>
     </span>
   );
 }

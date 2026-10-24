@@ -1,6 +1,9 @@
 "use client";
 
-import { useId } from "react";
+import { useUi } from "@bebranded/elearning-react";
+
+// The back-office's fields, drawn by the provider's UI kit (spec 11). They keep
+// the admin's own API (multiline text, typed select values) over the kit's.
 
 type Common = {
   readonly label: string;
@@ -19,30 +22,20 @@ export type TextFieldProps = Common & {
   readonly max?: number;
 };
 
-/** A labelled input; the label is always visible and programmatically linked (WCAG). */
-export function TextField({ label, onChange, multiline = false, ...input }: TextFieldProps) {
-  const id = useId();
-  return (
-    <>
-      <label htmlFor={id}>{label}</label>
-      {multiline ? (
-        <textarea
-          id={id}
-          {...input}
-          onChange={(event) => {
-            onChange(event.target.value);
-          }}
-        />
-      ) : (
-        <input
-          id={id}
-          {...input}
-          onChange={(event) => {
-            onChange(event.target.value);
-          }}
-        />
-      )}
-    </>
+/** A labelled input or text area; the label is always visible and programmatically linked. */
+export function TextField({
+  multiline = false,
+  pattern,
+  type,
+  min,
+  max,
+  ...field
+}: TextFieldProps) {
+  const { TextArea, TextField: Input } = useUi();
+  return multiline ? (
+    <TextArea {...field} />
+  ) : (
+    <Input {...field} pattern={pattern} type={type} min={min} max={max} />
   );
 }
 
@@ -54,30 +47,20 @@ export type SelectFieldProps<V extends string> = Omit<Common, "value" | "onChang
 
 /** A labelled select; `onChange` only ever receives one of the options. */
 export function SelectField<V extends string>({
-  label,
   options,
   onChange,
   ...select
 }: SelectFieldProps<V>) {
-  const id = useId();
+  const { Select } = useUi();
   return (
-    <>
-      <label htmlFor={id}>{label}</label>
-      <select
-        id={id}
-        {...select}
-        onChange={(event) => {
-          const option = options.find((entry) => entry.value === event.target.value);
-          if (option !== undefined) onChange(option.value);
-        }}
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    </>
+    <Select
+      {...select}
+      options={options}
+      onChange={(value) => {
+        const option = options.find((entry) => entry.value === value);
+        if (option !== undefined) onChange(option.value);
+      }}
+    />
   );
 }
 
@@ -89,11 +72,11 @@ export type MoveButtonsProps = {
 
 /** The keyboard way to reorder: one place up or down. */
 export function MoveButtons({ disabled, onMove, labels }: MoveButtonsProps) {
+  const { Button } = useUi();
   return (
     <>
-      <button
-        type="button"
-        className="el-button"
+      <Button
+        size="sm"
         disabled={disabled}
         aria-label={labels.up}
         onClick={() => {
@@ -101,10 +84,9 @@ export function MoveButtons({ disabled, onMove, labels }: MoveButtonsProps) {
         }}
       >
         <span aria-hidden="true">↑</span>
-      </button>
-      <button
-        type="button"
-        className="el-button"
+      </Button>
+      <Button
+        size="sm"
         disabled={disabled}
         aria-label={labels.down}
         onClick={() => {
@@ -112,7 +94,7 @@ export function MoveButtons({ disabled, onMove, labels }: MoveButtonsProps) {
         }}
       >
         <span aria-hidden="true">↓</span>
-      </button>
+      </Button>
     </>
   );
 }
@@ -121,20 +103,11 @@ export type CheckboxFieldProps = {
   readonly label: string;
   readonly checked: boolean;
   readonly onChange: (checked: boolean) => void;
+  readonly disabled?: boolean | undefined;
 };
 
-/** A checkbox inside its label, so the whole text is the click target. */
-export function CheckboxField({ label, checked, onChange }: CheckboxFieldProps) {
-  return (
-    <label className="el-admin-check">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={(event) => {
-          onChange(event.target.checked);
-        }}
-      />
-      {label}
-    </label>
-  );
+/** A labelled checkbox. */
+export function CheckboxField(props: CheckboxFieldProps) {
+  const { Checkbox } = useUi();
+  return <Checkbox {...props} />;
 }
