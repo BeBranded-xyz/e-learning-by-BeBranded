@@ -13,6 +13,7 @@ import type {
 } from "@bebranded/elearning-core";
 
 import type { RequestContext } from "../context.js";
+import { resolveFileUrls } from "../services/files.js";
 import { json } from "../http/responses.js";
 import { presentQuizAttempt } from "../presenters/quiz.presenters.js";
 import { loadAccessibleLesson } from "../services/lesson-access.js";
@@ -26,6 +27,7 @@ import {
   quizNotReady,
   requireQuizLesson,
   seedOf,
+  contextBlocks,
   surveyOf,
 } from "../services/quiz.js";
 
@@ -147,7 +149,8 @@ export async function openQuizAttempt(
   const input = { accessible, lessonQuiz: { ...lessonQuiz, quiz } };
   const outcome = await context.storage.transaction((tx) => openInTransaction(tx, context, input));
   if (outcome.kind === "refused") throw refusal(outcome.eligibility, context.now());
-  const survey = surveyOf(presentationOf(quiz, outcome.attempt));
+  const fileUrl = await resolveFileUrls(context, contextBlocks(quiz.definition));
+  const survey = surveyOf(presentationOf(quiz, outcome.attempt), { fileUrl });
   return json(
     presentQuizAttempt(outcome.attempt, survey),
     context.requestId,

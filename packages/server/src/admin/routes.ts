@@ -10,6 +10,7 @@ import {
   listAdminCourses,
   updateCourse,
 } from "./courses.js";
+import { createFileUpload, getAdminFile } from "./files.js";
 import { createLesson, deleteLesson, getAdminLesson, updateLesson } from "./lessons.js";
 import { getAdminQuiz, saveAdminQuiz } from "./quizzes.js";
 import { reorderCourse } from "./reorder.js";
@@ -76,6 +77,16 @@ export const adminRoutes: readonly Route<RequestContext>[] = [
     method: "POST",
     pattern: "/v1/admin/videos/uploads",
     handle: (context) => createVideoUpload(context),
+  },
+  {
+    method: "POST",
+    pattern: "/v1/admin/files/uploads",
+    handle: (context) => createFileUpload(context),
+  },
+  {
+    method: "GET",
+    pattern: "/v1/admin/files/:id",
+    handle: (context, { id }) => getAdminFile(context, id),
   },
   {
     method: "POST",

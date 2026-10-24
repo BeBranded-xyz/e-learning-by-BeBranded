@@ -6,6 +6,7 @@ import {
 } from "@bebranded/elearning-core";
 import type {
   LessonDetail,
+  LessonDocument,
   Quiz,
   QuizAttempt,
   QuizDefinition,
@@ -15,6 +16,7 @@ import type {
   SurveyJson,
 } from "@bebranded/elearning-core";
 import { renderLessonHtml } from "@bebranded/elearning-editor/server";
+import type { RenderOptions } from "@bebranded/elearning-editor/server";
 
 import type { RequestContext } from "../context.js";
 
@@ -45,8 +47,13 @@ export function presentationOf(quiz: Quiz, attempt: QuizAttempt): QuizPresentati
 }
 
 /** The learner's survey: context blocks rendered and sanitized here, never answers. */
-export function surveyOf(presentation: QuizPresentation): SurveyJson {
-  return toSurveyJson(presentation, renderLessonHtml);
+export function surveyOf(presentation: QuizPresentation, options: RenderOptions = {}): SurveyJson {
+  return toSurveyJson(presentation, (blocks) => renderLessonHtml(blocks, options));
+}
+
+/** Every context block of a quiz: question intros and the outro. */
+export function contextBlocks(definition: QuizDefinition): LessonDocument {
+  return [...definition.questions.flatMap((question) => question.intro), ...definition.outro];
 }
 
 export function requireQuizLesson(lesson: LessonDetail): void {

@@ -45,4 +45,6 @@ export const STATUS_OVERRIDES: Record<string, number> = {
   method_not_allowed: 405,
   unsupported_media_type: 415,
   payload_too_large: 413,
+  file_too_large: 413,
+  file_type_not_allowed: 415,
 };

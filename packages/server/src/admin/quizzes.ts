@@ -10,7 +10,8 @@ import type { LessonDetail, Quiz, QuizDefinition } from "@bebranded/elearning-co
 
 import type { RequestContext } from "../context.js";
 import { json } from "../http/responses.js";
-import { quizVersion, requireQuizLesson } from "../services/quiz.js";
+import { assertFilesExist } from "../services/files.js";
+import { contextBlocks, quizVersion, requireQuizLesson } from "../services/quiz.js";
 import { found, parseId } from "./ids.js";
 import { BODY_LIMITS, parseBody } from "./parse-body.js";
 
@@ -71,6 +72,7 @@ export async function saveAdminQuiz(
   const body = await parseBody(context, saveQuizBody, BODY_LIMITS.lesson);
   const lesson = await loadQuizLesson(context, rawId);
   const definition = definitionOf(body.document);
+  await assertFilesExist(context, contextBlocks(definition));
   const existing = await context.storage.findQuiz(context.scope, lesson.id);
   const quiz: Quiz = {
     id: existing?.id ?? quizIdSchema.parse(context.newId()),

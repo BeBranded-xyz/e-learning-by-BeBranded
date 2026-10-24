@@ -12,6 +12,7 @@ import type {
 import type { RequestContext } from "../context.js";
 import { json, noContent } from "../http/responses.js";
 import { presentLessonDetail } from "../presenters/admin.presenters.js";
+import { assertFilesExist } from "../services/files.js";
 import { parseLessonSettings } from "../services/lesson-settings.js";
 import { emitIfPublished } from "../services/publishing.js";
 import { quizNotReady } from "../services/quiz.js";
@@ -24,12 +25,15 @@ const CONTENT_SCHEMA_VERSION = 1;
 
 /**
  * Content is validated before it is stored (spec 08); every issue is
- * reported. The stored value is the validated document as plain JSON.
+ * reported, then every uploaded file it points to must be the tenant's. The stored value is the validated document as plain JSON.
  */
-function validContent(content: unknown): JsonValue | null {
+async function validContent(context: RequestContext, content: unknown): Promise<JsonValue | null> {
   if (content === null) return null;
   const result = validateLessonDocument(content);
-  if (result.ok) return z.json().parse(JSON.parse(JSON.stringify(result.value)));
+  if (result.ok) {
+    await assertFilesExist(context, result.value);
+    return z.json().parse(JSON.parse(JSON.stringify(result.value)));
+  }
   throw new AppError("validation", "invalid_content", "The lesson content is invalid.", {
     details: {
       issues: result.error.map((issue) => ({
@@ -65,7 +69,7 @@ async function assertPublishable(
 /** POST /v1/admin/lessons: 404 when the chapter does not exist or belongs to another tenant. */
 export async function createLesson(context: RequestContext): Promise<Response> {
   const body = await parseBody(context, createLessonBody, BODY_LIMITS.lesson);
-  const content = validContent(body.content);
+  const content = await validContent(context, body.content);
   const settings = parseLessonSettings(body.type, body.settings);
   // A new video lesson has no video yet, and a new quiz lesson no questions: both start as drafts.
   if (body.type === "video" && body.status === "published") throw videoNotReady();
@@ -111,7 +115,10 @@ export async function updateLesson(
   assertNotEmpty(body);
   const content =
     "content" in body
-      ? { content: validContent(body.content), contentSchemaVersion: CONTENT_SCHEMA_VERSION }
+      ? {
+          content: await validContent(context, body.content),
+          contentSchemaVersion: CONTENT_SCHEMA_VERSION,
+        }
       : {};
   const updated = await context.storage.transaction(async (tx) => {
     const before = found(await tx.findLesson(context.scope, id));
