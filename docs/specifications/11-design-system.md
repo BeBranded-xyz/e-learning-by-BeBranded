@@ -11,11 +11,11 @@ A host adopts the module without looking like a foreign body. **One design file*
 
 ## The design file
 
-`defineDesign()` from `@bebranded/elearning-core` (pure, runs on server and client) validates and returns an `ElearningDesign`:
+`defineDesign()` from `@bebranded/elearning-core/design` (pure, runs on server and client) validates and returns an `ElearningDesign`:
 
 ```ts
 // elearning.design.ts — the only file to edit to restyle every surface.
-import { defineDesign } from "@bebranded/elearning-core";
+import { defineDesign } from "@bebranded/elearning-core/design";
 
 export default defineDesign({
   brand: { name: "Acme Corp training" },
@@ -35,18 +35,18 @@ export default defineDesign({
 | Shape | `radius` | A CSS length. |
 | Type | `fonts.body`, `fonts.heading`, `fonts.mono` | Font family lists. |
 | Behavior | `darkMode` | `media` follows the system, `class` follows a `.dark` ancestor, `off` stays light. |
-| Brand | `brand.name`, `brand.logoUrl` (optional, https or a data URI) | Export cover and footer. |
+| Brand | `brand.name`, `brand.logo` (optional: a PNG, JPEG, GIF or WebP data URI; exports never fetch) | Export cover and footer. |
 
 - **Validation**: only plain colors (`#hex`, `rgb()`, `hsl()`, `oklch()`), lengths and font names are accepted. Anything else is rejected with the token's name, never silently dropped, so CSS can never be injected through a design value.
-- **Contrast**: `checkDesign(design)` returns a warning for every text pair below WCAG AA (4.5:1), in both color schemes. The demo's tests require none.
+- **Contrast**: `checkDesign(design)` returns a warning for every text pair below WCAG AA (4.5:1), in each scheme the design uses. A partial dark palette falls back to light tokens, which easily pairs light text with a light surface; the check catches it. The demo's tests require no warning.
 
 ### What the design file drives
 
 | Surface | How |
 |---|---|
-| Module UI (learner, back-office, BlockNote editor) | `<ElearningProvider design={design}>` sets the `--el-*` variables (light, and dark per `darkMode`) on its root. |
-| The host's own shell | `designToCss(design)` returns a stylesheet with shadcn's variable names (`--background`, `--primary`…) for `:root` and `.dark`; the shadcn registry ships the same values as a `registry:theme`. |
-| PDF export | `elearningExport({ design })`: print CSS from the light colors, fonts and brand. |
+| Module UI (learner, back-office, BlockNote editor) | `<ElearningProvider design={design}>` renders `designToModuleCss(design)`: the `--el-*` variables scoped to its root, light and dark per `darkMode` (a `nonce` prop serves a strict CSP). |
+| The host's own shell | `designToShadcnCss(design)` returns a stylesheet with shadcn's variable names (`--background`, `--primary`…) for `:root` and `.dark`; the shadcn registry ships the same values as a `registry:theme`. |
+| PDF export | `elearningExport({ design })`, through `designToExportTheme`: print CSS from the light colors as `#rrggbb`, fonts and brand. |
 | Word export | Same option: heading and link colors, body and heading fonts. |
 
 `theme` on `<ElearningProvider>` and `elearningExport` (spec 04, section 6) is replaced by `design`. No package has been published yet, so there is no deprecation period.
@@ -87,7 +87,7 @@ A shadcn host runs `npx shadcn add https://e-learning.bebranded.xyz/r/elearning.
 
 ## The demo
 
-- `apps/demo/elearning.design.ts` is the demo's single design source: Tailwind v4 and shadcn read the CSS from `designToCss`, the module reads `design`, and exports read it on the server.
+- `apps/demo/elearning.design.ts` is the demo's single design source: Tailwind v4 and shadcn read the CSS from `designToShadcnCss`, the module reads `design`, and exports read it on the server.
 - The shell (header, navigation, sign-in, catalog pages around the module) is built with shadcn/ui components, and the module runs with the shadcn kit.
 - The header keeps the BeBranded logo and the link to the source code.
 
