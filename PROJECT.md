@@ -6,7 +6,7 @@
 > decision changes. **This repository is public**: never put secrets, client
 > names, internal identifiers, or internal URLs here.
 
-Last updated: 2026-10-23
+Last updated: 2026-10-24
 
 ---
 
@@ -21,7 +21,8 @@ Last updated: 2026-10-23
   receives fixes through semver updates. Non-trivial parts: trustworthy
   completion (video watch verification, server-side grading), permission rules
   driven by the host's roles, and two data modes (host database or dedicated).
-- **Status**: phase 1 (foundations) complete; nothing published to npm yet. See
+- **Status**: phases 1 to 4 (foundations, video, quizzes, back-office) complete;
+  nothing published to npm yet. See
   `docs/specifications/09-roadmap.md`.
 - **License**: MIT, copyright BeBranded. Public repository.
 
@@ -265,8 +266,9 @@ Core rules always apply.
     reads (spec 05, "RLS") come in a later migration (`BACKLOG.md` B-018),
     off by default. Confirmed by the maintainer (2026-10-23).
     Owner: maintainers. Review: when B-018 lands.
-  - `exactOptionalPropertyTypes` is off in `packages/editor` and `packages/admin` only
-    (the two packages that type BlockNote editors): BlockNote
+  - `exactOptionalPropertyTypes` is off in `packages/editor`, `packages/admin` and
+    the private `apps/demo` only (the code that types BlockNote editors; the demo
+    type-checks the admin sources): BlockNote
     0.56's generic types (optional props such as `heading.isToggleable`) do not
     type-check with it. The editor package keeps every other strict option.
     Owner: maintainers. Review: on each BlockNote upgrade (`BACKLOG.md` B-021).

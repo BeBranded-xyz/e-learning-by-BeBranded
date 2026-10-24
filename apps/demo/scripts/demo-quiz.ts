@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 
 import { editorDocumentToQuiz, quizIdSchema } from "@bebranded/elearning-core";
-import type { LessonDetail, Quiz } from "@bebranded/elearning-core";
+import type { JsonValue, LessonDetail, Quiz } from "@bebranded/elearning-core";
 
 // A synthetic quiz for the demo (BlockNote JSON of the quiz editor); no real content.
 
@@ -14,7 +14,7 @@ const choice = (id: string, label: string, correct = false) => ({
   children: [],
 });
 
-const fireQuizDocument = [
+const fireQuizDocument: JsonValue = [
   {
     id: "context",
     type: "paragraph",

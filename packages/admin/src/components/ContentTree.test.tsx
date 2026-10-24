@@ -149,6 +149,19 @@ describe("ContentTree", () => {
     });
   });
 
+  it("clears the title once the lesson is added", async () => {
+    renderTree({ "POST /lessons": { status: 201, body: {} } });
+    const practice = within(screen.getByRole("listitem", { name: "Practice" }));
+    const field = practice.getByLabelText<HTMLInputElement>("New lesson title");
+
+    await userEvent.type(field, "First");
+    await userEvent.click(practice.getByRole("button", { name: "Add a lesson" }));
+
+    await waitFor(() => {
+      expect(field.value).toBe("");
+    });
+  });
+
   it("publishes a draft chapter and deletes one after confirming", async () => {
     const { requests } = renderTree({
       "PATCH /chapters/c2": { body: {} },

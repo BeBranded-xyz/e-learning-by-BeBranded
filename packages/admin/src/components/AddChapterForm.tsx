@@ -21,7 +21,7 @@ export function AddChapterForm({ courseId, position }: { courseId: string; posit
       { course_id: courseId, title: title.trim(), position },
       {
         onSuccess: () => {
-          setTitle("");
+          setTitle((current) => (current === title ? "" : current));
         },
       },
     );

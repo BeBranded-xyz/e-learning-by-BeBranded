@@ -3,7 +3,7 @@
 A **reusable, embeddable e-learning module** for existing applications (ERPs, business web apps, client portals).
 Instead of rebuilding training features in every product, we maintain **one versioned module**. Each host product adds its own branding (colors, typography, theme) and plugs in its own users and roles.
 
-> **Status: phases 1 (foundations), 2 (video) and 3 (quizzes) done, not published yet.** Text, video and quiz lessons, verified video completion, server-graded quizzes, access rules, progress, the learner UI and the admin API work end to end in the demo app. The back-office comes next (see the [roadmap](docs/specifications/09-roadmap.md)).
+> **Status: phases 1 (foundations), 2 (video), 3 (quizzes) and 4 (back-office) done, not published yet.** Text, video and quiz lessons, verified video completion, server-graded quizzes, access rules, assignments, progress, reports, the learner UI and the back-office work end to end in the demo app. Editor extensions (multi-column, PDF and Word export) come next (see the [roadmap](docs/specifications/09-roadmap.md)).
 
 ## Try it locally
 
@@ -18,7 +18,7 @@ corepack pnpm --filter @bebranded/elearning-demo seed
 corepack pnpm --filter @bebranded/elearning-demo dev
 ```
 
-Open http://localhost:3000/sign-in and pick a demo user. Sign-in is fake and the content is synthetic.
+Open http://localhost:3000/sign-in and pick a demo user. Sign-in is fake and the content is synthetic. The training admin persona opens the back-office at http://localhost:3000/admin; uploaded images are kept in the system's temporary directory.
 
 | Command | What it runs |
 |---|---|

@@ -76,6 +76,27 @@ describe("CourseReport", () => {
   });
 });
 
+describe("report errors", () => {
+  it("shows a failed report with a retry", async () => {
+    renderAdmin(<CourseReport courseId={COURSE_ID} />, {
+      [`GET /reports/courses/${COURSE_ID}`]: apiError("internal_error", 500),
+    });
+
+    expect(
+      await screen.findByRole("button", { name: "Try again" }, { timeout: 3000 }),
+    ).toBeDefined();
+  });
+
+  it("shows a learner report error and an unknown quiz", async () => {
+    renderAdmin(<LearnerReport learnerId="x" />, {});
+    renderAdmin(<QuizReport lessonId="none" />, {});
+
+    await waitFor(() => {
+      expect(screen.getAllByText(/does not exist/)).toHaveLength(2);
+    });
+  });
+});
+
 describe("LearnerReport", () => {
   it("lists the learner's courses with links", async () => {
     renderAdmin(<LearnerReport learnerId="staff 1" courseHref={(id) => `/admin/courses/${id}`} />, {

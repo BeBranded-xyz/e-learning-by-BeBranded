@@ -20,6 +20,7 @@ export default function RootLayout({ children }: { readonly children: ReactNode 
             Acme Corp training
           </a>
           <span className="demo-badge">Demo: fake sign-in, synthetic content</span>
+          <a href="/admin">Back-office</a>
           <a href="/sign-in">Switch user</a>
         </header>
         <main className="demo-main">{children}</main>
