@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { AppError, fileIdSchema, fileUrl, learnerIdSchema } from "@bebranded/elearning-core";
-import type { StoredFile } from "@bebranded/elearning-core";
+import type { ApiStoredFile, StoredFile } from "@bebranded/elearning-core";
 
 import type { RequestContext } from "../context.js";
 import { json } from "../http/responses.js";
@@ -14,7 +14,7 @@ const createFileUploadBody = z.strictObject({
   size_bytes: z.int().min(1).max(Number.MAX_SAFE_INTEGER),
 });
 
-function presentFile(file: StoredFile) {
+function presentFile(file: StoredFile): ApiStoredFile {
   return {
     id: file.id,
     url: fileUrl(file.id),

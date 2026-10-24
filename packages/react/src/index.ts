@@ -34,7 +34,10 @@ export {
   useSubmitQuizAttempt,
 } from "./hooks/queries.js";
 
-export { ElearningApiError } from "./api/api-error.js";
+export { QueryState } from "./components/QueryState.js";
+export type { QueryStateProps } from "./components/QueryState.js";
+
+export { ElearningApiError, toApiError } from "./api/api-error.js";
 export type { Fetcher } from "./api/client.js";
 export type { MessageKey, Messages } from "./i18n/messages.js";
 export type { ElearningTheme } from "./theme/theme.js";

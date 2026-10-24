@@ -1,0 +1,54 @@
+"use client";
+
+import type { ApiAdminLessonSummary } from "@bebranded/elearning-core";
+import { QueryState } from "@bebranded/elearning-react";
+
+import { AccessRulesEditor } from "../components/AccessRulesEditor.js";
+import { AssignmentsEditor } from "../components/AssignmentsEditor.js";
+import { ContentTree } from "../components/ContentTree.js";
+import { CourseSettings } from "../components/CourseSettings.js";
+import { useAdminCourse } from "../hooks/admin-queries.js";
+import { useAdmin } from "../provider/admin-context.js";
+
+export type CourseAdminProps = {
+  readonly courseId: string;
+  /** The host's back-office page of a lesson. */
+  readonly lessonHref: (lesson: ApiAdminLessonSummary) => string;
+  /** Host roles for the audience menus (spec 05, `listRoles`). */
+  readonly roles?: readonly string[] | undefined;
+  readonly onDeleted?: (() => void) | undefined;
+};
+
+/** One course in the back-office: settings, content tree, access rules and assignments. */
+export function CourseAdmin({ courseId, lessonHref, roles, onDeleted }: CourseAdminProps) {
+  const { t } = useAdmin();
+  const course = useAdminCourse(courseId);
+  if (course.isPending) return <QueryState kind="loading" />;
+  if (course.isError) {
+    return <QueryState kind="error" error={course.error} onRetry={() => void course.refetch()} />;
+  }
+  const tree = course.data;
+  return (
+    <article className="el-admin-course" aria-labelledby="el-admin-course-title">
+      <h2 id="el-admin-course-title">{tree.title}</h2>
+      <CourseSettings
+        key={`${tree.id}-${tree.title}-${tree.slug}`}
+        course={tree}
+        onDeleted={onDeleted}
+      />
+      <ContentTree course={tree} lessonHref={lessonHref} />
+      <section aria-labelledby="el-admin-rules-title">
+        <h3 id="el-admin-rules-title">{t.t("rules.title")}</h3>
+        <AccessRulesEditor
+          courseId={tree.id}
+          targetType="course"
+          targetId={tree.id}
+          rules={tree.access_rules}
+          roles={roles}
+          editable={tree.editable}
+        />
+      </section>
+      <AssignmentsEditor courseId={tree.id} roles={roles} />
+    </article>
+  );
+}

@@ -264,6 +264,28 @@ export type {
   ApiProgress,
 } from "./api/api.types.js";
 export type {
+  ApiAccessRule,
+  ApiAdminChapter,
+  ApiAdminCourse,
+  ApiAdminFile,
+  ApiAdminLesson,
+  ApiAdminLessonSummary,
+  ApiAdminQuiz,
+  ApiAdminVideo,
+  ApiAssignment,
+  ApiAttemptGrant,
+  ApiAudience,
+  ApiCourseReport,
+  ApiCourseTree,
+  ApiEnrollmentReportRow,
+  ApiFileUpload,
+  ApiLearnerReport,
+  ApiQuizReport,
+  ApiReportSummary,
+  ApiStoredFile,
+  ApiVideoUpload,
+} from "./api/admin-api.types.js";
+export type {
   ApiLessonQuiz,
   ApiOpenQuizAttempt,
   ApiQuizAttempt,

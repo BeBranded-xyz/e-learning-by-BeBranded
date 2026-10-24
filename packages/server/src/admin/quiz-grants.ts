@@ -5,7 +5,7 @@ import {
   attemptsRemaining,
   learnerIdSchema,
 } from "@bebranded/elearning-core";
-import type { QuizAttemptGrant } from "@bebranded/elearning-core";
+import type { ApiAttemptGrant, QuizAttemptGrant } from "@bebranded/elearning-core";
 
 import type { RequestContext } from "../context.js";
 import { json } from "../http/responses.js";
@@ -18,7 +18,7 @@ const grantBody = z.strictObject({
   extra_attempts: z.int().min(1).max(100),
 });
 
-function presentGrant(grant: QuizAttemptGrant) {
+function presentGrant(grant: QuizAttemptGrant): ApiAttemptGrant {
   return {
     id: grant.id,
     lesson_id: grant.lessonId,
