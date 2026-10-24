@@ -4,7 +4,8 @@ import type { PartialBlock } from "@blocknote/core";
 import { BlockNoteView } from "@blocknote/mantine";
 import { SuggestionMenuController, useCreateBlockNote } from "@blocknote/react";
 import type { ApiAdminLesson } from "@bebranded/elearning-core";
-import { lessonEditorSchema } from "@bebranded/elearning-editor";
+import { useMemo } from "react";
+import { createLessonEditorSchema } from "@bebranded/elearning-editor";
 import type { LessonEditorSchema } from "@bebranded/elearning-editor";
 
 import { lessonSlashItems } from "../editor/slash-menu.js";
@@ -32,8 +33,12 @@ function initialContent(content: unknown): LessonBlock[] | undefined {
  */
 export function TextLessonEditor({ lesson }: { readonly lesson: ApiAdminLesson }) {
   const { admin, upload, t } = useAdmin();
+  const schema = useMemo(
+    () => createLessonEditorSchema({ columnResizeLabel: t.t("columns.resize") }),
+    [t],
+  );
   const editor = useCreateBlockNote({
-    schema: lessonEditorSchema,
+    schema,
     initialContent: initialContent(lesson.content),
     uploadFile: (file: File) => uploadEditorFile(admin, upload, file),
     resolveFileUrl: (url: string) => resolveEditorFileUrl(admin, url),

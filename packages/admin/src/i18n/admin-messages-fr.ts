@@ -115,6 +115,7 @@ export const fr: AdminMessages = {
   "quiz.group": "Questions",
   "columns.group": "Mise en page",
   "columns.insert": "{count} colonnes",
+  "columns.resize": "Redimensionner les colonnes",
   "report.title": "Suivi",
   "report.empty": "Personne n'est encore inscrit.",
   "report.enrolled": "Inscrits",

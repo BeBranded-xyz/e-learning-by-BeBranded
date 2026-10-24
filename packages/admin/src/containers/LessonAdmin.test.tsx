@@ -77,6 +77,38 @@ describe("LessonAdmin, text lessons", () => {
     ).toBeDefined();
   });
 
+  it("names the column resize handle in the back-office's language", async () => {
+    const column = (id: string, text: string) => ({
+      id,
+      type: "column",
+      props: { width: 1 },
+      children: [paragraph(`${id}-p`, text)],
+    });
+    const lesson = aLesson({
+      content: [
+        {
+          id: "l",
+          type: "columnList",
+          props: {},
+          children: [column("a", "Left"), column("b", "Right")],
+        },
+      ],
+    });
+    renderAdmin(
+      <LessonAdmin lessonId={lesson.id} courseHref={(id) => `/admin/courses/${id}`} />,
+      {
+        [`GET /lessons/${lesson.id}`]: { body: lesson },
+        [`GET /courses/${COURSE_ID}`]: { body: tree },
+      },
+      "fr",
+    );
+
+    expect(await screen.findByText("Right")).toBeDefined();
+    expect(screen.getAllByRole("separator", { name: "Redimensionner les colonnes" })).toHaveLength(
+      2,
+    );
+  });
+
   it("saves the editor's document as the lesson content", async () => {
     const { requests } = renderLesson(aLesson(), { "PATCH /lessons/a": { body: aLesson() } });
 

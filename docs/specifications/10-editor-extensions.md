@@ -88,7 +88,7 @@ Two block types in the lesson editor's schema (quiz lessons have no columns):
 |--------|----------|
 | Create columns | Slash menu entries "2 columns", "3 columns", "4 columns" (group "Layout"): equal columns, each starting with an empty paragraph that takes the cursor. An empty paragraph is replaced; otherwise the columns go after the current block. Creating columns by dragging a block onto another block's edge is planned (BACKLOG). |
 | Drag between columns | BlockNote's drag handle moves blocks within a column, between columns, and out of the column list. |
-| Resize | A handle (`role="separator"`) on the right edge of every column but the last moves width between that column and the next one, in steps of 5% of the row, never below 15%. Drag it, or focus it and use the left and right arrow keys. |
+| Resize | A handle (`role="separator"`, named in the editor's language: `createLessonEditorSchema({ columnResizeLabel })`, English by default) on the right edge of every column but the last moves width between that column and the next one, in steps of 5% of the row, never below 15%. Drag it, or focus it and use the left and right arrow keys. |
 | Remove a column | A column whose last block is removed is removed. When only one column remains, the column list dissolves and its blocks go back to the main flow. |
 | Keyboard | BlockNote's cursor movement crosses column boundaries in document order (left column top to bottom, then the next column). |
 | Undo / redo | Every operation above is a single history step; a resize is one step. |

@@ -20,7 +20,7 @@ async function writeColumns(page: Page) {
   await editor.locator(".el-column").nth(1).locator(".bn-inline-content").first().click();
   await page.keyboard.type("Right side");
 
-  const handle = editor.getByRole("separator", { name: "Resize columns" }).first();
+  const handle = editor.getByRole("separator", { name: "Resize the columns" }).first();
   await handle.focus();
   await page.keyboard.press("ArrowRight");
   await page.keyboard.press("ArrowRight");
