@@ -139,6 +139,15 @@ flowchart LR
 - a video lesson's section starts with the video's title and a link to the lesson; quiz questions are never in the tree, only the lesson's notes;
 - `walkExport` visits every block iteratively, `exportImageIds` lists the images to inline once each, and `countExportBlocks` measures the document against `EXPORT_LIMITS` (20,000 blocks, 200 images, 25 MB of images) before any rendering.
 
+### HTML for PDF
+
+`renderExportHtml` (`@bebranded/elearning-editor/server`) turns an `ExportDocument` into one self-contained HTML document:
+
+- the head is fixed: charset, title, and print CSS (`@page` A4 or Letter, page breaks before chapters, header rows in `thead` so they repeat). The theme's primary color must be a `#rrggbb` value and its font family a plain list of names; anything else falls back to the defaults, so a theme value cannot inject CSS;
+- a lesson starts with its title and course; a course with a cover page (optional logo), a table of contents linking to each section, then chapters (`h2`) and lessons (`h3`) with content headings shifted below them;
+- images are `<img>` only with an inlined `data:image/(png|jpeg|gif|webp);base64` source. An image that could not be inlined becomes an attachment line linking to the lesson; any other source is dropped by the sanitizer;
+- the body goes through an allowlist sanitizer: no script, no event attribute, no `javascript:` link.
+
 ### Block mapping
 
 | Block | PDF (HTML + print CSS) | Word |
