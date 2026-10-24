@@ -37,6 +37,8 @@ export function exportCss(theme: ExportTheme, pageSize: PageSize): string {
 body { margin: 0; font-family: ${font}; font-size: 11pt; line-height: 1.5; color: #111827; }
 h1, h2, h3, h4, h5, h6 { break-after: avoid; color: #111827; }
 h1 { font-size: 22pt; } h2 { font-size: 17pt; } h3 { font-size: 14pt; }
+/* Lesson headings shift down in a course (to h6): every level stays above body size. */
+h4 { font-size: 13pt; } h5 { font-size: 12pt; } h6 { font-size: 11.5pt; }
 a { color: var(--el-primary); }
 img { max-width: 100%; height: auto; }
 figure { margin: 1em 0; break-inside: avoid; }

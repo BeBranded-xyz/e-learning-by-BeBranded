@@ -29,7 +29,8 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "validate:docx": "tsx --conditions=@bebranded/source scripts/validate-docx.ts"
   },
   "dependencies": {
     "@bebranded/elearning-core": "workspace:^",

@@ -5,6 +5,8 @@ Instead of rebuilding training features in every product, we maintain **one vers
 
 > **Status: phases 1 (foundations), 2 (video), 3 (quizzes), 4 (back-office) and 4b (editor extensions) done, not published yet.** Text, video and quiz lessons, verified video completion, server-graded quizzes, access rules, assignments, progress, reports, multi-column lessons, PDF and Word export, the learner UI and the back-office work end to end in the demo app. The pilot comes next (see the [roadmap](docs/specifications/09-roadmap.md)).
 
+**Live demo**: https://e-learning.bebranded.xyz (fake sign-in, synthetic content).
+
 ## Try it locally
 
 Requires Node.js 24 (see `.node-version`), Corepack, Docker (for PostgreSQL) and ffmpeg (the seed generates the demo's synthetic video).
