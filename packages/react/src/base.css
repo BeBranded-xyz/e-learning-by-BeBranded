@@ -34,8 +34,22 @@
     --el-font-family: inherit;
     --el-font-heading: inherit;
     --el-font-mono: ui-monospace, monospace;
-    --el-space: 1rem;
+    /*
+     * Spacing: steps of one unit (the design's `spacing`, 0.25rem by default),
+     * numbered like Tailwind's (`--el-space-4` is `p-4`). Every gap, margin
+     * and padding of the module is one of these steps (spacing.test.ts).
+     */
+    --el-space-unit: 0.25rem;
+    --el-space-1: var(--el-space-unit);
+    --el-space-2: calc(var(--el-space-unit) * 2);
+    --el-space-3: calc(var(--el-space-unit) * 3);
+    --el-space-4: calc(var(--el-space-unit) * 4);
+    --el-space-5: calc(var(--el-space-unit) * 5);
+    --el-space-6: calc(var(--el-space-unit) * 6);
+    --el-space-8: calc(var(--el-space-unit) * 8);
 
+    /* In a host's grid or flex layout, wide content (a table) scrolls inside instead of widening the page. */
+    min-inline-size: 0;
     color: var(--el-color-text);
     background: var(--el-color-background);
     font-family: var(--el-font-family);
@@ -75,20 +89,19 @@
   :where(.el-grid) {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
-    gap: var(--el-space);
+    gap: var(--el-space-4);
     padding: 0;
     list-style: none;
   }
   :where(.el-card) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--el-space-3);
     height: 100%;
-    padding: var(--el-space);
+    padding: var(--el-space-4);
     border: 1px solid var(--el-color-border);
     border-radius: var(--el-radius);
     background: var(--el-color-surface);
-  }
-  :where(.el-card-title) {
-    margin: 0 0 0.5rem;
-    font-size: 1.125rem;
   }
   :where(.el-root a) {
     color: var(--el-color-primary);
@@ -103,16 +116,18 @@
     outline-offset: 2px;
   }
 
-  /* Course outline */
+  /* Course outline: rows of lesson, status and duration, aligned with the chapter title. */
   :where(.el-outline-lessons) {
-    padding-left: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
   :where(.el-outline-lesson) {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem 1rem;
+    gap: var(--el-space-2) var(--el-space-4);
     align-items: baseline;
-    padding: 0.25rem 0;
+    padding: var(--el-space-1) 0;
   }
 
   /* Type: the module sets its own scale, so a host's CSS reset changes nothing. */
@@ -124,22 +139,51 @@
     letter-spacing: -0.01em;
   }
   :where(.el-root h1) {
-    margin: 0 0 0.75rem;
+    margin: 0 0 var(--el-space-3);
     font-size: 1.875rem;
   }
   :where(.el-root h2) {
-    margin: 1.5rem 0 0.75rem;
+    margin: var(--el-space-6) 0 var(--el-space-3);
     font-size: 1.375rem;
   }
   :where(.el-root h3) {
-    margin: 1.25rem 0 0.5rem;
+    margin: var(--el-space-5) 0 var(--el-space-2);
     font-size: 1.125rem;
   }
   :where(.el-root h4) {
-    margin: 1rem 0 0.5rem;
+    margin: var(--el-space-4) 0 var(--el-space-2);
     font-size: 1rem;
   }
-  :where(.el-outline-lessons) {
-    list-style: decimal;
+
+  /* The module's first heading starts flush: the host already spaced the module from what precedes it. */
+  :where(.el-root > :first-child > :is(h1, h2, h3):first-child) {
+    margin-block-start: 0;
+  }
+
+  /* Card content after the type scale, so the h3 margins do not push it down: the card's gap spaces it. */
+  :where(.el-card-title) {
+    margin: 0;
+    font-size: 1.125rem;
+  }
+  :where(.el-card-summary, .el-card-due) {
+    margin: 0;
+  }
+
+  /*
+   * Vertical rhythm: the blocks of a page sit one step apart, whatever the
+   * host's CSS reset. Headings keep their own margins from the type scale.
+   */
+  :where(
+      .el-course-header,
+      .el-lesson,
+      .el-lesson-footer,
+      .el-course-list,
+      .el-outline-chapter,
+      .el-quiz-intro,
+      .el-quiz-result,
+      .el-quiz-form
+    )
+    > :where(* + :not(h1, h2, h3, h4, style)) {
+    margin-block: var(--el-space-4) 0;
   }
 }

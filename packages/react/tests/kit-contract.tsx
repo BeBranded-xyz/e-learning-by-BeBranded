@@ -15,6 +15,7 @@ export function describeKitContract(name: string, kit: UiKit): void {
     describeActions(kit);
     describeDisplay(kit);
     describeFields(kit);
+    describeChoiceFields(kit);
     describeTable(kit);
   });
 }
@@ -110,7 +111,7 @@ function describeDisplay({ Alert, Badge, Card, Progress }: UiKit) {
   });
 }
 
-function describeFields({ Checkbox, Select, TextArea, TextField }: UiKit) {
+function describeFields({ TextArea, TextField }: UiKit) {
   it("TextField and TextArea: labelled, controlled, with their constraints", async () => {
     const onTitle = vi.fn();
     const onSummary = vi.fn();
@@ -129,6 +130,21 @@ function describeFields({ Checkbox, Select, TextArea, TextField }: UiKit) {
     expect(screen.getByLabelText("Summary").hasAttribute("disabled")).toBe(true);
   });
 
+  it("TextField: suggests from a datalist and asks for a numeric keyboard", () => {
+    render(
+      <>
+        <TextField label="Role" value="" onChange={vi.fn()} list="roles" />
+        <TextField label="Grade" value="" onChange={vi.fn()} inputMode="numeric" />
+        <datalist id="roles" />
+      </>,
+    );
+
+    expect(screen.getByLabelText("Role").getAttribute("list")).toBe("roles");
+    expect(screen.getByLabelText("Grade").getAttribute("inputmode")).toBe("numeric");
+  });
+}
+
+function describeChoiceFields({ Checkbox, Select, TextArea, TextField }: UiKit) {
   it("Select: labelled, reports the chosen option's value", async () => {
     const onChange = vi.fn();
     render(
@@ -155,6 +171,23 @@ function describeFields({ Checkbox, Select, TextArea, TextField }: UiKit) {
     await userEvent.click(screen.getByRole("checkbox", { name: "Learners can download" }));
 
     expect(onChange).toHaveBeenLastCalledWith(true);
+  });
+
+  it("each field is one box, its label inside, so a row of fields lines up", () => {
+    const { container } = render(
+      <>
+        <TextField label="Title" value="" onChange={vi.fn()} />
+        <TextArea label="Summary" value="" onChange={vi.fn()} />
+        <Select label="Mode" value="a" onChange={vi.fn()} options={[{ value: "a", label: "A" }]} />
+      </>,
+    );
+    const fields = ["Title", "Summary", "Mode"].map((name) => ({
+      box: screen.getByText(name, { selector: "label" }).parentElement,
+      control: screen.getByLabelText(name),
+    }));
+
+    expect(fields.map(({ box }) => box === container)).toEqual([false, false, false]);
+    expect(fields.map(({ box, control }) => box?.contains(control))).toEqual([true, true, true]);
   });
 }
 

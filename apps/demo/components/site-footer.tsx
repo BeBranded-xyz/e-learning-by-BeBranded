@@ -7,7 +7,8 @@ export function SiteFooter() {
       <Separator className="mb-6" />
       <p>
         Acme Corp is fictional. This demo runs e-learning by BeBranded (MIT) with its shadcn/ui
-        theme; every color, font and radius comes from one file, <code>elearning.design.ts</code>.
+        theme; every color, font, radius and spacing comes from one file,{" "}
+        <code>elearning.design.ts</code>.
       </p>
     </footer>
   );

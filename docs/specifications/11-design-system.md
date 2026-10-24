@@ -1,6 +1,6 @@
 # 11 — Design system: one design file, swappable UI kits
 
-A host adopts the module without looking like a foreign body. **One design file** declares every visual decision (colors in light and dark, fonts, radius, brand) and drives the learner UI, the back-office, and the PDF and Word exports. The module draws its buttons, cards, fields, badges, alerts, progress bars and tables through a **UI kit**: a small typed interface with a plain default. A host swaps the kit for its own design system. **Theme 1 is shadcn/ui**, distributed as a shadcn registry and used by the demo. See [ADR-0002](../adr/0002-design-file-and-ui-kits.md).
+A host adopts the module without looking like a foreign body. **One design file** declares every visual decision (colors in light and dark, fonts, radius, spacing, brand) and drives the learner UI, the back-office, and the PDF and Word exports. The module draws its buttons, cards, fields, badges, alerts, progress bars and tables through a **UI kit**: a small typed interface with a plain default. A host swaps the kit for its own design system. **Theme 1 is shadcn/ui**, distributed as a shadcn registry and used by the demo. See [ADR-0002](../adr/0002-design-file-and-ui-kits.md).
 
 ## Goals
 
@@ -24,6 +24,7 @@ export default defineDesign({
     dark: { background: "#0a0a0a", foreground: "#fafafa", primary: "#e5e5e5", primaryForeground: "#171717" /* … */ },
   },
   radius: "0.625rem",
+  spacing: "0.25rem", // the unit: every gap, margin and padding is a step of it
   fonts: { body: "Inter, system-ui, sans-serif", heading: "Inter, system-ui, sans-serif", mono: "ui-monospace, monospace" },
   darkMode: "media", // "media" | "class" | "off"
 });
@@ -33,6 +34,7 @@ export default defineDesign({
 |---|---|---|
 | Colors (light, dark) | `background`, `foreground`, `card`, `cardForeground`, `primary`, `primaryForeground`, `secondary`, `secondaryForeground`, `muted`, `mutedForeground`, `accent`, `accentForeground`, `destructive`, `destructiveForeground`, `success`, `successForeground`, `warning`, `warningForeground`, `border`, `input`, `ring` | shadcn/ui's vocabulary, so a shadcn host maps one to one. `light` is complete; `dark` may be partial and falls back to `light` per token. |
 | Shape | `radius` | A CSS length. |
+| Spacing | `spacing` | The spacing unit, a CSS length above zero (default `0.25rem`). See [Spacing](#spacing). |
 | Type | `fonts.body`, `fonts.heading`, `fonts.mono` | Font family lists. |
 | Behavior | `darkMode` | `media` follows the system, `class` follows a `.dark` ancestor, `off` stays light. |
 | Brand | `brand.name`, `brand.logo` (optional: a PNG, JPEG, GIF or WebP data URI; exports never fetch) | Export cover and footer. |
@@ -49,6 +51,28 @@ export default defineDesign({
 | PDF export | `elearningExport({ design })`, through `designToExportTheme`: print CSS from the light colors as `#rrggbb`, fonts and brand. |
 | Word export | Same option: heading and link colors, body and heading fonts. |
 
+## Spacing
+
+The design file owns spacing like it owns colors: one unit, and a fixed scale of steps derived from it.
+
+| Step | Value | Tailwind equivalent |
+|---|---|---|
+| `--el-space-1` | 1 unit | `p-1` |
+| `--el-space-2` | 2 units | `p-2` |
+| `--el-space-3` | 3 units | `p-3` |
+| `--el-space-4` | 4 units | `p-4` |
+| `--el-space-5` | 5 units | `p-5` |
+| `--el-space-6` | 6 units | `p-6` |
+| `--el-space-8` | 8 units | `p-8` |
+
+- **One knob**: `designToModuleCss` writes the unit as `--el-space-unit` on the module's root; the steps are computed from it in `base.css` (0.25rem without a design file). `designToShadcnCss` writes the same unit as `--spacing`, from which Tailwind v4 computes every spacing utility, so the host shell and the module move together. The registry's theme item carries it too.
+- **Numbered like Tailwind**: `--el-space-4` and `p-4` are the same length with the default unit.
+- **Only steps of the scale**: every `margin`, `padding`, `gap` and offset of the module's stylesheets is a step or zero. Other lengths (control heights, icon and handle sizes, borders) are sizes, not spacing, and stay as they are.
+- **Vertical rhythm**: the module's blocks (course header, lesson, back-office sections, quiz panels) space their children one step 4 apart, whatever the host's CSS reset; headings keep the margins of the type scale. The first heading of the module starts flush, and empty back-office lists take no room.
+- **Fields are one box**: every kit field renders its label above its control inside one element, so a row of fields lines up on their controls and the row's button on their baseline.
+- **Wide content scrolls in place**: the module's root and its single-column grids may shrink below their content's width (`min-inline-size: 0`, `minmax(0, 1fr)`), so a wide table scrolls in its wrapper instead of widening a host page on mobile.
+- **Enforced**: `packages/react/src/spacing.test.ts` fails on any literal length in a spacing property of the module's stylesheets and on any step the scale does not define; `apps/demo/lib/spacing.test.ts` fails on an arbitrary Tailwind spacing value (`p-[13px]`) in the demo shell.
+
 `theme` on `<ElearningProvider>` and `elearningExport` (spec 04, section 6) is replaced by `design`. No package has been published yet, so there is no deprecation period.
 
 ## UI kits
@@ -63,8 +87,8 @@ export default defineDesign({
 | `Badge` | `tone: "neutral" \| "success" \| "warning" \| "info"`, `children` | `<span class="el-tag">` |
 | `Alert` | `tone: "error" \| "info" \| "success"`, `role`, `children` | `<div class="el-state …">` |
 | `Progress` | `value` (0 to 1), `label` | `<progress>`-like bar with `role="progressbar"` |
-| `TextField`, `TextArea` | `label`, `value`, `onChange`, `required`, `maxLength`, `pattern`, `disabled` | `<label>` + `<input>` / `<textarea>` |
-| `Select` | `label`, `value`, `options`, `onChange`, `disabled` | `<label>` + `<select>` |
+| `TextField`, `TextArea` | `label`, `value`, `onChange`, `required`, `maxLength`, `pattern`, `disabled`; `TextField` also `list` (a `<datalist>` id) and `inputMode` | `<div class="el-field">` with `<label>` + `<input>` / `<textarea>` |
+| `Select` | `label`, `value`, `options`, `onChange`, `disabled` | `<div class="el-field">` with `<label>` + `<select>` |
 | `Checkbox` | `label`, `checked`, `onChange`, `disabled` | `<label>` + `<input type="checkbox">` |
 | `Table` | `caption`, `columns`, `rows` | `<table>` with `<caption>` and `scope` headers |
 
@@ -79,7 +103,7 @@ The demo publishes a **shadcn registry** at `https://e-learning.bebranded.xyz/r/
 | Item | Type | What it installs |
 |---|---|---|
 | `elearning-design` | `registry:file` | `elearning.design.ts` at the project root, the demo's design as a starting point |
-| `elearning-theme` | `registry:theme` | The design's colors, radius and fonts as shadcn CSS variables (light and dark) |
+| `elearning-theme` | `registry:theme` | The design's colors, radius, spacing and fonts as shadcn CSS variables (light and dark) |
 | `elearning-kit` | `registry:lib` | `lib/elearning-kit.tsx`, the `UiKit` drawn with shadcn components; it pulls in `button`, `card`, `badge`, `alert`, `progress`, `input`, `textarea`, `select`, `checkbox`, `label` and `table` |
 | `elearning` | `registry:item` | All three at once |
 
@@ -93,7 +117,8 @@ A shadcn host runs `npx shadcn add https://e-learning.bebranded.xyz/r/elearning.
 
 ## Testing
 
-- Core: design validation (each token kind, rejected values with their names), dark fallback, CSS generation (both naming schemes), contrast warnings, export theme mapping.
+- Core: design validation (each token kind, rejected values with their names, a zero or relative spacing unit), dark fallback, CSS generation (both naming schemes), contrast warnings, export theme mapping.
+- Spacing: the stylesheet and demo-shell guards above, each with tests of what they catch and what they accept.
 - React and admin: component tests run with the default kit and with a recording kit, proving every primitive goes through the kit; the kit contract suite on the default kit.
-- Demo: the kit contract suite on the shadcn kit; end-to-end journeys unchanged, plus axe on every page in light and dark; the registry build matches the design file.
+- Demo: the kit contract suite on the shadcn kit (fields in one box, `list` and `inputMode` forwarded); end-to-end journeys unchanged, plus axe on every page in light and dark; the registry build matches the design file.
 - Exports: the layout checks of spec 10 with a custom design (colors and fonts reach the PDF; colors reach the Word XML).

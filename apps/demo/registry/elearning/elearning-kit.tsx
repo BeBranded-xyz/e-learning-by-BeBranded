@@ -75,9 +75,10 @@ function KitLinkButton({
   );
 }
 
+// The wrapper fills its grid cell too, so the cards of a row share one height.
 function KitCard({ as: Tag = "div", children, ...card }: UiCardProps) {
   return (
-    <Tag {...card}>
+    <Tag {...card} className="h-full">
       <Card className="h-full gap-3 px-6 py-5">{children}</Card>
     </Tag>
   );

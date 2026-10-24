@@ -13,7 +13,7 @@
     border-collapse: collapse;
   }
   :where(.el-content th, .el-content td) {
-    padding: 0.5rem;
+    padding: var(--el-space-2);
     border: 1px solid var(--el-color-border);
     text-align: start;
   }
@@ -22,17 +22,17 @@
   }
   :where(.el-content pre) {
     overflow-x: auto;
-    padding: var(--el-space);
+    padding: var(--el-space-4);
     border-radius: var(--el-radius);
     background: var(--el-color-surface);
   }
   :where(.el-content blockquote) {
     margin-inline: 0;
-    padding-inline-start: var(--el-space);
+    padding-inline-start: var(--el-space-4);
     border-inline-start: 4px solid var(--el-color-border);
   }
   :where(.el-block-children) {
-    padding-inline-start: 1.5rem;
+    padding-inline-start: var(--el-space-6);
   }
 
   :where(.el-checklist) {
@@ -41,7 +41,7 @@
   }
   :where(.el-checklist li) {
     display: flex;
-    gap: 0.5rem;
+    gap: var(--el-space-2);
   }
   :where(.el-checklist li[data-checked] span) {
     text-decoration: line-through;
@@ -54,10 +54,11 @@
     display: inline;
   }
   :where(.el-callout) {
-    margin-block: var(--el-space);
-    padding: var(--el-space);
+    margin-block: var(--el-space-4);
+    padding: var(--el-space-4);
     border-inline-start: 4px solid var(--el-color-primary);
-    border-radius: var(--el-radius);
+    /* Square on the bar's side, so the bar stays straight. */
+    border-radius: 0 var(--el-radius) var(--el-radius) 0;
     background: var(--el-color-surface);
   }
   :where(.el-callout[data-variant="success"]) {
@@ -70,7 +71,7 @@
     border-color: var(--el-color-danger);
   }
   :where(.el-figure) {
-    margin-block: var(--el-space);
+    margin-block: var(--el-space-4);
     margin-inline: 0;
   }
   :where(.el-figure img) {
@@ -79,12 +80,12 @@
     border-radius: var(--el-radius);
   }
   :where(.el-media-caption) {
-    margin-block-start: calc(var(--el-space) / 2);
+    margin-block-start: var(--el-space-2);
     color: var(--el-color-muted-foreground);
   }
   :where(.el-file) {
-    margin-block: var(--el-space);
-    padding: var(--el-space);
+    margin-block: var(--el-space-4);
+    padding: var(--el-space-4);
     border: 1px solid var(--el-color-border);
     border-radius: var(--el-radius);
   }
@@ -159,22 +160,28 @@
     line-height: 1.65;
   }
   :where(.el-content :is(p, ul, ol, blockquote, pre, figure, details)) {
-    margin-block: 0 1rem;
+    margin-block: 0 var(--el-space-4);
+  }
+  :where(.el-content > :first-child) {
+    margin-block-start: 0;
+  }
+  :where(.el-content > :last-child) {
+    margin-block-end: 0;
   }
   :where(.el-content ul:not(.el-checklist)) {
-    padding-inline-start: 1.5rem;
+    padding-inline-start: var(--el-space-6);
     list-style: disc;
   }
   :where(.el-content ol) {
-    padding-inline-start: 1.5rem;
+    padding-inline-start: var(--el-space-6);
     list-style: decimal;
   }
   :where(.el-content h2) {
-    margin-block: 2rem 0.75rem;
+    margin-block: var(--el-space-8) var(--el-space-3);
     font-size: 1.5rem;
   }
   :where(.el-content h3) {
-    margin-block: 1.5rem 0.5rem;
+    margin-block: var(--el-space-6) var(--el-space-2);
     font-size: 1.25rem;
   }
 }

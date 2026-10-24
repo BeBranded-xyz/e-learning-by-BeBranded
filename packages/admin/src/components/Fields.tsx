@@ -20,6 +20,9 @@ export type TextFieldProps = Common & {
   readonly multiline?: boolean;
   readonly min?: number;
   readonly max?: number;
+  /** The id of a `<datalist>` whose options the field suggests. */
+  readonly list?: string | undefined;
+  readonly inputMode?: "text" | "numeric" | undefined;
 };
 
 /** A labelled input or text area; the label is always visible and programmatically linked. */

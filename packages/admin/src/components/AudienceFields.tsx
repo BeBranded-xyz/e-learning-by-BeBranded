@@ -4,7 +4,7 @@ import type { ApiAudience } from "@bebranded/elearning-core";
 import { useId } from "react";
 
 import { useAdmin } from "../provider/admin-context.js";
-import { SelectField } from "./Fields.js";
+import { SelectField, TextField } from "./Fields.js";
 
 type AudienceType = ApiAudience["type"];
 
@@ -52,14 +52,13 @@ export function AudienceFields({ draft, onChange, types, roles }: AudienceFields
       />
       {draft.type === "everyone" ? null : (
         <>
-          <label htmlFor={`${id}-value`}>{t.t(VALUE_LABELS[draft.type])}</label>
-          <input
-            id={`${id}-value`}
+          <TextField
+            label={t.t(VALUE_LABELS[draft.type])}
             value={draft.value}
             inputMode={draft.type === "grade_min" ? "numeric" : undefined}
             list={suggestions}
-            onChange={(event) => {
-              onChange({ type: draft.type, value: event.target.value });
+            onChange={(value) => {
+              onChange({ type: draft.type, value });
             }}
           />
           {suggestions === undefined ? null : (

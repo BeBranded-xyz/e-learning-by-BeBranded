@@ -8,6 +8,9 @@ const color = z.string().refine((value) => parseColor(value) !== null, {
   message: "must be a color: #hex, rgb(), hsl() or oklch()",
 });
 const length = z.string().regex(/^\d+(\.\d+)?(px|rem|em)$/, "must be a length in px, rem or em");
+const positiveLength = length.refine((value) => Number.parseFloat(value) > 0, {
+  message: "must be a length above zero",
+});
 const font = z.string().regex(/^[\w\s,"'-]{1,200}$/, "must be a list of font names");
 const logo = z
   .string()
@@ -44,6 +47,7 @@ const designSchema = z.strictObject({
   brand: z.strictObject({ name: z.string().max(200).optional(), logo: logo.optional() }).optional(),
   colors: z.strictObject({ light: fullColors, dark: fullColors.partial().optional() }),
   radius: length.optional(),
+  spacing: positiveLength.optional(),
   fonts: z
     .strictObject({ body: font.optional(), heading: font.optional(), mono: font.optional() })
     .optional(),
@@ -86,11 +90,12 @@ export function defineDesign(input: DesignInput): ElearningDesign {
     const issues = parsed.error.issues.map((issue) => `${issue.path.join(".")} ${issue.message}`);
     throw new Error(`Invalid design: ${issues.join("; ")}`);
   }
-  const { brand, colors, radius, fonts, darkMode } = parsed.data;
+  const { brand, colors, radius, spacing, fonts, darkMode } = parsed.data;
   return {
     brand: resolveBrand(brand),
     colors: { light: colors.light, dark: withDefined(colors.light, colors.dark) },
     radius: radius ?? "0.5rem",
+    spacing: spacing ?? "0.25rem",
     fonts: resolveFonts(fonts),
     darkMode: colors.dark === undefined ? "off" : (darkMode ?? "media"),
   };

@@ -8,12 +8,13 @@ import type {
 } from "./kit.types.js";
 
 // Labels are always visible and programmatically linked (WCAG 1.3.1, 2.5.3).
+// Each field is one box (`el-field`), its label above the control.
 
 export function DefaultTextField({ label, onChange, id, ...input }: UiTextFieldProps) {
   const generated = useId();
   const inputId = id ?? generated;
   return (
-    <>
+    <div className="el-field">
       <label htmlFor={inputId}>{label}</label>
       <input
         {...input}
@@ -22,7 +23,7 @@ export function DefaultTextField({ label, onChange, id, ...input }: UiTextFieldP
           onChange(event.target.value);
         }}
       />
-    </>
+    </div>
   );
 }
 
@@ -30,7 +31,7 @@ export function DefaultTextArea({ label, onChange, id, ...textarea }: UiTextArea
   const generated = useId();
   const inputId = id ?? generated;
   return (
-    <>
+    <div className="el-field">
       <label htmlFor={inputId}>{label}</label>
       <textarea
         {...textarea}
@@ -39,7 +40,7 @@ export function DefaultTextArea({ label, onChange, id, ...textarea }: UiTextArea
           onChange(event.target.value);
         }}
       />
-    </>
+    </div>
   );
 }
 
@@ -47,7 +48,7 @@ export function DefaultSelect({ label, onChange, options, id, ...select }: UiSel
   const generated = useId();
   const inputId = id ?? generated;
   return (
-    <>
+    <div className="el-field">
       <label htmlFor={inputId}>{label}</label>
       <select
         {...select}
@@ -62,7 +63,7 @@ export function DefaultSelect({ label, onChange, options, id, ...select }: UiSel
           </option>
         ))}
       </select>
-    </>
+    </div>
   );
 }
 

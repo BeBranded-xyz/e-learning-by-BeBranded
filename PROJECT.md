@@ -104,6 +104,9 @@ Last updated: 2026-10-24
 - **Styling approach**: packages ship plain CSS in the `elearning` cascade
   layer, with low specificity (`:where()`), no imposed framework. The demo and the shadcn kit use Tailwind v4
   and shadcn/ui.
+- **Spacing**: one unit in the design file (`spacing`), a fixed scale
+  `--el-space-1` to `--el-space-8` in the packages and Tailwind's `--spacing`
+  in the shell; literal spacing values fail the tests (spec 11, "Spacing").
 - **Themes**: light and dark from the design file (`darkMode`: media, class or
   off).
 - **Icons**: lucide (shadcn's set) in the demo and the shadcn kit; the packages
