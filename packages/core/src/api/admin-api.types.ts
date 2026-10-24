@@ -141,6 +141,13 @@ export type ApiAttemptGrant = {
   readonly created_at: string;
 };
 
+/** The answer to a grant: the grant and the learner's standing after it. */
+export type ApiAttemptGrantResult = ApiAttemptGrant & {
+  readonly attempts_used: number;
+  /** Null when the quiz has unlimited attempts. */
+  readonly attempts_remaining: number | null;
+};
+
 export type ApiEnrollmentReportRow = {
   readonly learner_id: string;
   readonly course_id: string;

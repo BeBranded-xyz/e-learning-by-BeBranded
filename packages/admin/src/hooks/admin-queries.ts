@@ -96,3 +96,35 @@ export function useLessonMutation<V, R>(
     },
   });
 }
+
+export function useCourseReport(courseId: string) {
+  const { admin } = useAdmin();
+  return useQuery({
+    queryKey: adminKeys.report("course", courseId),
+    queryFn: () => admin.courseReport(courseId),
+  });
+}
+
+export function useLearnerReport(learnerId: string) {
+  const { admin } = useAdmin();
+  return useQuery({
+    queryKey: adminKeys.report("learner", learnerId),
+    queryFn: () => admin.learnerReport(learnerId),
+  });
+}
+
+export function useQuizReport(lessonId: string) {
+  const { admin } = useAdmin();
+  return useQuery({
+    queryKey: adminKeys.report("quiz", lessonId),
+    queryFn: () => admin.quizReport(lessonId),
+  });
+}
+
+export function useAttemptGrants(lessonId: string) {
+  const { admin } = useAdmin();
+  return useQuery({
+    queryKey: adminKeys.grants(lessonId),
+    queryFn: () => admin.listAttemptGrants(lessonId),
+  });
+}

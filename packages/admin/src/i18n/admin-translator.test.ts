@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { ElearningApiError } from "@bebranded/elearning-react";
 
-import { adminMessages, en } from "./admin-messages.js";
+import { en } from "./admin-messages.js";
+import { fr } from "./admin-messages-fr.js";
 import { createAdminI18n } from "./admin-translator.js";
 
 const apiError = (code: string) =>
@@ -46,6 +47,6 @@ describe("createAdminI18n", () => {
   });
 
   it("translates every key in French", () => {
-    expect(Object.keys(adminMessages.fr).sort()).toEqual(Object.keys(en).sort());
+    expect(Object.keys(fr).sort()).toEqual(Object.keys(en).sort());
   });
 });

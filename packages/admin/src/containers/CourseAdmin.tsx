@@ -9,6 +9,7 @@ import { ContentTree } from "../components/ContentTree.js";
 import { CourseSettings } from "../components/CourseSettings.js";
 import { useAdminCourse } from "../hooks/admin-queries.js";
 import { useAdmin } from "../provider/admin-context.js";
+import { CourseReport } from "../reports/CourseReport.js";
 
 export type CourseAdminProps = {
   readonly courseId: string;
@@ -17,10 +18,18 @@ export type CourseAdminProps = {
   /** Host roles for the audience menus (spec 05, `listRoles`). */
   readonly roles?: readonly string[] | undefined;
   readonly onDeleted?: (() => void) | undefined;
+  /** The host's page of one learner's report, linked from the tracking table. */
+  readonly learnerHref?: ((learnerId: string) => string) | undefined;
 };
 
-/** One course in the back-office: settings, content tree, access rules and assignments. */
-export function CourseAdmin({ courseId, lessonHref, roles, onDeleted }: CourseAdminProps) {
+/** One course in the back-office: settings, content tree, access rules, assignments, tracking. */
+export function CourseAdmin({
+  courseId,
+  lessonHref,
+  roles,
+  onDeleted,
+  learnerHref,
+}: CourseAdminProps) {
   const { t } = useAdmin();
   const course = useAdminCourse(courseId);
   if (course.isPending) return <QueryState kind="loading" />;
@@ -49,6 +58,7 @@ export function CourseAdmin({ courseId, lessonHref, roles, onDeleted }: CourseAd
         />
       </section>
       <AssignmentsEditor courseId={tree.id} roles={roles} />
+      <CourseReport courseId={tree.id} learnerHref={learnerHref} />
     </article>
   );
 }
