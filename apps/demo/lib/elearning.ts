@@ -1,7 +1,9 @@
 import { postgresStorage } from "@bebranded/elearning-db";
+import { elearningExport, playwrightPdf } from "@bebranded/elearning-export";
 import { createElearning } from "@bebranded/elearning-server";
 import type { Elearning } from "@bebranded/elearning-server";
 import { fakeVideoProvider } from "@bebranded/elearning-video/testing";
+import { chromium } from "playwright-core";
 
 import { demoFileStorage } from "./demo-files";
 import { DEMO_VIDEO_PLAYLIST } from "./demo-video";
@@ -35,6 +37,13 @@ function create(): Elearning {
       playbackUrl: () => DEMO_VIDEO_PLAYLIST,
       webhookSecret: crypto.randomUUID(),
     }),
+    // PDF through the Chromium Playwright installs (`playwright install chromium`), launched
+    // on the first export and kept open; Word needs no browser. Export links open lesson pages.
+    exporter: elearningExport({
+      pdf: playwrightPdf({ launch: () => chromium.launch() }),
+    }),
+    exportLessonUrl: ({ courseSlug, lessonId }) =>
+      new URL(`/training/${courseSlug}/${lessonId}`, env.DEMO_PUBLIC_URL).toString(),
   });
 }
 

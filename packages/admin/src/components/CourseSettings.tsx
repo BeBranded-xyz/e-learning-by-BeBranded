@@ -8,7 +8,7 @@ import { useCourseMutation } from "../hooks/admin-queries.js";
 import { useAdmin } from "../provider/admin-context.js";
 import { DeleteButton } from "./DeleteButton.js";
 import { ErrorAlert } from "./ErrorAlert.js";
-import { SelectField, TextField } from "./Fields.js";
+import { CheckboxField, SelectField, TextField } from "./Fields.js";
 import type { TextFieldProps } from "./Fields.js";
 
 export type CourseSettingsProps = {
@@ -16,7 +16,10 @@ export type CourseSettingsProps = {
   readonly onDeleted?: (() => void) | undefined;
 };
 
-type Draft = Pick<ApiAdminCourse, "title" | "slug" | "summary" | "enrollment_mode">;
+type Draft = Pick<
+  ApiAdminCourse,
+  "title" | "slug" | "summary" | "enrollment_mode" | "allow_learner_export"
+>;
 
 const PATTERN = "[a-z0-9]+(-[a-z0-9]+)*";
 
@@ -69,6 +72,15 @@ function CourseFields(props: {
           set({ enrollment_mode: mode });
         }}
       />
+      {disabled ? null : (
+        <CheckboxField
+          label={t.t("field.allowLearnerExport")}
+          checked={draft.allow_learner_export}
+          onChange={(checked) => {
+            set({ allow_learner_export: checked });
+          }}
+        />
+      )}
     </>
   );
 }
@@ -105,7 +117,10 @@ function CourseActions(props: { course: ApiAdminCourse; onDeleted?: (() => void)
   );
 }
 
-/** Title, slug, summary and enrollment mode of a course, its publication, and its deletion. */
+/**
+ * Title, slug, summary, enrollment mode and learner export of a course, its
+ * publication, and its deletion.
+ */
 export function CourseSettings({ course, onDeleted }: CourseSettingsProps) {
   const { t } = useAdmin();
   const [draft, setDraft] = useState<Draft>(() => ({
@@ -113,6 +128,7 @@ export function CourseSettings({ course, onDeleted }: CourseSettingsProps) {
     slug: course.slug,
     summary: course.summary,
     enrollment_mode: course.enrollment_mode,
+    allow_learner_export: course.allow_learner_export,
   }));
   const save = useCourseMutation(course.id, (admin, body: Readonly<Record<string, unknown>>) =>
     admin.updateCourse(course.id, body),

@@ -57,7 +57,7 @@
 - [x] Export routes on the server, with the per-course learner setting
 - [x] Export security tests (no network from the renderer, SSRF, limits)
 - [x] Clean-room checkbox in the pull request template
-- [ ] Export buttons on the learner pages and in the back-office, the learner-export setting in course settings, demo and end-to-end journeys (columns and exports)
+- [x] Export buttons on the learner pages and in the back-office, the learner-export setting in course settings, demo and end-to-end journeys (columns and exports)
 
 **Deliverable**: multi-column lessons, and lessons and courses exportable to PDF and Word. See [10 — Editor extensions](10-editor-extensions.md).
 

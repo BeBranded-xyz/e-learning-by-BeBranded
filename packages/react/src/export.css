@@ -1,0 +1,16 @@
+/*
+ * Download buttons of courses and lessons (spec 10), imported by styles.css.
+ * Zero specificity like styles.css.
+ */
+
+:where(.el-export) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--el-space) / 2);
+}
+:where(.el-export-error) {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--el-color-danger);
+}

@@ -233,6 +233,17 @@ describe("export formats on the course page", () => {
 
     expect(await formats("exportable", "staff")).toEqual(["pdf", "docx"]);
     expect(await formats("locked", "staff")).toEqual([]);
+    expect(await formats("locked", "admin")).toEqual(["pdf", "docx"]);
+  });
+
+  it("lists them on lesson pages too", async () => {
+    const [lockedLesson] = await t.database.storage.listLessons(scope, [closed.id]);
+    const formats = async (id: string, as: LearnerName) =>
+      (await readJson(await get(`/v1/lessons/${id}`, as))).export_formats;
+
+    expect(await formats(text.id, "staff")).toEqual(["pdf", "docx"]);
+    expect(await formats(lockedLesson?.id ?? "", "staff")).toEqual([]);
+    expect(await formats(lockedLesson?.id ?? "", "admin")).toEqual(["pdf", "docx"]);
   });
 });
 
@@ -254,5 +265,13 @@ describe("allow_learner_export in the admin API", () => {
     );
 
     expect(updated.allow_learner_export).toBe(true);
+  });
+
+  it("lists the export formats on the admin course tree", async () => {
+    const course = await readJson(
+      await t.request("GET", `/v1/admin/courses/${closed.id}`, { as: "admin" }),
+    );
+
+    expect(course.export_formats).toEqual(["pdf", "docx"]);
   });
 });

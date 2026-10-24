@@ -73,4 +73,5 @@ export const tree: ApiCourseTree = {
     },
   ],
   access_rules: [everyoneRule],
+  export_formats: [],
 };

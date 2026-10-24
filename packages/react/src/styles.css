@@ -5,6 +5,7 @@
  */
 
 @import "./columns.css";
+@import "./export.css";
 
 :where(.el-root) {
   --el-color-primary: #4338ca;

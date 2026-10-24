@@ -10,7 +10,8 @@ const securityHeaders = [
 
 const config: NextConfig = {
   // pg has an optional native binding: Node loads it at runtime instead of bundling it.
-  serverExternalPackages: ["pg"],
+  // playwright-core starts a browser process: it runs from node_modules, never bundled.
+  serverExternalPackages: ["pg", "playwright-core"],
   poweredByHeader: false,
   headers: () => Promise.resolve([{ source: "/:path*", headers: securityHeaders }]),
 };

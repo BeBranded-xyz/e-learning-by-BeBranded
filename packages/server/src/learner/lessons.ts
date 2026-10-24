@@ -4,6 +4,7 @@ import { renderLessonHtml } from "@bebranded/elearning-editor/server";
 import type { RequestContext } from "../context.js";
 import { json } from "../http/responses.js";
 import { presentEnrollment, presentLesson } from "../presenters/learner.presenters.js";
+import { exportFormatsFor } from "../services/export.js";
 import { resolveFileUrls } from "../services/files.js";
 import { loadAccessibleLesson } from "../services/lesson-access.js";
 import { recordLessonProgress } from "../services/progress.js";
@@ -42,7 +43,7 @@ export async function getLesson(
   context: RequestContext,
   lessonId: string | undefined,
 ): Promise<Response> {
-  const { lesson, view } = await loadAccessibleLesson(context, lessonId);
+  const { lesson, course, view } = await loadAccessibleLesson(context, lessonId);
   const status = view.chapters
     .flatMap((chapter) => chapter.lessons)
     .find((entry) => entry.lesson.id === lesson.id)?.status;
@@ -50,7 +51,12 @@ export async function getLesson(
   const video = lesson.type === "video" ? await loadLessonVideo(context, lesson) : null;
   const quiz = lesson.type === "quiz" ? await loadLessonQuiz(context, lesson) : null;
   return json(
-    presentLesson(lesson, html, status ?? "not_started", { video, quiz, now: context.now() }),
+    presentLesson(lesson, html, status ?? "not_started", {
+      video,
+      quiz,
+      now: context.now(),
+      exportFormats: exportFormatsFor(context, course),
+    }),
     context.requestId,
   );
 }

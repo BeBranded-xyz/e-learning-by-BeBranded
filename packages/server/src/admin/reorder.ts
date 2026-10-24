@@ -5,6 +5,7 @@ import type { RequestContext } from "../context.js";
 import { json } from "../http/responses.js";
 import { presentCourseTree } from "../presenters/admin.presenters.js";
 import { loadCourseTree } from "../services/course-tree.js";
+import { exportFormatsFor } from "../services/export.js";
 import type { CourseTree } from "../services/course-tree.js";
 import { reorderBody } from "./admin.schemas.js";
 import type { ReorderBody } from "./admin.schemas.js";
@@ -75,5 +76,8 @@ export async function reorderCourse(context: RequestContext): Promise<Response> 
     await applyOrder(tx, context.scope, before, body);
     return { course: locked, tree: await loadCourseTree(tx, context.scope, locked) };
   });
-  return json(presentCourseTree(course, tree, context.scope), context.requestId);
+  return json(
+    presentCourseTree(course, tree, context.scope, exportFormatsFor(context, course)),
+    context.requestId,
+  );
 }

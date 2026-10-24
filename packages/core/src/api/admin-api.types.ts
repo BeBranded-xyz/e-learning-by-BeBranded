@@ -6,6 +6,7 @@ import type {
   EnrollmentMode,
   LessonStatus,
 } from "../content/content.schemas.js";
+import type { ExportFormat } from "../ports/exporter.types.js";
 import type { EnrollmentSource, JsonValue } from "../ports/storage.types.js";
 import type { ApiLessonType, ApiVideoAssetStatus } from "./api.types.js";
 
@@ -94,6 +95,8 @@ export type ApiCourseTree = ApiAdminCourse & {
     readonly lessons: readonly ApiAdminLessonSummary[];
   })[];
   readonly access_rules: readonly ApiAccessRule[];
+  /** The formats the course can be exported to; empty without an exporter (spec 10). */
+  readonly export_formats: readonly ExportFormat[];
 };
 
 export type ApiAdminQuiz = {

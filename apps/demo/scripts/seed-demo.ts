@@ -189,6 +189,8 @@ function quizCourse(): CatalogEntry {
 function demoCatalog(): CatalogEntry[] {
   const safety = course("workplace-safety", "Workplace safety", {
     summary: "The basics everyone at Acme Corp needs.",
+    // Learners may download it as PDF or Word (spec 10).
+    allowLearnerExport: true,
   });
   const basics = chapter(safety, "Basics", 0);
   const further = chapter(safety, "Going further", 1);
