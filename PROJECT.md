@@ -91,8 +91,8 @@ Last updated: 2026-10-23
 - **Token source**: CSS custom properties prefixed `--el-*`
   (`docs/specifications/04-integration.md`, section 6). Package path decided in
   phase 1.
-- **Shared components**: `@bebranded/elearning-react` (learner, phase 1) and `-admin` (phase 4).
-- **API contract types**: `packages/core/src/api/api.types.ts`, implemented by the server presenters and consumed by the React client.
+- **Shared components**: `@bebranded/elearning-react` (learner, phase 1) and `@bebranded/elearning-admin` (back-office, phase 4), which reuses the learner provider, tokens, buttons and loading and error states.
+- **API contract types**: `packages/core/src/api/api.types.ts` (learner) and `admin-api.types.ts` (admin), implemented by the server presenters and consumed by the React and admin clients.
 - **Styling approach**: plain CSS with low specificity (`:where()`), no imposed
   framework; optional Tailwind preset.
 - **Component catalogue, themes, icons, enforcement**: to be decided in phase 1

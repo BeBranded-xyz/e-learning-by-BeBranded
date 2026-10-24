@@ -28,6 +28,7 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | B-054 | S3-compatible (R2, S3) and Supabase Storage `FileStorage` adapters (spec 04, section 4) | feature | P3 | maintainers | spec 04 | 2026-10-24 | Hosts implement the port themselves for now |
 | B-055 | Optional `resolveLearners(ids)` host hook so reports and the back-office show names next to `learner_id` (spec 04, section 1) | feature | P2 | maintainers | spec 04 | 2026-10-24 | Reports list ids only |
 | B-056 | Paginate and aggregate reports in SQL for large tenants (reports load every enrollment or attempt of one course or quiz) | feature | P3 | maintainers | `modules/performance`, B-025 | 2026-10-24 | Fine for pilot sizes |
+| B-057 | Content tree drag and drop is pointer-only (the move buttons are the accessible path, WCAG 2.5.7); revisit with an accessible sortable pattern if authors ask, and remove the `no-static-element-interactions` suppression in `DropZone.tsx` | debt | P3 | maintainers | `modules/frontend` | 2026-10-24 | |
 | B-001 | Re-run `init.sh --target claude,codex --update` from AI-Dev-Rules `main` once its PRs #1, #2, #3 are merged; commit the new `.ruleset-version` | ops | P1 | maintainers | AI-Dev-Rules #1–#3 | 2026-10-22 | Current install comes from a local integration of those PRs |
 
 ## Next

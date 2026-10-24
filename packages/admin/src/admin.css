@@ -1,0 +1,96 @@
+/*
+ * @bebranded/elearning-admin styles. Load after @bebranded/elearning-react's
+ * styles.css, whose --el-* tokens and buttons these rules reuse. Every rule
+ * is wrapped in :where() so any host style wins.
+ */
+:where(.el-admin) {
+  display: grid;
+  gap: var(--el-space);
+}
+:where(
+  .el-admin-list,
+  .el-admin-chapters,
+  .el-admin-lessons,
+  .el-admin-rules ul,
+  .el-admin-assignments ul
+) {
+  display: grid;
+  gap: calc(var(--el-space) / 2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+:where(.el-admin-list > li, .el-admin-rules li, .el-admin-assignments li, .el-admin-drop) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--el-space) / 2);
+  align-items: center;
+}
+:where(.el-admin-chapter) {
+  padding: var(--el-space);
+  border: 1px solid var(--el-color-border);
+  border-radius: var(--el-radius);
+  background: var(--el-color-surface);
+}
+:where(.el-admin-chapter-header) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--el-space) / 2);
+  align-items: center;
+}
+:where(.el-admin-chapter-header h4) {
+  margin: 0;
+}
+:where(.el-admin-lesson) {
+  padding: calc(var(--el-space) / 2);
+  border: 1px solid var(--el-color-border);
+  border-radius: var(--el-radius);
+  background: var(--el-color-background);
+}
+:where(.el-admin-lesson [draggable="true"]) {
+  cursor: grab;
+}
+:where(.el-admin-form) {
+  display: grid;
+  gap: calc(var(--el-space) / 2);
+  max-inline-size: 40rem;
+}
+:where(.el-admin-inline-form) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--el-space) / 2);
+  align-items: center;
+}
+:where(.el-admin input, .el-admin select, .el-admin textarea) {
+  min-block-size: 2.75rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--el-color-border);
+  border-radius: var(--el-radius);
+  background: var(--el-color-background);
+  color: var(--el-color-text);
+  font: inherit;
+}
+:where(.el-admin-actions, .el-admin-confirm) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--el-space) / 2);
+  align-items: center;
+}
+:where(.el-button-danger) {
+  border-color: var(--el-color-danger);
+  color: var(--el-color-danger);
+}
+:where(.el-admin-error) {
+  color: var(--el-color-danger);
+}
+:where(.el-tag[data-status="published"]) {
+  color: var(--el-color-success);
+}
+:where(.el-visually-hidden) {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
