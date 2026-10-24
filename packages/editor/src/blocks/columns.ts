@@ -68,13 +68,13 @@ function resize(editor: ColumnEditor, columnId: string, delta: number): void {
  * The handle between a column and the next one: drag it, or focus it and use
  * the arrow keys (5% of the row per press). It is chrome, outside the slot.
  */
-function resizeHandle(editor: ColumnEditor, columnId: string): HTMLElement {
+function resizeHandle(editor: ColumnEditor, columnId: string, label: string): HTMLElement {
   const handle = document.createElement("div");
   handle.className = "el-column-resize";
   handle.tabIndex = 0;
   handle.setAttribute("role", "separator");
   handle.setAttribute("aria-orientation", "vertical");
-  handle.setAttribute("aria-label", "Resize columns");
+  handle.setAttribute("aria-label", label);
   handle.contentEditable = "false";
   handle.addEventListener("keydown", (event) => {
     if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
@@ -102,8 +102,18 @@ function resizeHandle(editor: ColumnEditor, columnId: string): HTMLElement {
   return handle;
 }
 
+export type ColumnOptions = {
+  /** The resize handle's accessible name, in the editor's language. */
+  readonly resizeLabel: string;
+};
+
 /** One column; `width` is its share of the row, normalized when rendered. */
-export const createColumn = createBlockSpec(
+export const createColumn = createBlockSpec<
+  "column",
+  { readonly width: { readonly default: number } },
+  "none",
+  ColumnOptions
+>(
   {
     type: "column",
     propSchema: { width: { default: 1 } },
@@ -112,14 +122,14 @@ export const createColumn = createBlockSpec(
     placeable: "namedOnly",
     children: { exclude: ["columnList"] },
   },
-  {
+  (options: Partial<ColumnOptions>) => ({
     renderFrame: (block, editor) => {
       const dom = document.createElement("div");
       dom.className = "el-column";
       dom.style.flexGrow = String(block.props.width);
       const slot = document.createElement("div");
       slot.className = "el-column-content";
-      dom.append(slot, resizeHandle(editor, block.id));
+      dom.append(slot, resizeHandle(editor, block.id, options.resizeLabel ?? "Resize columns"));
       return {
         dom,
         slot,
@@ -129,5 +139,5 @@ export const createColumn = createBlockSpec(
         },
       };
     },
-  },
+  }),
 );

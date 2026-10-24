@@ -16,7 +16,7 @@ import {
 } from "./blocks/quiz-blocks.js";
 
 /**
- * The module's block schema: BlockNote's default blocks plus our callout.
+ * The module's block schemas: BlockNote's default blocks plus our callout.
  *
  * The server-side validator (`validateLessonDocument` in elearning-core) is
  * the source of truth for what a lesson may contain: it rejects headings
@@ -24,18 +24,29 @@ import {
  * uploaded through the module. The admin editor's menu hides what it rejects.
  * `BlockNoteSchema.create({ blockSpecs })` with a subset of the default specs
  * does not type-check under `exactOptionalPropertyTypes`; `extend` does.
- */
-/**
- * A fresh base per schema: BlockNote's `extend` adds to the schema it is
- * called on, so two schemas extending one base would share every block.
+ *
+ * Each schema gets a fresh base: BlockNote's `extend` adds to the schema it
+ * is called on, so two schemas extending one base would share every block.
  */
 const contentSchema = () =>
   BlockNoteSchema.create().extend({ blockSpecs: { callout: createCalloutBlock() } });
 
+export type LessonEditorSchemaOptions = {
+  /** The column resize handle's accessible name; English by default. */
+  readonly columnResizeLabel?: string;
+};
+
 /** Lessons also lay blocks out in 2 to 4 columns (spec 10, ADR-0001). */
-export const lessonEditorSchema = contentSchema().extend({
-  blockSpecs: { columnList: createColumnList(), column: createColumn() },
-});
+export function createLessonEditorSchema(options: LessonEditorSchemaOptions = {}) {
+  const column =
+    options.columnResizeLabel === undefined
+      ? createColumn()
+      : createColumn({ resizeLabel: options.columnResizeLabel });
+  return contentSchema().extend({ blockSpecs: { columnList: createColumnList(), column } });
+}
+
+/** The lesson schema with English labels. */
+export const lessonEditorSchema = createLessonEditorSchema();
 
 export type LessonEditorSchema = typeof lessonEditorSchema;
 

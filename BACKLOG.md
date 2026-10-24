@@ -31,9 +31,8 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | B-059 | Usability sessions with content authors on the editor and back-office before the phase 5 pilot; findings become regression tests | test | P1 | maintainers | `TEST_PLAN.md` #59 | 2026-10-24 | Needs people; cannot be automated |
 | B-061 | Create columns by dragging a block onto another block's left or right edge (spec 10, "Editing behavior"); the slash menu is the only way today | feature | P3 | maintainers | spec 10, ADR-0001 | 2026-10-24 | Needs a drop target on block edges |
 | B-062 | Playwright journeys for the remaining column behaviors: drag a block between columns and out of the list, resize with the pointer, remove a column until the list dissolves | test | P2 | maintainers | spec 10 "Testing", `TEST_PLAN.md` #9, #47 | 2026-10-24 | Creating, typing, keyboard resize and the learner layout are covered (`columns.spec.ts`); the rest by editor tests on a mounted editor |
-| B-065 | Visual regression of exported PDF pages (Playwright screenshots of rendered pages) and validation of .docx files in LibreOffice headless, per spec 10 "Testing" | test | P2 | maintainers | spec 10, `TEST_PLAN.md` #11 | 2026-10-24 | Text extraction and XML structure are tested today |
 | B-066 | Back-office download of a single lesson (drafts included) from the lesson editor page; admins download the whole course today | feature | P3 | maintainers | spec 10 | 2026-10-24 | Lesson detail payload has no `export_formats` |
-| B-063 | Localize the column resize handle's accessible name ("Resize columns" is English): pass a label from the admin translator into the column block spec | feature | P2 | maintainers | `modules/i18n`, `modules/frontend` | 2026-10-24 | The editor package has no translator |
+| B-067 | Deploy the public demo automatically after each merge into `main` (CI job, only when `apps/demo` or a package it uses changed), with a smoke test and the previous image kept for rollback | ops | P2 | maintainers | `modules/deployments`, `modules/infra` | 2026-10-24 | Redeployed by hand with a script on the server today |
 | B-001 | Re-run `init.sh --target claude,codex --update` from AI-Dev-Rules `main` once its PRs #1, #2, #3 are merged; commit the new `.ruleset-version` | ops | P1 | maintainers | AI-Dev-Rules #1–#3 | 2026-10-22 | Current install comes from a local integration of those PRs |
 
 ## Next
@@ -84,6 +83,7 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 
 | ID | Question | Who decides | Blocking | Asked on | Link |
 |---|---|---|---|---|---|
+| Q-002 | The public demo lets anyone sign in as the admin persona and edit content or upload files. Reset it on a schedule (database and uploads), put it behind basic auth, or make the back-office read-only there? | Maxime | No | 2026-10-24 | `PROJECT.md` section 5 |
 | Q-001 | Which host product pilots the module? Still undecided on 2026-10-23; the demo app stays the only host | Maxime | Phase 5 | 2026-10-22 | spec 09, Q4 |
 
 ## Done (last 30 days, then prune)
@@ -93,6 +93,8 @@ Tracker: this file only (GitHub Issues once outside contributors arrive)
 | | Technical specifications 01–10, repository security baseline | 2026-10-22 | direct commits before branch protection |
 | | AI-Dev-Rules adoption (Claude Code and Codex) | 2026-10-22 | #1 |
 | B-064 | `styles.css` of the React package split by area (`base`, `content`, `video`, `columns`, `export`), imported in the original order; the flattened CSS is identical | 2026-10-24 | this PR |
+| B-063 | Column resize handle named in the editor's language (`createLessonEditorSchema`, en and fr in the back-office) | 2026-10-24 | this PR |
+| B-065 | Export checks: PDF layout read back with pdfjs (found and fixed lesson headings printing smaller than body text), every exported .docx opened by LibreOffice in CI | 2026-10-24 | this PR |
 | | Export UI: download buttons on course and lesson pages and in the back-office, learner-export setting in course settings, demo exporter (Playwright) and journeys for exports and columns; phase 4b complete | 2026-10-24 | this PR |
 | | Multi-column layout: spike go (ADR-0001), core validation, editor blocks with resize, slash items, learner, HTML and Word rendering; lesson and quiz editor schemas no longer share blocks | 2026-10-24 | this PR |
 | B-022 | Authoring menu hides headings 4 to 6, audio and video | 2026-10-24 | #35 |
