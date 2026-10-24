@@ -16,6 +16,7 @@ import type {
   AssignmentStorageWrites,
 } from "./assignment-storage.types.js";
 import type { FileStorageReads, FileStorageWrites } from "./file-storage.types.js";
+import type { ReportStorageReads } from "./report-storage.types.js";
 import type { QuizStorageReads, QuizStorageWrites } from "./quiz-storage.types.js";
 import type { VideoStorageReads, VideoStorageWrites } from "./video-storage.types.js";
 
@@ -111,7 +112,8 @@ export type StorageReads = {
 } & VideoStorageReads &
   QuizStorageReads &
   AssignmentStorageReads &
-  FileStorageReads;
+  FileStorageReads &
+  ReportStorageReads;
 
 export type StorageWrites = {
   /** Locks the learner's enrollment row until the transaction ends. */
