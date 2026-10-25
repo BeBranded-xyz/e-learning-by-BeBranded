@@ -4,16 +4,15 @@ import { useEffect } from "react";
 import type { RefObject } from "react";
 
 /** Native disclosure semantics, with dismissal while a floating action panel is open. */
-export function useDisclosureDismiss(ref: RefObject<HTMLDetailsElement | null>, open: boolean) {
+export function useDisclosureDismiss(ref: RefObject<HTMLDetailsElement | null>) {
   useEffect(() => {
-    if (!open) return;
     const outside = (event: PointerEvent) => {
       const details = ref.current;
-      if (details !== null && event.target instanceof Node && !details.contains(event.target))
+      if (details?.open && event.target instanceof Node && !details.contains(event.target))
         details.open = false;
     };
     const escape = (event: KeyboardEvent) => {
-      if (event.key !== "Escape" || ref.current === null) return;
+      if (event.key !== "Escape" || !ref.current?.open) return;
       ref.current.open = false;
       ref.current.querySelector("summary")?.focus();
     };
@@ -23,5 +22,5 @@ export function useDisclosureDismiss(ref: RefObject<HTMLDetailsElement | null>, 
       document.removeEventListener("pointerdown", outside);
       document.removeEventListener("keydown", escape);
     };
-  }, [ref, open]);
+  }, [ref]);
 }
