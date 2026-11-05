@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@bebranded/elearning-core": "workspace:^",
-    "@blocknote/core": "^0.56.0",
+    "@blocknote/core": "^0.57.0",
     "prosemirror-state": "^1.4.4",
     "sanitize-html": "^2.18.1"
   },

@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@bebranded/elearning-core": "workspace:^",
-    "kysely": "^0.29.7",
+    "kysely": "^0.29.8",
     "zod": "^4.6.7"
   },
   "devDependencies": {
