@@ -46,7 +46,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with: { persist-credentials: false }
-      - uses: grafana/setup-k6-action@43b9fc21641a76002687994433dd586f56e791b1 # v1.2.2
+      - uses: grafana/setup-k6-action@c47136d33d365efbeb9ae7266908b5dcf98cdece # v1.3.0
       - run: k6 run tests/load/baseline.js --env BASE_URL="$TARGET_URL"
       - run: k6 run tests/load/stress.js --env BASE_URL="$TARGET_URL"
       - run: k6 run tests/load/spike.js --env BASE_URL="$TARGET_URL"
