@@ -40,6 +40,6 @@
     "@bebranded/elearning-db": "workspace:^",
     "@bebranded/elearning-export": "workspace:^",
     "@bebranded/elearning-video": "workspace:^",
-    "kysely": "^0.29.7"
+    "kysely": "^0.29.8"
   }
 }
