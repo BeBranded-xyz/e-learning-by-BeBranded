@@ -38,11 +38,11 @@
   },
   "dependencies": {
     "@bebranded/elearning-core": "workspace:^",
-    "kysely": "^0.29.7",
+    "kysely": "^0.29.9",
     "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@testcontainers/postgresql": "12.2.1",
+    "@testcontainers/postgresql": "12.2.2",
     "@types/pg": "8.23.1",
     "kysely-codegen": "0.20.0",
     "pg": "8.23.1"
